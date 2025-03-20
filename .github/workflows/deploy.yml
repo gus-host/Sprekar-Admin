@@ -24,9 +24,10 @@ jobs:
         run: npm run build
 
       - name: Deploy with Serverless Framework
-        run: npx serverless
+        run: npx serverless --nonInteractive
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: ${{ secrets.AWS_REGION }}
           SERVERLESS_ACCESS_KEY: ${{ secrets.SERVERLESS_ACCESS_KEY }}
+          CI: true
