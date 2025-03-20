@@ -1,0 +1,48 @@
+{
+  "/Users/macbook/Documents/2025/CRAYSOFT/Sprekar-Admin/serverless.yml": {
+    "versionFramework": "4.9.0",
+    "servicePath": "/Users/macbook/Documents/2025/CRAYSOFT/Sprekar-Admin/serverless.yml",
+    "serviceConfigFileName": "serverless.yml",
+    "service": {
+      "service": "nextjs-app",
+      "provider": {
+        "name": "aws",
+        "runtime": "nodejs22.x"
+      },
+      "component": "@sls-next/serverless-component@1.20.0",
+      "inputs": {
+        "domain": [
+          "sprekar.com"
+        ],
+        "region": "us-east-1"
+      }
+    },
+    "provider": {
+      "name": "aws",
+      "runtime": "nodejs22.x"
+    },
+    "dashboard": {
+      "isEnabledForService": false,
+      "requiredAuthentication": true,
+      "orgFeaturesInUse": null,
+      "orgObservabilityIntegrations": null,
+      "serviceAppId": null,
+      "serviceProvider": null,
+      "instanceParameters": null
+    },
+    "serviceRawFile": "service: nextjs-app\nprovider:\n  name: aws\n  runtime: nodejs22.x\n\ncomponent: \"@sls-next/serverless-component@1.20.0\"\ninputs:\n  domain:\n    - sprekar.com\n  region: us-east-1\n",
+    "command": [
+      "login"
+    ],
+    "options": {},
+    "orgId": "50ebd852-d1d6-402e-a7df-586b78048422",
+    "orgName": "craysoft",
+    "userId": "r75Pts3vk1cmGYQynd",
+    "userName": "craysoft",
+    "serviceProviderAwsCfStackId": null,
+    "serviceProviderAwsCfStackCreated": null,
+    "serviceProviderAwsCfStackUpdated": null,
+    "serviceProviderAwsCfStackStatus": null,
+    "serviceProviderAwsCfStackOutputs": null
+  }
+}
