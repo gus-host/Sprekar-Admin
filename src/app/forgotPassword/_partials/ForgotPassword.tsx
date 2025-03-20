@@ -1,19 +1,49 @@
-'use client';
+"use client";
 
-import TextInput from '@/app/_partials/TextInputs';
-import Button from '@/components/Button';
-import { useFormik } from 'formik';
-import React from 'react';
-import { validationSchema } from '../validation';
+import TextInput from "@/app/_partials/TextInputs";
+import Button from "@/components/Button";
+import { useFormik } from "formik";
+import React, { useState } from "react";
+import { validationSchema } from "../validation";
+import api from "@/utils/axios/api";
+import toast from "react-hot-toast";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 export default function ForgotPassword() {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const router = useRouter();
   const formIk = useFormik({
     validationSchema: validationSchema,
     initialValues: {
-      email: '',
+      email: "",
     },
-    onSubmit: (values) => {
-      console.log('submited');
+    onSubmit: async (values) => {
+      try {
+        setIsSubmitting(true);
+        const response = await api.post("/api/auth/forgot-password", {
+          ...values,
+        });
+        console.log(response);
+        if (response.status === 201 || response.status === 200) {
+          console.log(response.data);
+          toast.success("Success, Otp sent to your email");
+          router.push(
+            `/verify-email/password-reset?email=${encodeURIComponent(
+              values.email
+            )}`
+          );
+        } else {
+          console.log(response.data);
+          toast.error(response.data.data.message || "An error occured");
+        }
+      } catch (error) {
+        if (axios.isAxiosError(error))
+          toast.error(error?.response?.data?.message || "An error occured.");
+        if (error instanceof Error) console.log(error);
+      } finally {
+        setIsSubmitting(false);
+      }
     },
   });
   return (
@@ -22,7 +52,7 @@ export default function ForgotPassword() {
         <h2 className="text-[20px] font-bold">Forgot Password</h2>
         <p className="text-[12px] font-medium text-[#9B9B9B] mt-1 leading-[1.3]">
           Please enter the email associated with your account, kindly click on
-          the clink to reset your password.
+          the link to reset your password.
         </p>
       </div>
       <div className="flex flex-col gap-[25px] mb-10 ">
@@ -38,7 +68,12 @@ export default function ForgotPassword() {
       </div>
 
       <div className="flex flex-col gap-[16px]">
-        <Button text={'Submit'} classNames="rounded-[5px]" type="submit" />
+        <Button
+          text={"Submit"}
+          classNames="rounded-[5px]"
+          type="submit"
+          isLoading={isSubmitting}
+        />
       </div>
     </form>
   );

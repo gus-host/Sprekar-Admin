@@ -1,16 +1,20 @@
-import type { Metadata } from 'next';
-import { Open_Sans } from 'next/font/google';
-import './globals.css';
+import type { Metadata } from "next";
+import { Open_Sans } from "next/font/google";
+import "./globals.css";
+import { GoogleOAuthProvider } from "@react-oauth/google";
+import { Toaster } from "react-hot-toast";
+
+const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
 
 const openSans = Open_Sans({
-  subsets: ['latin'],
-  display: 'swap',
+  subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
   title: {
-    template: '%s | Cray',
-    default: 'Sign Up | Cray',
+    template: "%s | Cray",
+    default: "Sign Up | Cray",
   },
 };
 
@@ -20,8 +24,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${openSans.className} bg-[#FCFCFC]`}>{children}</body>
-    </html>
+    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID as string}>
+      <html lang="en">
+        <body className={`${openSans.className} bg-[#FCFCFC]`}>
+          <>
+            <Toaster position="top-right" />
+            {children}
+          </>
+        </body>
+      </html>
+    </GoogleOAuthProvider>
   );
 }

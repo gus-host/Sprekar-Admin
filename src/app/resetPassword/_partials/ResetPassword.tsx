@@ -1,36 +1,69 @@
-'use client';
+"use client";
 
-import TextInput from '@/app/_partials/TextInputs';
-import Button from '@/components/Button';
-import { useFormik } from 'formik';
-import Link from 'next/link';
-import React from 'react';
-import { validationSchema } from '../validation';
+import TextInput from "@/app/_partials/TextInputs";
+import Button from "@/components/Button";
+import { useFormik } from "formik";
+import React, { useState } from "react";
+import { validationSchema } from "../validation";
+import api from "@/utils/axios/api";
+import { useRouter, useSearchParams } from "next/navigation";
+import toast from "react-hot-toast";
+import axios from "axios";
 
+export const revalidate = 0;
 export default function ResetPassword() {
+  const searchParams = useSearchParams();
+  const queryParams = new URLSearchParams(searchParams);
+  const id = queryParams.get("id") || "";
+  console.log(id);
+  const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const formIk = useFormik({
     validationSchema: validationSchema,
     initialValues: {
-      password: '',
-      passwordConfirm: '',
+      password: "",
+      passwordConfirm: "",
     },
-    onSubmit: (values) => {
-      console.log('submited');
+    onSubmit: async (values) => {
+      console.log(values);
+      try {
+        setIsSubmitting(true);
+        const response = await api.post(`/api/auth/change-password`, {
+          ...values,
+          id,
+        });
+        if (response.status === 201 || response.status === 200) {
+          console.log(response.data);
+          toast.success(response.data.message || "Password successfully reset");
+          router.push(`/login`);
+        } else {
+          console.log(response.data);
+          toast.error(response.data.data.message || "An error occured");
+        }
+      } catch (error) {
+        if (axios.isAxiosError(error))
+          toast.error(error?.response?.data?.message || "An error occured.");
+        if (error instanceof Error) console.log(error);
+      } finally {
+        setIsSubmitting(false);
+      }
     },
   });
+
   return (
     <form onSubmit={formIk.handleSubmit}>
       <div className="mb-[20px]">
         <h2 className="text-[20px] font-bold">Reset Password</h2>
         <p className="text-[12px] mt-1 font-medium text-[#9B9B9B]">
-          Please enter your new password
+          Please enter your new password and Otp you received at your email
         </p>
       </div>
-      <div className="flex flex-col gap-[25px] ">
+      <div className="flex flex-col gap-[25px] mb-8">
         <TextInput
           type="password"
           name="password"
-          placeholder="Password"
+          placeholder="Old Password"
           showPasswordToggle
           value={formIk.values.password}
           onChange={formIk.handleChange}
@@ -39,8 +72,8 @@ export default function ResetPassword() {
         />
         <TextInput
           type="password"
-          name="confirm-password"
-          placeholder="Re-enter Password"
+          name="passwordConfirm"
+          placeholder="New Password"
           showPasswordToggle
           value={formIk.values.passwordConfirm}
           onChange={formIk.handleChange}
@@ -48,23 +81,13 @@ export default function ResetPassword() {
           onBlur={formIk.handleBlur}
         />
       </div>
-      <div className="flex justify-between items-center mt-3 mb-[40px] text-[#000000] text-[12px]">
-        <div className="flex items-center gap-1">
-          <input type="checkbox" /> <span>Remember me</span>
-        </div>
-        <Link
-          href={'/forgotPassword'}
-          className="hover:underline hover:font-medium"
-        >
-          Forgot password?
-        </Link>
-      </div>
 
       <div className="flex flex-col gap-[16px]">
         <Button
-          text={'Reset Password'}
+          text={"Reset Password"}
           classNames="rounded-[5px]"
-          type={'submit'}
+          type={"submit"}
+          isLoading={isSubmitting}
         />
       </div>
     </form>
