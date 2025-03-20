@@ -5,9 +5,7 @@ import Image from "next/image";
 import React from "react";
 import UsersTable from "@/components/UsersTable";
 
-export const validate = 0;
-
-export default function page() {
+export default function Page() {
   return (
     <div>
       <h2 className="text-[#1E1E1E] text-[22px]">Good morning, John!</h2>
