@@ -1,0 +1,10 @@
+service: nextjs-app
+provider:
+  name: aws
+  runtime: nodejs22.x
+
+component: "@sls-next/serverless-component@1.20.0"
+inputs:
+  domain:
+    - sprekar.com
+  region: us-east-1
