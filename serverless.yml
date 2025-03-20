@@ -1,3 +1,6 @@
+app: sprekar-app
+org: craysoft
+
 service: nextjs-app
 provider:
   name: aws
