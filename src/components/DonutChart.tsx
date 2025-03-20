@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { PieChart, Pie, Cell, Legend, ResponsiveContainer } from "recharts";
+import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 
 export const revalidate = 0;
 const data = [
@@ -12,7 +12,7 @@ const data = [
   { name: "Spanish", value: 5, color: "#FF0000" },
 ];
 
-const colors = data.map((d) => d.color && `${d.color}`);
+const colors = data.filter((d) => d.color !== "#ADB4F3");
 
 const DonutChart = () => {
   const [mounted, setMounted] = useState(false);
@@ -45,21 +45,24 @@ const DonutChart = () => {
           </Pie>
         </PieChart>
       </ResponsiveContainer>
-      <div className="max-w-[200px] mx-auto mt-5">
-        <div
-          className="py-1 rounded-[5px] border-l-8"
-          style={{
-            borderColor: "#FF0000",
-            boxShadow: "0px 14px 17.6px 0px #0000000A",
-          }}
-        >
-          <p className="text-center flex justify-center gap-4 items-center">
-            <strong className="text-[12px]">40%</strong>
-            <span className="text-[12px] text-[#161A4169] font-semibold">
-              Spanish
-            </span>{" "}
-          </p>
-        </div>
+      <div className="max-w-[200px] mx-auto mt-5 flex flex-col gap-[15px]">
+        {colors.map((color, i) => (
+          <div
+            key={i}
+            className="py-[10px] rounded-[5px] border-l-8"
+            style={{
+              borderColor: color.color,
+              boxShadow: "0px 14px 17.6px 0px #0000000A",
+            }}
+          >
+            <p className="text-center flex justify-center gap-4 items-center">
+              <strong className="text-[12px]">{color.value}%</strong>
+              <span className="text-[12px] text-[#161A4169] font-semibold">
+                {color.name}
+              </span>{" "}
+            </p>
+          </div>
+        ))}
       </div>
     </>
   );

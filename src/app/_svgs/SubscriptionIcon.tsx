@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 export default function SubscriptionIcon() {
   return (
@@ -11,7 +11,7 @@ export default function SubscriptionIcon() {
     >
       <mask
         id="mask0_1076_668"
-        style={{ maskType: 'luminance' }}
+        style={{ maskType: "luminance" }}
         maskUnits="userSpaceOnUse"
         x="0"
         y="0"

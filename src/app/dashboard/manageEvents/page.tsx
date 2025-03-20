@@ -1,5 +1,5 @@
 import BarChart from "@/components/BarChart";
-import NoteIcon from "@/public/svgs/NoteIcon";
+import NoteIcon from "@/app/_svgs/NoteIcon";
 import React from "react";
 
 export default function page() {

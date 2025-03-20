@@ -1,13 +1,13 @@
 "use client";
 
-import DashboardIcon from "@/public/svgs/DashboardIcon";
-import CalenderIcon from "@/public/svgs/CalenderIcon";
-import MicIcon from "@/public/svgs/MicIcon";
-import PastIcon from "@/public/svgs/PastIcon";
-import PeopleIcon from "@/public/svgs/PeopleIcon";
-import SubscriptionIcon from "@/public/svgs/SubscriptionIcon";
-import SettingsIcon from "@/public/svgs/SettingsIcon";
-import ExitIcon from "@/public/svgs/ExitIcon";
+import DashboardIcon from "@/app/_svgs/DashboardIcon";
+import CalenderIcon from "@/app/_svgs/CalenderIcon";
+import MicIcon from "@/app/_svgs/MicIcon";
+import PastIcon from "@/app/_svgs/PastIcon";
+import PeopleIcon from "@/app/_svgs/PeopleIcon";
+import SubscriptionIcon from "@/app/_svgs/SubscriptionIcon";
+import SettingsIcon from "@/app/_svgs/SettingsIcon";
+import ExitIcon from "@/app/_svgs/ExitIcon";
 import NavLink from "./NavLink";
 import React, { useEffect, useState } from "react";
 import { useWindowSize } from "react-use";

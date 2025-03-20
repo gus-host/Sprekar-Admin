@@ -1,10 +1,9 @@
 "use client";
 
-import ChevronLeftRounded from "@/public/svgs/ChevronLeftRounded";
 import { ReactNode, useEffect, useState } from "react";
 import { useWindowSize } from "react-use";
-import Sidebar from "./Sidebar";
 import MobileSidebar from "./MobileSidebar";
+import ChevronLeftRounded from "@/app/_svgs/ChevronLeftRounded";
 
 export default function DashboardMain({ children }: { children: ReactNode }) {
   const [isShowNav, setIsShowNav] = useState(true);
@@ -26,7 +25,6 @@ export default function DashboardMain({ children }: { children: ReactNode }) {
           overflowY: "auto",
         }}
       >
-        
         {clientWidth && clientWidth <= 1200 && (
           <MobileSidebar
             setIsShowNav={setIsShowNav}

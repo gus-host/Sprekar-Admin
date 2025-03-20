@@ -15,7 +15,6 @@ export default function ResetPassword() {
   const searchParams = useSearchParams();
   const queryParams = new URLSearchParams(searchParams);
   const id = queryParams.get("id") || "";
-  console.log(id);
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -29,10 +28,14 @@ export default function ResetPassword() {
       console.log(values);
       try {
         setIsSubmitting(true);
-        const response = await api.post(`/api/auth/change-password`, {
-          ...values,
-          id,
-        });
+        const response = await api.post(
+          `/api/auth/change-password`,
+          {
+            ...values,
+            id,
+          },
+          { withCredentials: true }
+        );
         if (response.status === 201 || response.status === 200) {
           console.log(response.data);
           toast.success(response.data.message || "Password successfully reset");

@@ -1,6 +1,7 @@
 "use client";
-import GoogleIcon from "@/public/svgs/GoogleIcon";
-import AppleIcon from "@/public/svgs/AppleIcon";
+
+import AppleIcon from "../_svgs/AppleIcon";
+import GoogleIcon from "../_svgs/GoogleIcon";
 
 export default function AuthButton({
   type,

@@ -1,4 +1,4 @@
-import NotificationIcon from "@/public/svgs/NotificationIcon";
+import NotificationIcon from "@/app/_svgs/NotificationIcon";
 import { ChevronDown } from "lucide-react";
 import DashboardMain from "./_partials/DashboardMain";
 import { ReactNode } from "react";
