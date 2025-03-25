@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Open_Sans } from "next/font/google";
 import "./globals.css";
+import "./index.css";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { Toaster } from "react-hot-toast";
 
@@ -13,8 +14,8 @@ const openSans = Open_Sans({
 
 export const metadata: Metadata = {
   title: {
-    template: "%s | Cray",
-    default: "Sign Up | Cray",
+    template: "%s | Sprekar",
+    default: "Sign Up | Sprekar",
   },
 };
 

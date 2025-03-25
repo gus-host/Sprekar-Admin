@@ -19,7 +19,8 @@ export default function NavLink({
   activeClassName = "opacity-100",
 }: NavLinkProps) {
   const pathname = usePathname();
-  const isActive = pathname === href;
+  const isActive =
+    href !== "/dashboard" ? pathname.includes(href) : pathname === href;
 
   return (
     <Link

@@ -60,7 +60,6 @@ export default function SignUp() {
       const response = await api.post("/api/auth/googleSignUp", {
         ...payload,
       });
-      console.log("Tokens:", response.data);
 
       if (response.status === 201 || response.status === 200) {
         const responseFromSignin = await api.post("/api/auth/googleSignin", {
@@ -71,8 +70,6 @@ export default function SignUp() {
           responseFromSignin.status === 201 ||
           responseFromSignin.status === 200
         ) {
-          console.log(responseFromSignin.data);
-
           const accessToken =
             responseFromSignin?.data?.data?.tokens?.access?.token || "";
           const refreshToken = responseFromSignin?.data?.data?.tokens?.refresh;

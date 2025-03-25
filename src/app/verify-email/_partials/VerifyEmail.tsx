@@ -53,7 +53,6 @@ export default function VerifyEmail() {
           });
           console.log(response);
           if (response.status === 201 || response.status === 200) {
-            console.log(response.data);
             toast.success(
               response.data.message || "Email Verified Successfully"
             );

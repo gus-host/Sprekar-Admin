@@ -18,7 +18,7 @@ export default function page() {
             <h3>Overview of engagement</h3>
             <NoteIcon />
           </div>
-          <div className="grid grid-cols-3 gap-x-[10px] mt-3 mb-5">
+          <div className="grid grid-cols-3 gap-x-[10px] mt-3 mb-5 leading-[1.2]">
             <div className="text-center border border-[#E2E2E2] px-[10px] py-[15px]">
               <span className="text-[#0827F6] py-[8px] px-[14px] font-semibold rounded-full bg-[#025FF312] inline-block text-[14px] mb-2">
                 3

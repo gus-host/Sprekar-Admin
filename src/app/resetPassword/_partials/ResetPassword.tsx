@@ -37,11 +37,9 @@ export default function ResetPassword() {
           { withCredentials: true }
         );
         if (response.status === 201 || response.status === 200) {
-          console.log(response.data);
           toast.success(response.data.message || "Password successfully reset");
           router.push(`/login`);
         } else {
-          console.log(response.data);
           toast.error(response.data.data.message || "An error occured");
         }
       } catch (error) {

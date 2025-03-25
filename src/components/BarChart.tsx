@@ -11,6 +11,7 @@ import {
   CartesianGrid,
   ResponsiveContainer,
   LabelList,
+  TooltipProps,
 } from "recharts";
 
 // Sample data with two groups (e.g., actual vs. projected attendees)
@@ -26,7 +27,7 @@ const data = [
 ];
 
 // Custom Tooltip
-const CustomTooltip = ({ active, payload }: any) => {
+const CustomTooltip = ({ active, payload }: TooltipProps<number, string>) => {
   if (active && payload && payload.length) {
     return (
       <div className="bg-[#0F4FB6] text-white px-3 py-1 rounded-[5px] shadow-[#00000099] text-sm">

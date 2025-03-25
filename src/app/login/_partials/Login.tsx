@@ -33,7 +33,6 @@ export default function Login() {
         const response = await api.post("/api/auth/login", {
           ...values,
         });
-        console.log(response);
         if (response.status === 201 || response.status === 200) {
           const accessToken = response?.data?.data?.tokens?.access?.token || "";
           const refreshToken = response?.data?.data?.tokens?.refresh;

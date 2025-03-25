@@ -1,0 +1,90 @@
+import { Skeleton } from "@mui/material";
+import axios from "axios";
+import { cookies } from "next/headers";
+import Image from "next/image";
+import { Suspense } from "react";
+
+const BASE_URL = process.env.API_BASE_URL;
+
+interface User {
+  profilePicture?: string;
+  firstName?: string;
+  lastName?: string;
+}
+
+export default async function ProfileImg() {
+  const cookieStore = cookies();
+  const token = (await cookieStore).get("refreshToken")?.value;
+  let user: User = {
+    profilePicture: "",
+  };
+
+  try {
+    const response = await fetch(`${BASE_URL}/auth/me`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      cache: "no-store",
+    });
+
+    if (!response.ok) {
+      console.log(response.status);
+    }
+
+    const data = await response.json();
+    console.log(data);
+    user = data.data.user; // Adjust if needed
+  } catch (err) {
+    if (axios.isAxiosError(err)) {
+      error = err.message;
+      console.log("Axios Error:", err.message);
+    } else if (err instanceof Error) {
+      console.log("Fetch Error:", err);
+    } else {
+      console.log("Unknown Error:", err);
+    }
+  }
+
+  const svg = `
+  <svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="50" cy="50" r="50" fill="#025FF321"/>
+    <circle cx="50" cy="40" r="12" fill="#0827F6"/>
+    <path d="M30 75 C30 65, 70 65, 70 75 C70 82, 30 82, 30 75 Z" fill="#0827F6"/>
+  </svg>
+`;
+  const encodedSvg = encodeURIComponent(svg);
+  return (
+    <Suspense fallback={<Skeleton variant="circular" width={28} height={28} />}>
+      <>
+        {user.profilePicture && (
+          <Image
+            src={user.profilePicture}
+            width={28}
+            height={28}
+            className="rounded-full"
+            alt={"profile picture"}
+          />
+        )}
+
+        {user.firstName && user.lastName ? (
+          <div className="h-[28px] w-[28px] rounded-full bg-[#025FF321] text-[12px] text-[#0827F6] text-center flex justify-center items-center">
+            <span>
+              {user.firstName.at(0)}
+              {user.lastName.at(0)}
+            </span>
+          </div>
+        ) : (
+          <Image
+            src={`data:image/svg+xml,${encodedSvg}`}
+            alt="Profile Icon"
+            width={28}
+            height={28}
+            className="rounded-full"
+          />
+        )}
+      </>
+    </Suspense>
+  );
+}
