@@ -2,8 +2,12 @@
 
 import React, { useState } from "react";
 import { useFormik, FormikProvider } from "formik";
+import { useRouter } from "next/navigation";
+import dayjs from "dayjs";
+import moment from "moment-timezone";
+import { useEffect } from "react";
+
 import EventNameInput from "./EventNameInput";
-import CalenderBlue from "@/app/_svgs/CalenderBlue";
 import StartDateTimeSelector from "./StartDateTimeInputs";
 import EndDateTimeSelector from "./EndDateTimeInputs";
 import Toggle from "@/components/Toggle";
@@ -12,17 +16,12 @@ import SupportedLanguagesSelect, {
 } from "./SupportedLanguagesSelect";
 import TimeZoneSelect from "./TimeZoneSelect";
 import { eventFormValidation } from "./eventFormValidation";
-import moment from "moment-timezone";
 import EventDescriptionInput from "./EventDescriptionInput";
 import ModalMUI from "@/components/ModalMUI";
-import { useRouter } from "next/navigation";
-
-import dayjs from "dayjs";
 import api from "@/utils/axios/api";
-
 import Spinner from "@/components/ui/Spinner";
 
-import { useEffect } from "react";
+import CalenderBlue from "@/app/_svgs/CalenderBlue";
 import SuccessIcon from "@/app/_svgs/SuccessIcon";
 import FailedIcon from "@/app/_svgs/FailedIcon";
 

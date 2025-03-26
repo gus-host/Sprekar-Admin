@@ -6,7 +6,7 @@ export const metadata = {
 export default async function page({
   params,
 }: {
-  params: { eventid: string };
+  params: Promise<{ eventid: string }>;
 }) {
   const { eventid } = await params;
   return (
