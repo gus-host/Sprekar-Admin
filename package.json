@@ -48,7 +48,6 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.1",
-    "@next/swc-win32-x64-msvc": "^15.2.4",
     "@types/node": "^20.17.27",
     "@types/react": "^19.0.12",
     "@types/react-dom": "^19.0.4",
