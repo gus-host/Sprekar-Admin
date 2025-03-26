@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import useResponsiveSizes from "@/utils/helper/general/useResponsiveSizes";

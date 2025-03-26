@@ -3,7 +3,8 @@ import { ChevronDown } from "lucide-react";
 import DashboardMain from "./_partials/DashboardMain";
 import { ReactNode } from "react";
 import Sidebar from "./_partials/Sidebar";
-import ProfileImg from "./_partials/ProfileImg";
+import ProfileImgGetter from "./_partials/ProfileImgGetter";
+
 export const metadata = {
   title: "Dashboard",
 };
@@ -16,7 +17,7 @@ export default function layout({ children }: { children: ReactNode }) {
         <div className="flex items-center gap-[38px]">
           <NotificationIcon />
           <div className="flex items-center gap-[10px]">
-            <ProfileImg />
+            <ProfileImgGetter />
             <ChevronDown />
           </div>
         </div>

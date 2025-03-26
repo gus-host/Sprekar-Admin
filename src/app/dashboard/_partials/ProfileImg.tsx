@@ -1,10 +1,8 @@
-import { Skeleton } from "@mui/material";
-import axios from "axios";
-import { cookies } from "next/headers";
-import Image from "next/image";
-import { Suspense } from "react";
+"use client";
 
-const BASE_URL = process.env.API_BASE_URL;
+import Image from "next/image";
+import { Skeleton } from "@mui/material";
+import { Suspense } from "react";
 
 interface User {
   profilePicture?: string;
@@ -12,41 +10,7 @@ interface User {
   lastName?: string;
 }
 
-export default async function ProfileImg() {
-  const cookieStore = cookies();
-  const token = (await cookieStore).get("refreshToken")?.value;
-  let user: User = {
-    profilePicture: "",
-  };
-
-  try {
-    const response = await fetch(`${BASE_URL}/auth/me`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-      cache: "no-store",
-    });
-
-    if (!response.ok) {
-      console.log(response.status);
-    }
-
-    const data = await response.json();
-    console.log(data);
-    user = data.data.user; // Adjust if needed
-  } catch (err) {
-    if (axios.isAxiosError(err)) {
-      error = err.message;
-      console.log("Axios Error:", err.message);
-    } else if (err instanceof Error) {
-      console.log("Fetch Error:", err);
-    } else {
-      console.log("Unknown Error:", err);
-    }
-  }
-
+export default function ProfileImg({ user }: { user: User }) {
   const svg = `
   <svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
     <circle cx="50" cy="50" r="50" fill="#025FF321"/>
