@@ -6,7 +6,6 @@ import toast from "react-hot-toast";
 import OtpInput from "react-otp-input";
 import axios from "axios";
 import Link from "next/link";
-import api from "@/utils/axios/api";
 
 import Spinner from "@/components/ui/Spinner";
 export const revalidate = 0;
@@ -34,7 +33,7 @@ export default function VerifyEmail() {
         try {
           setIsSubmitting(true);
           const numOtp = +otp;
-          const response = await api.post("/auth/verify-email", {
+          const response = await axios.post("/api/auth/verify-email", {
             email,
             otp: numOtp,
           });
@@ -46,7 +45,7 @@ export default function VerifyEmail() {
               "Email is already verified. kindly login"
             ) {
               try {
-                const responseGetUser = await api.get("/auth/me", {
+                const responseGetUser = await axios.get("/api/auth/me", {
                   withCredentials: true,
                 });
                 if (

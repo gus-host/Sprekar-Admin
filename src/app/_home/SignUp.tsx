@@ -13,7 +13,6 @@ import Button from "@/components/Button";
 import AuthButton from "../_partials/AuthButton";
 import { signupValidationSchema } from "./signupValidationSchema";
 
-import api from "@/utils/axios/api";
 import {
   setRefreshTokenCookie,
   setUserTokenCookie,
@@ -35,7 +34,9 @@ export default function SignUp() {
     onSubmit: async (values) => {
       try {
         setIsCreatingUser(true);
-        const response = await api.post("/auth/create-user", { ...values });
+        const response = await axios.post("/api/auth/create-user", {
+          ...values,
+        });
         if (response.status === 201 || response.status === 200) {
           toast.success("Registered successfully");
           router.push(
@@ -59,7 +60,7 @@ export default function SignUp() {
       setLoading(true);
       const payload = { token: token, role: "ADMIN" };
 
-      const response = await api.post("/auth/google/create-user", {
+      const response = await axios.post("/api/auth/googleSignUp", {
         ...payload,
       });
 
