@@ -3,7 +3,7 @@ import ProfileImg from "./ProfileImg";
 import axios from "axios";
 import { cookies } from "next/headers";
 
-const BASE_URL = process.env.API_BASE_URL;
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 export const revalidate = 0;
 
 interface User {
