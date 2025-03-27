@@ -61,19 +61,24 @@ export default function QrCode({
         Get sprekar on your phone
       </p>
       <h3 className="font-bold text-[14px]">{eventCode || ""}</h3>
-      {qrCode && (
-        <div className="relative min-w-[150px] min-h-[140px] mb-2">
+      <div className="relative min-w-[150px] min-h-[140px] mb-2">
+        {!qrCode && (
+          <div className="min-w-[150px] min-h-[140px] flex items-center justify-center">
+            <p className="text-[14px] text-gray-500">No QR code</p>
+          </div>
+        )}
+        {qrCode && (
           <Image
             src={qrCode}
             alt="qr code"
             fill
-            style={{ minHeight: "140px", minWidth: "100px" }} // Maintain aspect ratio
+            style={{ minHeight: "140px", minWidth: "140px" }} // Maintain aspect ratio
             className="aspect-square object-cover"
             priority
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
-        </div>
-      )}
+        )}
+      </div>
       {description && (
         <p className="text-center leading-[1.5] text-[#303030] text-[12px] max-w-[250px]">
           {description}

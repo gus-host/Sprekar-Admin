@@ -1,7 +1,9 @@
 "use client";
 
+import { cn } from "@/lib/utils";
+import { removeUserTokenCookie } from "@/utils/helper/auth/cookieUtility";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 interface NavLinkProps {
   href: string;
@@ -21,12 +23,27 @@ export default function NavLink({
   const pathname = usePathname();
   const isActive =
     href !== "/dashboard" ? pathname.includes(href) : pathname === href;
+  const router = useRouter();
+
+  function handleClick() {
+    removeUserTokenCookie();
+    router.replace("/router");
+
+    return;
+  }
 
   return (
     <Link
       href={href}
-      className={`${className} ${isActive ? activeClassName : "opacity-50"}`}
-      onClick={onClick}
+      className={cn(
+        `${className}`,
+        isActive
+          ? activeClassName
+          : href === "/login"
+          ? "opacity-100"
+          : "opacity-50"
+      )}
+      onClick={href === "/login" ? handleClick : onClick}
     >
       {children}
     </Link>

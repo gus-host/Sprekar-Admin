@@ -140,6 +140,7 @@ export default function SupportedLanguagesSelect({
         name={name}
         placeholder="Select languages..."
         components={{ Option: CheckboxOption }}
+        className="supportedLanguages"
         styles={customStyles}
       />
       {meta.touched && meta.error ? (

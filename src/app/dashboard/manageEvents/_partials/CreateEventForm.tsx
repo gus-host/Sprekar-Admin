@@ -12,7 +12,9 @@ import EventNameInput from "./EventNameInput";
 import StartDateTimeSelector from "./StartDateTimeInputs";
 import EndDateTimeSelector from "./EndDateTimeInputs";
 import Toggle from "@/components/Toggle";
-import SupportedLanguagesSelect from "./SupportedLanguagesSelect";
+import SupportedLanguagesSelect, {
+  languageOptions,
+} from "./SupportedLanguagesSelect";
 import TimeZoneSelect from "./TimeZoneSelect";
 import { eventFormValidation } from "./eventFormValidation";
 import EventDescriptionInput from "./EventDescriptionInput";
@@ -41,7 +43,7 @@ export default function CreateEventForm() {
       startTime: null,
       endDate: null,
       endTime: null,
-      supportedLanguages: [],
+      supportedLanguages: languageOptions,
       timezone: { value: "", label: "" },
       description: "",
       isQRCodeEnabled: true,
@@ -218,13 +220,15 @@ export default function CreateEventForm() {
           <Toggle name="isQRCodeEnabled" />
         </div>
         <div className="flex gap-3 items-start max-w-[800px] mb-[50px] max-[760px]:flex-wrap">
-          <SupportedLanguagesSelect name="supportedLanguages" />
+          <SupportedLanguagesSelect
+            name="supportedLanguages"
+            label={`Supported Languages (${eventFormIk.values.supportedLanguages.length})`}
+          />
           <TimeZoneSelect fieldName="timezone" />
           <EventDescriptionInput
             value={eventFormIk.values.description}
             onChange={eventFormIk.handleChange}
             onBlur={eventFormIk.handleBlur}
-            // onFocus={eve}
           />
         </div>
         <div className="flex gap-4">
