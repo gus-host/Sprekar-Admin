@@ -38,6 +38,7 @@ interface Event {
   description: string;
   qrCode: string;
   eventCode: string;
+  isQRCodeEnabled: boolean;
 }
 
 export default function EditEventForm({
@@ -136,6 +137,7 @@ export default function EditEventForm({
     eventFormIk.setFieldValue("supportedLanguages", formattedLanguages);
     eventFormIk.setFieldValue("name", eventData.name);
     eventFormIk.setFieldValue("description", eventData.description);
+    eventFormIk.setFieldValue("isQRCodeEnabled", eventData.isQRCodeEnabled);
 
     // Set other fields
     eventFormIk.setFieldValue("startDate", dayjs(eventData.startDate));
