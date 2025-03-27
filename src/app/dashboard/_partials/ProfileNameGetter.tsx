@@ -1,23 +1,21 @@
 import { unstable_noStore as noStore } from "next/cache";
-import ProfileImg from "./ProfileImg";
 import axios from "axios";
 import { cookies } from "next/headers";
+import Greet from "./Greet";
 
 const BASE_URL = process.env.API_BASE_URL;
 export const revalidate = 0;
 
 interface User {
-  profilePicture?: string;
-  firstName?: string;
-  lastName?: string;
+  firstName: string;
 }
 
-export default async function ProfileImgGetter() {
+export default async function ProfileNameGetter() {
   noStore();
   const cookieStore = cookies();
   const token = (await cookieStore).get("refreshToken")?.value;
   let user: User = {
-    profilePicture: "",
+    firstName: "",
   };
 
   try {
@@ -35,6 +33,7 @@ export default async function ProfileImgGetter() {
     }
 
     const data = await response.json();
+    console.log(data);
     user = data.data.user; // Adjust if needed
   } catch (err) {
     if (axios.isAxiosError(err)) {
@@ -46,5 +45,5 @@ export default async function ProfileImgGetter() {
     }
   }
 
-  return <ProfileImg user={user} />;
+  return <Greet name={user.firstName} />;
 }

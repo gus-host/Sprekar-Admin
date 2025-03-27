@@ -2,12 +2,8 @@
 
 import React, { useState } from "react";
 import { useFormik, FormikProvider } from "formik";
-import { useRouter } from "next/navigation";
-import dayjs from "dayjs";
-import moment from "moment-timezone";
-import { useEffect } from "react";
-
 import EventNameInput from "./EventNameInput";
+import CalenderBlue from "@/app/_svgs/CalenderBlue";
 import StartDateTimeSelector from "./StartDateTimeInputs";
 import EndDateTimeSelector from "./EndDateTimeInputs";
 import Toggle from "@/components/Toggle";
@@ -16,12 +12,17 @@ import SupportedLanguagesSelect, {
 } from "./SupportedLanguagesSelect";
 import TimeZoneSelect from "./TimeZoneSelect";
 import { eventFormValidation } from "./eventFormValidation";
+import moment from "moment-timezone";
 import EventDescriptionInput from "./EventDescriptionInput";
 import ModalMUI from "@/components/ModalMUI";
+import { useRouter } from "next/navigation";
+
+import dayjs from "dayjs";
 import api from "@/utils/axios/api";
+
 import Spinner from "@/components/ui/Spinner";
 
-import CalenderBlue from "@/app/_svgs/CalenderBlue";
+import { useEffect } from "react";
 import SuccessIcon from "@/app/_svgs/SuccessIcon";
 import FailedIcon from "@/app/_svgs/FailedIcon";
 
@@ -38,6 +39,7 @@ interface Event {
   description: string;
   qrCode: string;
   eventCode: string;
+  isQRCodeEnabled: boolean;
 }
 
 export default function EditEventForm({
@@ -136,6 +138,7 @@ export default function EditEventForm({
     eventFormIk.setFieldValue("supportedLanguages", formattedLanguages);
     eventFormIk.setFieldValue("name", eventData.name);
     eventFormIk.setFieldValue("description", eventData.description);
+    eventFormIk.setFieldValue("isQRCodeEnabled", eventData.isQRCodeEnabled);
 
     // Set other fields
     eventFormIk.setFieldValue("startDate", dayjs(eventData.startDate));
@@ -164,7 +167,7 @@ export default function EditEventForm({
       <div className="p-4 bg-red-50 border border-red-200 rounded text-red-800 text-center">
         <p>Error: {error}</p>
         <button
-          onClick={handleRetry}
+          onClick={router.refresh}
           className="mt-2 px-4 py-2 bg-red-600 text-white rounded"
         >
           Retry
@@ -251,7 +254,10 @@ export default function EditEventForm({
           <Toggle name="isQRCodeEnabled" />
         </div>
         <div className="flex gap-3 items-start max-w-[800px] mb-[50px] flex-wrap">
-          <SupportedLanguagesSelect name="supportedLanguages" />
+          <SupportedLanguagesSelect
+            name="supportedLanguages"
+            label={`Supported Languages (${eventFormIk.values.supportedLanguages.length})`}
+          />
           <TimeZoneSelect fieldName="timezone" />
           <EventDescriptionInput
             value={eventFormIk.values.description}

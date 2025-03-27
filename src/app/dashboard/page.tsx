@@ -4,11 +4,14 @@ import NoteIcon from "@/app/_svgs/NoteIcon";
 import Image from "next/image";
 import React from "react";
 import UsersTable from "@/components/UsersTable";
+import ProfileNameGetter from "./_partials/ProfileNameGetter";
 
 export default function Page() {
   return (
     <div>
-      <h2 className="text-[#1E1E1E] text-[22px]">Good morning, John!</h2>
+      <h2 className="text-[#1E1E1E] text-[22px]">
+        <ProfileNameGetter />
+      </h2>
       <p className="text-[#7F7F7F] text-[14px]">Website overview</p>
       <div className="grid grid-cols-6 min-w-[100%] gap-y-[20px] gap-x-[20px] my-[40px]">
         <div className="col-span-4 max-[945px]:col-span-6 bg-white py-3 px-[15px] rounded-[10px] border border-[#C6C6C6]">
