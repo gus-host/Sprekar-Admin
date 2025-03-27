@@ -1,23 +1,28 @@
 "use client";
 import React, { useState } from "react";
-import Button from "@/components/Button";
-import TextInput from "@/app/_partials/TextInputs";
 import Link from "next/link";
 import { useFormik } from "formik";
-import { loginValidationSchema } from "../loginValidation";
 import { useRouter } from "next/navigation";
-import api from "@/utils/axios/api";
 import toast from "react-hot-toast";
 import axios from "axios";
+import { useGoogleLogin } from "@react-oauth/google";
+
+import Button from "@/components/Button";
+import TextInput from "@/app/_partials/TextInputs";
+import { loginValidationSchema } from "../loginValidation";
 import {
   getRefreshTokenCookie,
   removeUserTokenCookie,
   setRefreshTokenCookie,
   setUserTokenCookie,
 } from "@/utils/helper/auth/cookieUtility";
+import api from "@/utils/axios/api";
+import AuthButton from "@/app/_partials/AuthButton";
+import { handleAxiosError } from "@/utils/helper/general/errorHandler";
 
 export default function Login() {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const router = useRouter();
   const refreshToken = getRefreshTokenCookie();
@@ -30,7 +35,7 @@ export default function Login() {
     onSubmit: async (values) => {
       try {
         setIsSubmitting(true);
-        const response = await api.post("/api/auth/login", {
+        const response = await api.post("/auth/login", {
           ...values,
         });
         if (response.status === 201 || response.status === 200) {
@@ -57,6 +62,45 @@ export default function Login() {
         setIsSubmitting(false);
       }
     },
+  });
+
+  const handleGoogleAuth = async (token: string) => {
+    try {
+      setLoading(true);
+      const payload = { token: token };
+
+      const response = await api.post("/auth/google/login", {
+        ...payload,
+      });
+
+      if (response.status === 201 || response.status === 200) {
+        const accessToken = response?.data?.data?.tokens?.access?.token || "";
+        const refreshToken = response?.data?.data?.tokens?.refresh;
+
+        if (accessToken) {
+          setUserTokenCookie(accessToken);
+          setRefreshTokenCookie(refreshToken);
+        }
+        toast.success(response?.data?.message || "Login Successful");
+        router.push("/dashboard");
+      } else {
+        toast.error(
+          response.data.data.message || "Something went wrong! Try again"
+        );
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      handleAxiosError(error);
+      toast.error("Unable to login!");
+      alert("Something went wrong!");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const googleSignUp = useGoogleLogin({
+    onSuccess: (tokenResponse) => handleGoogleAuth(tokenResponse.access_token),
+    onError: () => alert("Google signin failed"),
   });
 
   return (
@@ -113,6 +157,27 @@ export default function Login() {
           type="submit"
           isLoading={isSubmitting}
         />
+      </div>
+
+      <div className="min-h-[20px] text-center relative text-[#D9D9D9] font-medium text-[14px] my-[10px]">
+        <div className="absolute border-b-[1px] border-[#D9D9D9] top-[50%] left-[0] min-w-[45%] translate-y-[-50%]"></div>
+        OR
+        <div className="absolute border-b-[1px] border-[#D9D9D9] top-[50%] right-[0] min-w-[45%] translate-y-[-50%]"></div>
+      </div>
+
+      <div className="flex flex-col gap-[15px]">
+        <span
+          onClick={() => {
+            if (loading) return;
+            googleSignUp();
+          }}
+          style={{
+            cursor: loading ? "not-allowed" : "pointer",
+            opacity: loading ? 0.5 : 1,
+          }}
+        >
+          <AuthButton type="google" action={"Continue "} isLoading={loading} />
+        </span>
       </div>
     </form>
   );

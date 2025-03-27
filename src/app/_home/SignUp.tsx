@@ -1,22 +1,24 @@
 "use client";
+
 import { useFormik } from "formik";
 import React, { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
+import axios from "axios";
+import { useGoogleLogin } from "@react-oauth/google";
+
 import TextInput from "@/app/_partials/TextInputs";
 import Button from "@/components/Button";
 import AuthButton from "../_partials/AuthButton";
 import { signupValidationSchema } from "./signupValidationSchema";
-import { useGoogleLogin } from "@react-oauth/google";
 
 import api from "@/utils/axios/api";
 import {
   setRefreshTokenCookie,
   setUserTokenCookie,
 } from "@/utils/helper/auth/cookieUtility";
-import { useRouter } from "next/navigation";
-import toast from "react-hot-toast";
 import { handleAxiosError } from "@/utils/helper/general/errorHandler";
-import axios from "axios";
 
 export default function SignUp() {
   const [loading, setLoading] = useState(false);
@@ -33,7 +35,7 @@ export default function SignUp() {
     onSubmit: async (values) => {
       try {
         setIsCreatingUser(true);
-        const response = await api.post("/api/auth/create-user", { ...values });
+        const response = await api.post("/auth/create-user", { ...values });
         if (response.status === 201 || response.status === 200) {
           toast.success("Registered successfully");
           router.push(
@@ -57,36 +59,20 @@ export default function SignUp() {
       setLoading(true);
       const payload = { token: token, role: "ADMIN" };
 
-      const response = await api.post("/api/auth/googleSignUp", {
+      const response = await api.post("/auth/google/create-user", {
         ...payload,
       });
 
       if (response.status === 201 || response.status === 200) {
-        const responseFromSignin = await api.post("/api/auth/googleSignin", {
-          token,
-        });
+        const accessToken = response?.data?.data?.tokens?.access?.token || "";
+        const refreshToken = response?.data?.data?.tokens?.refresh;
 
-        if (
-          responseFromSignin.status === 201 ||
-          responseFromSignin.status === 200
-        ) {
-          const accessToken =
-            responseFromSignin?.data?.data?.tokens?.access?.token || "";
-          const refreshToken = responseFromSignin?.data?.data?.tokens?.refresh;
-
-          if (accessToken) {
-            setUserTokenCookie(accessToken);
-            setRefreshTokenCookie(refreshToken);
-          }
-          toast.success(
-            responseFromSignin?.data?.message || "Login Successful"
-          );
-          router.push("/dashboard");
-        } else {
-          toast.error(
-            response.data.data.message || "Something went wrong! Try again"
-          );
+        if (accessToken) {
+          setUserTokenCookie(accessToken);
+          setRefreshTokenCookie(refreshToken);
         }
+        toast.success(response?.data?.message || "Login Successful");
+        router.push("/dashboard");
       } else {
         toast.error(
           response.data.data.message || "Something went wrong! Try again"

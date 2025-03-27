@@ -7,7 +7,7 @@ import EditEventForm from "../../_partials/EditEventForm";
 import QrCode from "../../_partials/QrCode";
 import { notFound } from "next/navigation";
 
-const BASE_URL = process.env.API_BASE_URL;
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 export const revalidate = 0;
 
 interface Event {
