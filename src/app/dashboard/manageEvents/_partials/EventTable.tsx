@@ -1,6 +1,11 @@
 "use client";
 
 import React, { useState, useMemo, useRef } from "react";
+import Link from "next/link";
+import dayjs from "dayjs";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
+import axios from "axios";
 import {
   useReactTable,
   ColumnDef,
@@ -15,19 +20,16 @@ import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import classNames from "classnames";
 import dynamic from "next/dynamic";
 import { SingleValue } from "react-select";
+
+import ModalMUI from "@/components/ModalMUI";
+import Spinner from "@/components/ui/Spinner";
+
 import EditIcon from "@/app/_svgs/EditIcon";
 import DeleteIcon from "@/app/_svgs/DeleteIcon";
 import StartIcon from "@/app/_svgs/StartIcon";
-import Link from "next/link";
-import dayjs from "dayjs";
-import SearchIcon from "@/app/_svgs/SearchIcon";
-import { useRouter } from "next/navigation";
-import ModalMUI from "@/components/ModalMUI";
 import DeleteIconRed from "@/app/_svgs/DeleteIconRed";
-import Spinner from "@/components/ui/Spinner";
-import api from "@/utils/axios/api";
-import toast from "react-hot-toast";
-import axios from "axios";
+
+import SearchIcon from "@/app/_svgs/SearchIcon";
 
 // The server's event shape
 interface ServerEvent {
@@ -327,7 +329,7 @@ function ActionsDropdown({
   async function handleDelete() {
     try {
       setIsDeletingEvent(true);
-      const response = await api.delete(
+      const response = await axios.delete(
         `/api/event/delete-event?id=${row.id}`,
 
         { withCredentials: true }

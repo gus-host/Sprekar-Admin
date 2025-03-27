@@ -1,14 +1,14 @@
 "use client";
 
-import TextInput from "@/app/_partials/TextInputs";
-import Button from "@/components/Button";
 import { useFormik } from "formik";
 import React, { useState } from "react";
-import { validationSchema } from "../validation";
-import api from "@/utils/axios/api";
-import { useRouter, useSearchParams } from "next/navigation";
 import toast from "react-hot-toast";
 import axios from "axios";
+import { useRouter, useSearchParams } from "next/navigation";
+
+import { validationSchema } from "../validation";
+import TextInput from "@/app/_partials/TextInputs";
+import Button from "@/components/Button";
 
 export const revalidate = 0;
 export default function ResetPassword() {
@@ -28,7 +28,7 @@ export default function ResetPassword() {
       console.log(values);
       try {
         setIsSubmitting(true);
-        const response = await api.post(
+        const response = await axios.post(
           `/api/auth/change-password`,
           {
             ...values,

@@ -3,12 +3,11 @@ import React, { useEffect, useState } from "react";
 
 import { useRouter, useSearchParams } from "next/navigation";
 import toast from "react-hot-toast";
-import api from "@/utils/axios/api";
 import OtpInput from "react-otp-input";
 import axios from "axios";
-import Spinner from "@/components/ui/Spinner";
 import Link from "next/link";
-// import { useRouter } from "next/navigation";
+
+import Spinner from "@/components/ui/Spinner";
 export const revalidate = 0;
 
 const MAX_LENGTH = 6;
@@ -34,7 +33,7 @@ export default function VerifyEmail() {
         try {
           setIsSubmitting(true);
           const numOtp = +otp;
-          const response = await api.post("/api/auth/verify-email", {
+          const response = await axios.post("/api/auth/verify-email", {
             email,
             otp: numOtp,
           });
@@ -46,7 +45,7 @@ export default function VerifyEmail() {
               "Email is already verified. kindly login"
             ) {
               try {
-                const responseGetUser = await api.get("/api/auth/me", {
+                const responseGetUser = await axios.get("/api/auth/me", {
                   withCredentials: true,
                 });
                 if (

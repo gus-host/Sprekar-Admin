@@ -1,9 +1,14 @@
 "use client";
 
 import React, { useState } from "react";
+import toast from "react-hot-toast";
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import dayjs from "dayjs";
 import { useFormik, FormikProvider } from "formik";
+import moment from "moment-timezone";
+
 import EventNameInput from "./EventNameInput";
-import CalenderBlue from "@/app/_svgs/CalenderBlue";
 import StartDateTimeSelector from "./StartDateTimeInputs";
 import EndDateTimeSelector from "./EndDateTimeInputs";
 import Toggle from "@/components/Toggle";
@@ -12,17 +17,13 @@ import SupportedLanguagesSelect, {
 } from "./SupportedLanguagesSelect";
 import TimeZoneSelect from "./TimeZoneSelect";
 import { eventFormValidation } from "./eventFormValidation";
-import moment from "moment-timezone";
 import EventDescriptionInput from "./EventDescriptionInput";
 import ModalMUI from "@/components/ModalMUI";
-import useResponsiveSizes from "@/utils/helper/general/useResponsiveSizes";
-import { useRouter } from "next/navigation";
-import QrCode from "./QrCode";
-import dayjs from "dayjs";
-import api from "@/utils/axios/api";
-import toast from "react-hot-toast";
-import axios from "axios";
 import Spinner from "@/components/ui/Spinner";
+import useResponsiveSizes from "@/utils/helper/general/useResponsiveSizes";
+import QrCode from "./QrCode";
+
+import CalenderBlue from "@/app/_svgs/CalenderBlue";
 
 export default function CreateEventForm() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -74,7 +75,7 @@ export default function CreateEventForm() {
 
       try {
         setIsCreatingEvent(true);
-        const response = await api.post(
+        const response = await axios.post(
           "/api/event/create-event",
           {
             name,

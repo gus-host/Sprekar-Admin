@@ -2,6 +2,12 @@
 
 import React, { useState } from "react";
 import { useFormik, FormikProvider } from "formik";
+import { useRouter } from "next/navigation";
+import dayjs from "dayjs";
+import moment from "moment-timezone";
+import { useEffect } from "react";
+import axios from "axios";
+
 import EventNameInput from "./EventNameInput";
 import CalenderBlue from "@/app/_svgs/CalenderBlue";
 import StartDateTimeSelector from "./StartDateTimeInputs";
@@ -12,17 +18,10 @@ import SupportedLanguagesSelect, {
 } from "./SupportedLanguagesSelect";
 import TimeZoneSelect from "./TimeZoneSelect";
 import { eventFormValidation } from "./eventFormValidation";
-import moment from "moment-timezone";
 import EventDescriptionInput from "./EventDescriptionInput";
 import ModalMUI from "@/components/ModalMUI";
-import { useRouter } from "next/navigation";
-
-import dayjs from "dayjs";
-import api from "@/utils/axios/api";
-
 import Spinner from "@/components/ui/Spinner";
 
-import { useEffect } from "react";
 import SuccessIcon from "@/app/_svgs/SuccessIcon";
 import FailedIcon from "@/app/_svgs/FailedIcon";
 
@@ -96,7 +95,7 @@ export default function EditEventForm({
 
       try {
         setIsCreatingEvent(true);
-        const response = await api.post(
+        const response = await axios.post(
           "/api/event/update-event",
           {
             name,
@@ -159,9 +158,9 @@ export default function EditEventForm({
     const gmtOffset = `GMT${sign}${hours}${minutes > 0 ? ":" + minutes : ""}`;
     return gmtOffset;
   }
-  function handleRetry() {
-    window.location.reload();
-  }
+  // function handleRetry() {
+  //   window.location.reload();
+  // }
   if (error)
     return (
       <div className="p-4 bg-red-50 border border-red-200 rounded text-red-800 text-center">
