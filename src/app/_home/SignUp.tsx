@@ -59,36 +59,20 @@ export default function SignUp() {
       setLoading(true);
       const payload = { token: token, role: "ADMIN" };
 
-      const response = await api.post("/auth/googleSignUp", {
+      const response = await api.post("/auth/google/create-user", {
         ...payload,
       });
 
       if (response.status === 201 || response.status === 200) {
-        const responseFromSignin = await api.post("/auth/googleSignin", {
-          token,
-        });
+        const accessToken = response?.data?.data?.tokens?.access?.token || "";
+        const refreshToken = response?.data?.data?.tokens?.refresh;
 
-        if (
-          responseFromSignin.status === 201 ||
-          responseFromSignin.status === 200
-        ) {
-          const accessToken =
-            responseFromSignin?.data?.data?.tokens?.access?.token || "";
-          const refreshToken = responseFromSignin?.data?.data?.tokens?.refresh;
-
-          if (accessToken) {
-            setUserTokenCookie(accessToken);
-            setRefreshTokenCookie(refreshToken);
-          }
-          toast.success(
-            responseFromSignin?.data?.message || "Login Successful"
-          );
-          router.push("/dashboard");
-        } else {
-          toast.error(
-            response.data.data.message || "Something went wrong! Try again"
-          );
+        if (accessToken) {
+          setUserTokenCookie(accessToken);
+          setRefreshTokenCookie(refreshToken);
         }
+        toast.success(response?.data?.message || "Login Successful");
+        router.push("/dashboard");
       } else {
         toast.error(
           response.data.data.message || "Something went wrong! Try again"
