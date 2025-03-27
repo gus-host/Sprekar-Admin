@@ -1,14 +1,15 @@
 "use client";
 
-import TextInput from "@/app/_partials/TextInputs";
-import Button from "@/components/Button";
 import { useFormik } from "formik";
 import React, { useState } from "react";
-import { validationSchema } from "../validation";
-import api from "@/utils/axios/api";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+
+import { validationSchema } from "../validation";
+import TextInput from "@/app/_partials/TextInputs";
+import Button from "@/components/Button";
+import api from "@/utils/axios/api";
 
 export default function ForgotPassword() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -21,7 +22,7 @@ export default function ForgotPassword() {
     onSubmit: async (values) => {
       try {
         setIsSubmitting(true);
-        const response = await api.post("/api/auth/forgot-password", {
+        const response = await api.post("/auth/forgot-password", {
           ...values,
         });
         console.log(response);

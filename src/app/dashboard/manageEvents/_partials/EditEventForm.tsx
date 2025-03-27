@@ -95,7 +95,7 @@ export default function EditEventForm({
       try {
         setIsCreatingEvent(true);
         const response = await api.post(
-          "/api/event/update-event",
+          "/event/update-event",
           {
             name,
             description,

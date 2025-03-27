@@ -1,20 +1,21 @@
 "use client";
 import React, { useState } from "react";
-import Button from "@/components/Button";
-import TextInput from "@/app/_partials/TextInputs";
 import Link from "next/link";
 import { useFormik } from "formik";
-import { loginValidationSchema } from "../loginValidation";
 import { useRouter } from "next/navigation";
-import api from "@/utils/axios/api";
 import toast from "react-hot-toast";
 import axios from "axios";
+
+import Button from "@/components/Button";
+import TextInput from "@/app/_partials/TextInputs";
+import { loginValidationSchema } from "../loginValidation";
 import {
   getRefreshTokenCookie,
   removeUserTokenCookie,
   setRefreshTokenCookie,
   setUserTokenCookie,
 } from "@/utils/helper/auth/cookieUtility";
+import api from "@/utils/axios/api";
 
 export default function Login() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -30,7 +31,7 @@ export default function Login() {
     onSubmit: async (values) => {
       try {
         setIsSubmitting(true);
-        const response = await api.post("/api/auth/login", {
+        const response = await api.post("/auth/login", {
           ...values,
         });
         if (response.status === 201 || response.status === 200) {
