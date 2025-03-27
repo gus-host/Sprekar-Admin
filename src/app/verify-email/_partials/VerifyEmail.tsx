@@ -6,7 +6,6 @@ import toast from "react-hot-toast";
 import OtpInput from "react-otp-input";
 import axios from "axios";
 
-import api from "@/utils/axios/api";
 import formatSeconds from "@/utils/helper/general/formatSeconds";
 
 const MAX_LENGTH = 6;
@@ -47,7 +46,7 @@ export default function VerifyEmail() {
           setIsSubmitting(true);
           const numOtp = +otp;
           console.log(typeof numOtp);
-          const response = await api.post("/auth/verify-email", {
+          const response = await axios.post("/api/auth/verify-email", {
             email,
             otp: numOtp,
           });
@@ -79,7 +78,7 @@ export default function VerifyEmail() {
   const handleResendOtp = async (email: string) => {
     try {
       setIsSendingOtp(true);
-      const response = await api.post("/auth/resend-otp", { email });
+      const response = await axios.post("/api/auth/resend-otp", { email });
       console.log(response);
       if (response.status === 201 || response.status === 200) {
         console.log(response.data);

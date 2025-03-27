@@ -23,7 +23,6 @@ import { SingleValue } from "react-select";
 
 import ModalMUI from "@/components/ModalMUI";
 import Spinner from "@/components/ui/Spinner";
-import api from "@/utils/axios/api";
 
 import EditIcon from "@/app/_svgs/EditIcon";
 import DeleteIcon from "@/app/_svgs/DeleteIcon";
@@ -330,8 +329,8 @@ function ActionsDropdown({
   async function handleDelete() {
     try {
       setIsDeletingEvent(true);
-      const response = await api.delete(
-        `/event/delete-event?id=${row.id}`,
+      const response = await axios.delete(
+        `/api/event/delete-event?id=${row.id}`,
 
         { withCredentials: true }
       );

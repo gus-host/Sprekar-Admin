@@ -9,7 +9,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { validationSchema } from "../validation";
 import TextInput from "@/app/_partials/TextInputs";
 import Button from "@/components/Button";
-import api from "@/utils/axios/api";
 
 export const revalidate = 0;
 export default function ResetPassword() {
@@ -29,8 +28,8 @@ export default function ResetPassword() {
       console.log(values);
       try {
         setIsSubmitting(true);
-        const response = await api.post(
-          `/auth/change-password`,
+        const response = await axios.post(
+          `/api/auth/change-password`,
           {
             ...values,
             id,
