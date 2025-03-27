@@ -22,7 +22,7 @@ export default function ProfileImg({ user }: { user: User }) {
   return (
     <Suspense fallback={<Skeleton variant="circular" width={28} height={28} />}>
       <>
-        {user.profilePicture && (
+        {user.profilePicture ? (
           <Image
             src={user.profilePicture}
             width={28}
@@ -30,9 +30,7 @@ export default function ProfileImg({ user }: { user: User }) {
             className="rounded-full"
             alt={"profile picture"}
           />
-        )}
-
-        {user.firstName && user.lastName ? (
+        ) : user.firstName && user.lastName ? (
           <div className="h-[28px] w-[28px] rounded-full bg-[#025FF321] text-[12px] text-[#0827F6] text-center flex justify-center items-center">
             <span>
               {user.firstName.at(0)}

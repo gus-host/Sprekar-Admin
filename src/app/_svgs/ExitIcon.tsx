@@ -6,6 +6,7 @@ export default function ExitIcon() {
       viewBox="0 0 19 20"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      opacity={100}
     >
       <path
         fillRule="evenodd"

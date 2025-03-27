@@ -9,6 +9,7 @@ import { useEffect } from "react";
 import axios from "axios";
 
 import EventNameInput from "./EventNameInput";
+import CalenderBlue from "@/app/_svgs/CalenderBlue";
 import StartDateTimeSelector from "./StartDateTimeInputs";
 import EndDateTimeSelector from "./EndDateTimeInputs";
 import Toggle from "@/components/Toggle";
@@ -21,7 +22,6 @@ import EventDescriptionInput from "./EventDescriptionInput";
 import ModalMUI from "@/components/ModalMUI";
 import Spinner from "@/components/ui/Spinner";
 
-import CalenderBlue from "@/app/_svgs/CalenderBlue";
 import SuccessIcon from "@/app/_svgs/SuccessIcon";
 import FailedIcon from "@/app/_svgs/FailedIcon";
 
@@ -158,15 +158,15 @@ export default function EditEventForm({
     const gmtOffset = `GMT${sign}${hours}${minutes > 0 ? ":" + minutes : ""}`;
     return gmtOffset;
   }
-  function handleRetry() {
-    window.location.reload();
-  }
+  // function handleRetry() {
+  //   window.location.reload();
+  // }
   if (error)
     return (
       <div className="p-4 bg-red-50 border border-red-200 rounded text-red-800 text-center">
         <p>Error: {error}</p>
         <button
-          onClick={handleRetry}
+          onClick={router.refresh}
           className="mt-2 px-4 py-2 bg-red-600 text-white rounded"
         >
           Retry
@@ -253,7 +253,10 @@ export default function EditEventForm({
           <Toggle name="isQRCodeEnabled" />
         </div>
         <div className="flex gap-3 items-start max-w-[800px] mb-[50px] flex-wrap">
-          <SupportedLanguagesSelect name="supportedLanguages" />
+          <SupportedLanguagesSelect
+            name="supportedLanguages"
+            label={`Supported Languages (${eventFormIk.values.supportedLanguages.length})`}
+          />
           <TimeZoneSelect fieldName="timezone" />
           <EventDescriptionInput
             value={eventFormIk.values.description}

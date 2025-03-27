@@ -1,4 +1,7 @@
-export default function Greet() {
+import { Skeleton } from "@mui/material";
+import { Suspense } from "react";
+
+export default function Greet({ name }: { name: string }) {
   function greet(name: string): string {
     const hour = new Date().getHours();
     let greeting: string;
@@ -11,9 +14,12 @@ export default function Greet() {
       greeting = "Good evening";
     }
 
-    return `${greeting}, ${name}!`;
+    return name ? `${greeting}, ${name}!` : `${greeting}`;
   }
-  greet("add");
 
-  return <div>Greet</div>;
+  return (
+    <Suspense fallback={<Skeleton variant="text" sx={{ fontSize: "22px" }} />}>
+      <div>{greet(name)}</div>
+    </Suspense>
+  );
 }

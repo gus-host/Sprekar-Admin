@@ -61,12 +61,12 @@ export default function Sidebar() {
             <SettingsIcon /> <span>Settings</span>
           </NavLink>
         </div>
-        <div className="hover:opacity-[100]">
-          <span className="flex items-center gap-[10px] cursor-pointer">
+        <NavLink href="/login" className="flex items-center gap-[10px]">
+          <span className="opacity-[100]">
             <ExitIcon />{" "}
-            <span className="opacity-50 hover:opacity-[100]">Log out</span>
           </span>
-        </div>
+          <span className="opacity-50 hover:opacity-[100]">Log out</span>
+        </NavLink>
       </div>
     </div>
   );
