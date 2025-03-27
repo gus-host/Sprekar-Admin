@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import dayjs from "dayjs";
 import moment from "moment-timezone";
 import { useEffect } from "react";
+import axios from "axios";
 
 import EventNameInput from "./EventNameInput";
 import StartDateTimeSelector from "./StartDateTimeInputs";
@@ -18,7 +19,6 @@ import TimeZoneSelect from "./TimeZoneSelect";
 import { eventFormValidation } from "./eventFormValidation";
 import EventDescriptionInput from "./EventDescriptionInput";
 import ModalMUI from "@/components/ModalMUI";
-import api from "@/utils/axios/api";
 import Spinner from "@/components/ui/Spinner";
 
 import CalenderBlue from "@/app/_svgs/CalenderBlue";
@@ -94,8 +94,8 @@ export default function EditEventForm({
 
       try {
         setIsCreatingEvent(true);
-        const response = await api.post(
-          "/event/update-event",
+        const response = await axios.post(
+          "/api/event/update-event",
           {
             name,
             description,

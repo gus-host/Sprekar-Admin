@@ -16,7 +16,6 @@ import {
   setRefreshTokenCookie,
   setUserTokenCookie,
 } from "@/utils/helper/auth/cookieUtility";
-import api from "@/utils/axios/api";
 import AuthButton from "@/app/_partials/AuthButton";
 import { handleAxiosError } from "@/utils/helper/general/errorHandler";
 
@@ -35,7 +34,7 @@ export default function Login() {
     onSubmit: async (values) => {
       try {
         setIsSubmitting(true);
-        const response = await api.post("/auth/login", {
+        const response = await axios.post("/api/auth/login", {
           ...values,
         });
         if (response.status === 201 || response.status === 200) {
@@ -69,7 +68,7 @@ export default function Login() {
       setLoading(true);
       const payload = { token: token };
 
-      const response = await api.post("/auth/google/login", {
+      const response = await axios.post("/api/auth/googleSignin", {
         ...payload,
       });
 

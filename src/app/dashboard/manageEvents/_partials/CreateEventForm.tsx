@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 import axios from "axios";
-import api from "@/utils/axios/api";
 import { useRouter } from "next/navigation";
 import dayjs from "dayjs";
 import { useFormik, FormikProvider } from "formik";
@@ -74,8 +73,8 @@ export default function CreateEventForm() {
 
       try {
         setIsCreatingEvent(true);
-        const response = await api.post(
-          "/event/create-event",
+        const response = await axios.post(
+          "/api/event/create-event",
           {
             name,
             description,

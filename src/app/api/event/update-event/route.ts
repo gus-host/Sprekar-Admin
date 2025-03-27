@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import axios from "axios";
-import api from "@/utils/axios/api";
 import { cookies } from "next/headers";
+import api from "@/utils/axios/api";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 export async function POST(req: Request) {
