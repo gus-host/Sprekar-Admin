@@ -5,6 +5,7 @@ import { useState } from "react";
 
 export default function StartTranslation() {
   const [isStartingTranslation, setIsStartingTranslation] = useState(false);
+  console.log(setIsStartingTranslation);
   return (
     <button
       type="submit"
