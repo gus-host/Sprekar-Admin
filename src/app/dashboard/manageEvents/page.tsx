@@ -12,6 +12,9 @@ export default async function Page() {
         View and edit the primary details of your events including date, title
         and time
       </p>
+      <p className="text-blue-800 text-[12px] ">
+        Click an event to start translation
+      </p>
       <div className="">
         <EventsGetter />
       </div>

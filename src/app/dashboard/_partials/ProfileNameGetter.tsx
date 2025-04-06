@@ -33,7 +33,6 @@ export default async function ProfileNameGetter() {
     }
 
     const data = await response.json();
-    console.log(data);
     user = data.data.user; // Adjust if needed
   } catch (err) {
     if (axios.isAxiosError(err)) {
@@ -45,6 +44,5 @@ export default async function ProfileNameGetter() {
     }
   }
 
-  console.log(user);
   return <Greet name={user.firstName} />;
 }

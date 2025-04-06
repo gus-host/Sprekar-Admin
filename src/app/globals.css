@@ -116,6 +116,10 @@
   }
 }
 
+@theme {
+  --shadow-blue: 0px 0px 6.4px 4px #0255da57;
+  --shadow-red: 0px 0px 6.4px 4px #ff000057;
+}
 /* @layer base {
   * {
     @apply border-border;
