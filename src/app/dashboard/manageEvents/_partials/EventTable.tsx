@@ -383,7 +383,9 @@ function ActionsDropdown({
             </DropdownMenu.Item>
             <DropdownMenu.Item
               className="cursor-pointer hover:bg-gray-100 text-sm hover:border-none focus-visible:outline-none focus-visible:border-none live-row"
-              onSelect={() => alert(`Start Live for ${row.name}`)}
+              onSelect={() =>
+                router.push(`/dashboard/liveTranslation?eventId=${row.id}`)
+              }
             >
               <div className="flex items-center gap-2 px-2 py-1">
                 <StartIcon /> <span>Start Live</span>
@@ -483,7 +485,7 @@ const DraggableRow: React.FC<DraggableRowProps> = ({
       target.closest(".live-row")
     )
       return;
-    router.push(`/dashboard/manageEvents/${id}`);
+    router.push(`/dashboard/liveTranslation?eventId=${id}`);
   };
 
   return (

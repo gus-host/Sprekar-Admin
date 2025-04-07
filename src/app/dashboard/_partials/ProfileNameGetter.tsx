@@ -3,7 +3,7 @@ import axios from "axios";
 import { cookies } from "next/headers";
 import Greet from "./Greet";
 
-const BASE_URL = process.env.API_BASE_URL;
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 export const revalidate = 0;
 
 interface User {
@@ -33,7 +33,6 @@ export default async function ProfileNameGetter() {
     }
 
     const data = await response.json();
-    console.log(data);
     user = data.data.user; // Adjust if needed
   } catch (err) {
     if (axios.isAxiosError(err)) {

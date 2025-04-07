@@ -9,6 +9,7 @@ import Select, {
   components,
   MultiValue,
   ActionMeta,
+  SingleValue,
 } from "react-select";
 
 // 1. Define your option type
@@ -102,6 +103,33 @@ const customStyles: StylesConfig<LanguageOption, true> = {
     zIndex: 9999,
   }),
 };
+const customStylesTranslation: StylesConfig<LanguageOption, false> = {
+  control: (base) => ({
+    ...base,
+    backgroundColor: "#f5f5f5",
+    borderColor: "#ccc",
+    boxShadow: "none",
+    ":hover": {
+      borderColor: "#999",
+    },
+    minHeight: 18,
+  }),
+  placeholder: (base) => ({
+    ...base,
+    color: "#999",
+  }),
+  dropdownIndicator: (base) => ({
+    ...base,
+    color: "#666",
+    ":hover": {
+      color: "#333",
+    },
+  }),
+  menu: (base) => ({
+    ...base,
+    zIndex: 9999,
+  }),
+};
 
 interface SupportedLanguagesSelectProps {
   name: string;
@@ -143,6 +171,7 @@ export default function SupportedLanguagesSelect({
         className="supportedLanguages"
         styles={customStyles}
       />
+
       {meta.touched && meta.error ? (
         <div className="text-red-500 text-sm">
           {typeof meta.error === "string"
@@ -151,5 +180,33 @@ export default function SupportedLanguagesSelect({
         </div>
       ) : null}
     </div>
+  );
+}
+
+export function SupportedLangaugesTranslation({
+  options,
+  translationLanguage,
+  handleTranslationLanguageChange,
+}: {
+  options?: LanguageOption[];
+  translationLanguage: LanguageOption;
+  handleTranslationLanguageChange: (
+    option: SingleValue<LanguageOption>,
+    actionMeta: ActionMeta<LanguageOption>
+  ) => void;
+}) {
+  return (
+    <Select
+      // isMulti
+      name="translation-select"
+      options={options}
+      value={translationLanguage}
+      onChange={handleTranslationLanguageChange}
+      placeholder="Select languages..."
+      className="supportedLanguages text-[12px]"
+      styles={customStylesTranslation}
+      instanceId="my-react-select"
+      closeMenuOnSelect={true}
+    />
   );
 }

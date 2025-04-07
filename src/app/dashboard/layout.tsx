@@ -5,10 +5,6 @@ import { ReactNode } from "react";
 import Sidebar from "./_partials/Sidebar";
 import ProfileImgGetter from "./_partials/ProfileImgGetter";
 
-export const metadata = {
-  title: "Dashboard",
-};
-
 export default function layout({ children }: { children: ReactNode }) {
   return (
     <div className="flex flex-col h-dvh">
