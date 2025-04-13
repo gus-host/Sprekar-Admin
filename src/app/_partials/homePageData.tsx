@@ -1,0 +1,126 @@
+import OneIcon from "../_svgs/OneIcon";
+import joinScannerImg from "../../assets/JoinScannerImg.png";
+import joinLanguagesSelectImg from "../../assets/JoinLanguagesSelectImg.png";
+import joinLiveTranslationImg from "../../assets/JoinLiveTranslationImg.png";
+import joinSpeakFreelyImg from "../../assets/JoinSpeakFreelyImg.png";
+import joinSummaryImg from "../../assets/JoinSummaryImg.png";
+import hostCreateEventImg from "../../assets/HostCreateEventImg.png";
+import hostLiveTranslation from "../../assets/HostLiveTranslation.png";
+import hostQrcodeImg from "../../assets/HostQrcodeImg.png";
+import featureEventImg from "../../assets/FeatureEventImgLarge.png";
+import featureRealTimeImgLarge from "../../assets/FeatureRealTimeImgLarge.png";
+import featureSummaryImgLarge from "../../assets/FeatureSummaryImgLarge.png";
+import TwoIcon from "../_svgs/TwoIcon";
+import ThreeIcon from "../_svgs/ThreeIcon";
+import FourIcon from "../_svgs/FourIcon";
+import FiveIcon from "../_svgs/FiveIcon";
+import { StaticImageData } from "next/image";
+import React from "react";
+import FeatureIdentifier1 from "../_svgs/FeatureIdentifier1";
+import FeatureIdentifier2 from "../_svgs/FeatureIdentifier2";
+import FeatureIdentifier3 from "../_svgs/FeatureIdentifier3";
+
+export type Steps = {
+  title: string;
+  desc: string;
+  img: StaticImageData;
+  stepNum: React.JSX.Element;
+  alt?: string;
+};
+export type Feature = {
+  title: string;
+  desc: string;
+  img: StaticImageData;
+  ident: React.JSX.Element;
+  btn: string | null;
+  alt: string;
+};
+
+export const joinEventSteps: Steps[] = [
+  {
+    title: "Scan or Enter an Event Code",
+    desc: "Join live events instantly by scanning a QR code or entering an event code. No hassle, no delays.",
+    img: joinScannerImg,
+    stepNum: <OneIcon />,
+    alt: "Scanner image",
+  },
+  {
+    title: "Select Your Language",
+    desc: "Pick the language you want translations in—our AI ensures smooth and accurate communication.",
+    img: joinLanguagesSelectImg,
+    stepNum: <TwoIcon />,
+    alt: "Image showing different languages",
+  },
+  {
+    title: "Experience Live Translations",
+    desc: "See real-time subtitles as people speak, or listen to translated speech with our voice-to-voice feature.",
+    img: joinLiveTranslationImg,
+    stepNum: <ThreeIcon />,
+    alt: "Image showing live translation",
+  },
+  {
+    title: "Save & Summarize",
+    desc: "Need to revisit important discussions? Save translations or generate AI-powered summaries for later.",
+    img: joinSummaryImg,
+    stepNum: <FourIcon />,
+    alt: "Image showing live translation summary",
+  },
+  {
+    title: "Speak Freely, Anytime",
+    desc: "Use one-on-one conversation mode to communicate effortlessly with anyone, anywhere.",
+    img: joinSpeakFreelyImg,
+    stepNum: <FiveIcon />,
+    alt: "Image showing conversation chat room",
+  },
+];
+
+export const hostEventSteps: Steps[] = [
+  {
+    title: "Create Your Event",
+    desc: "Log in as an Organization Admin, enter your event details, then generate a unique QR Code and Event Code for easy access.",
+    img: hostCreateEventImg,
+    stepNum: <OneIcon />,
+    alt: "Image showing event creation form",
+  },
+  {
+    title: "Invite Participants",
+    desc: "Share the QR Code or Event Code with attendees so they can join instantly and experience real-time translations",
+    img: hostQrcodeImg,
+    stepNum: <TwoIcon />,
+    alt: "Image showing event qr code",
+  },
+  {
+    title: "Start Live Translation",
+    desc: "Begin speaking naturally while our AI-powered system translates instantly. Attendees will see subtitles or hear translations in their chosen language.",
+    img: hostLiveTranslation,
+    stepNum: <ThreeIcon />,
+    alt: "Image showing live translation room",
+  },
+];
+
+export const features: Feature[] = [
+  {
+    title: "Real-Time Translations",
+    desc: "Instant Speech-to-Speech & Speech-to-Text – Talk freely, and let Craysoft translate on the fly.",
+    img: featureRealTimeImgLarge,
+    ident: <FeatureIdentifier1 />,
+    btn: "Join a conversation",
+    alt: "Phones showing chat room and conversation",
+  },
+  {
+    title: "Event Translations",
+    desc: "QR Code Event Access – Scan & join live multilingual conversations in seconds.",
+    img: featureEventImg,
+    ident: <FeatureIdentifier2 />,
+    btn: "Join an event",
+    alt: "Phones showing join event screen and live translations",
+  },
+  {
+    title: "AI-Powered Summaries",
+    desc: "Missed a Meeting? No Problem. AI generates key takeaways & action points from conversations.",
+    img: featureSummaryImgLarge,
+    ident: <FeatureIdentifier3 />,
+    btn: null,
+    alt: "Phones showing summary of translations",
+  },
+];

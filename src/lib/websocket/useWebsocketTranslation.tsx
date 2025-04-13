@@ -32,6 +32,7 @@ export default function useWebsocketTranslation(
   // Basic event & user states:
   const eventCode = eventCodeServer;
   const [participantId, setParticipantId] = useState<string>("");
+  const [participantCount, setParticipantCount] = useState<number>(0);
   const [translationLanguage, setTranslationLanguage] =
     useState<OptionType | null>(null);
 
@@ -51,6 +52,8 @@ export default function useWebsocketTranslation(
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [hasMore, setHasMore] = useState<boolean>(true);
+  const [audioDevices, setAudioDevices] = useState<MediaDeviceInfo[]>([]);
+  const [selectedDeviceId, setSelectedDeviceId] = useState("");
   const [loadingMore, setLoadingMore] = useState<boolean>(false);
   const websocketUrl = process.env.NEXT_PUBLIC_WEBSOCKET_BASE_URL;
   const restApi = process.env.NEXT_PUBLIC_API_BASE_URL;
@@ -156,6 +159,26 @@ export default function useWebsocketTranslation(
     }
   };
 
+  // List available audio input devices when the component mounts
+  useEffect(() => {
+    async function getAudioDevices() {
+      try {
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const audioInputs = devices.filter(
+          (device) => device.kind === "audioinput"
+        );
+        setAudioDevices(audioInputs);
+        // Optionally select the first device by default
+        if (audioInputs.length > 0) {
+          setSelectedDeviceId(audioInputs[0].deviceId);
+        }
+      } catch (error) {
+        console.error("Error enumerating devices:", error);
+      }
+    }
+    getAudioDevices();
+  }, []);
+
   // On mount: check for participant query and establish WebSocket connection.
   useEffect(() => {
     connectWebSocket().catch((err) => {
@@ -182,6 +205,10 @@ export default function useWebsocketTranslation(
           data.message === "Event is not live; audio will not be processed")
       ) {
         setMessage("needs-to-rejoin");
+      }
+      if (data.type === "participant-count") {
+        // Update the participant count from the server
+        setParticipantCount(data.count);
       }
       if (data.type === "transcription") {
         setTranscription(data.text);
@@ -405,5 +432,9 @@ export default function useWebsocketTranslation(
     handleScroll,
     chatMessages,
     hasJoinedEvent,
+    participantCount,
+    audioDevices,
+    selectedDeviceId,
+    setSelectedDeviceId,
   };
 }
