@@ -19,3 +19,9 @@
   height: 44px;
   overflow-y: auto;
 }
+
+.swiper,
+.swiper-wrapper {
+  max-height: 769px !important;
+  height: auto !important;
+}

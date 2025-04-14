@@ -31,6 +31,7 @@ import {
   // FullScreenHandle,
   useFullScreenHandle,
 } from "react-full-screen";
+import { Skeleton } from "@mui/material";
 
 // prettier-ignore
 const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -57,6 +58,10 @@ export default function EventTranslation({
     handleScroll,
     chatMessages,
     error: errorTranslation,
+    participantCount,
+    audioDevices,
+    selectedDeviceId,
+    setSelectedDeviceId,
   } = useWebsocketTranslation(event?.createdBy || "", event?.eventCode || "");
   const endDate = new Date(event?.endDate || "");
   const endDateString = `${
@@ -221,25 +226,43 @@ export default function EventTranslation({
             isDeleteModalOpen={isDeleteModalOpen}
             isDeletingEvent={isDeletingEvent}
             handleDelete={handleDelete}
+            participantCount={participantCount}
           />
           <div className="mt-[10px]">
             <div className="flex justify-end">
-              {!isShowFullScreen && (
-                <div
-                  onClick={handleFullScreen.enter}
-                  className="text-[12px] py-1 px-2 bg-gray-50 border border-gray-100 cursor-pointer rounded hover:bg-gray-100"
+              <div className="flex gap-3 items-end ">
+                <select
+                  value={selectedDeviceId}
+                  onChange={(e) => setSelectedDeviceId(e.target.value)}
+                  className="border border-gray-50 bg-gray-50 rounded hover:bg-gray-100 text-[12px] py-1 px-2"
                 >
-                  Full screen mode
-                </div>
-              )}
-              {isShowFullScreen && (
-                <div
-                  onClick={handleFullScreen.exit}
-                  className="text-[12px] py-1 px-2 bg-gray-50 border border-gray-100 cursor-pointer rounded hover:bg-gray-100"
-                >
-                  Exit full screen mode
-                </div>
-              )}
+                  {audioDevices.map((device) => (
+                    <option key={device.deviceId} value={device.deviceId}>
+                      {(clientWidth as number) <= 620
+                        ? truncateText(device.label || "Unknown Device", 15)
+                        : device.label || "Unknown Device"}
+                    </option>
+                  ))}
+                </select>
+                <>
+                  {!isShowFullScreen && (
+                    <div
+                      onClick={handleFullScreen.enter}
+                      className="text-[12px] py-1 px-2 bg-gray-50 border border-gray-100 cursor-pointer rounded hover:bg-gray-100"
+                    >
+                      Full screen mode
+                    </div>
+                  )}
+                  {isShowFullScreen && (
+                    <div
+                      onClick={handleFullScreen.exit}
+                      className="text-[12px] py-1 px-2 bg-gray-50 border border-gray-100 cursor-pointer rounded hover:bg-gray-100"
+                    >
+                      Exit full screen mode
+                    </div>
+                  )}
+                </>
+              </div>
             </div>
             <div
               className="overflow-y-auto overflow-hidden"
@@ -330,6 +353,7 @@ function EventController({
   isDeleteModalOpen,
   isDeletingEvent,
   handleDelete,
+  participantCount,
 }: {
   speakerIcon: string;
   handleClickSpeaker: () => Promise<string | void>;
@@ -348,6 +372,7 @@ function EventController({
   isDeleteModalOpen: boolean;
   isDeletingEvent: boolean;
   handleDelete: () => Promise<void>;
+  participantCount?: number;
 }) {
   const { clientWidth } = useResponsiveSizes();
 
@@ -420,7 +445,9 @@ function EventController({
             Total attendees connected:
           </h4>
           <p className="text-[20px] font-semibold mb-3">
-            {event?.participants?.length}
+            {participantCount || (
+              <Skeleton variant="circular" width={20} height={20} />
+            )}
           </p>
           <ButtonRed onClick={() => setIsDeleteModalOpen((open) => !open)}>
             End Event

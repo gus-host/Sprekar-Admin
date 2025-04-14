@@ -5,7 +5,7 @@ import { removeUserTokenCookie } from "@/utils/helper/auth/cookieUtility";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
-interface NavLinkProps {
+export interface NavLinkProps {
   href: string;
   children: React.ReactNode;
   onClick?: () => void;
