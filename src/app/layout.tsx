@@ -15,8 +15,10 @@ const openSans = Open_Sans({
 export const metadata: Metadata = {
   title: {
     template: "%s | Sprekar",
-    default: "Sign Up | Sprekar",
+    default: "Home | Sprekar",
   },
+  description:
+    "Instantly translate speech, live events, and conversations in real-time with AI-powered accuracy",
 };
 
 export default function RootLayout({

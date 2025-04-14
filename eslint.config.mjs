@@ -11,6 +11,16 @@ const compat = new FlatCompat({
 
 const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
+  ...compat.extends("react-app", "react-app/jest"),
+  // Convert and include any Next.js additional recommended linting, if needed
+  ...compat.extends("plugin:@next/next/recommended"),
+  // Add any additional customizations
+  {
+    rules: {
+      "flowtype/define-flow-type": "off",
+      "flowtype/use-flow-type": "off",
+    },
+  },
 ];
 
 export default eslintConfig;

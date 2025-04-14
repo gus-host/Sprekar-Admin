@@ -6,6 +6,10 @@ import React from "react";
 import UsersTable from "@/components/UsersTable";
 import ProfileNameGetter from "./_partials/ProfileNameGetter";
 
+export const metadata = {
+  title: "Dashboard",
+};
+
 export default function Page() {
   return (
     <div>

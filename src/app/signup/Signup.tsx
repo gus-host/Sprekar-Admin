@@ -19,7 +19,7 @@ import {
 } from "@/utils/helper/auth/cookieUtility";
 import { handleAxiosError } from "@/utils/helper/general/errorHandler";
 
-export default function SignUp() {
+export default function Signup() {
   const [loading, setLoading] = useState(false);
   const [isCreatingUser, setIsCreatingUser] = useState(false);
   const router = useRouter();
@@ -109,7 +109,7 @@ export default function SignUp() {
         <TextInput
           type="text"
           name="firstName"
-          placeholder="firstName"
+          placeholder="first Name"
           value={signupFormIk.values.firstName}
           onChange={signupFormIk.handleChange}
           error={signupFormIk.submitCount > 0 && signupFormIk.errors.firstName}
@@ -118,7 +118,7 @@ export default function SignUp() {
         <TextInput
           type="text"
           name="lastName"
-          placeholder="lastName"
+          placeholder="last Name"
           value={signupFormIk.values.lastName}
           onChange={signupFormIk.handleChange}
           error={signupFormIk.submitCount > 0 && signupFormIk.errors.lastName}

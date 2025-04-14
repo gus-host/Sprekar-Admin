@@ -108,7 +108,7 @@ export default function Login() {
         <h2 className="text-[20px] font-bold">Welcome Back</h2>
         <p className="text-[12px] font-medium text-[#9B9B9B]">
           Don’t have an account?{" "}
-          <Link className="text-[#0255DA] hover:underline" href={"/"}>
+          <Link className="text-[#0255DA] hover:underline" href={"/signup"}>
             Sign Up
           </Link>
         </p>
