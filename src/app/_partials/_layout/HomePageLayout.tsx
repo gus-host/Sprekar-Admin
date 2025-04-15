@@ -52,22 +52,30 @@ export default function HomePageLayout({
           </nav>
         </header>
       </div>
-      <div className="min-h-[80dvh]">{children}</div>
-      <div>
-        <div>
-          <Logo color="text-white" type="home-logo" />
-          <ul>
-            <li>
+      <div
+        style={{
+          minHeight: showedHeroBg ? "" : "80vh",
+        }}
+      >
+        {children}
+      </div>
+      <footer className="px-[20px] bg-[#010E24] py-[40px]">
+        <div className="mx-auto max-w-[1300px] flex items-center justify-between pb-[30px] border-b border-b-[#BABABAA3] max-[680px]:flex-col max-[680px]:items-start max-[680px]:gap-[40px]">
+          <span className="max-[680px]:mx-auto max-[680px]:min-w-[139.09px]">
+            <Logo color="text-white" type="home-logo" />
+          </span>
+          <ul className="text-[#DDDDDD] flex gap-3 items-center text-[14px] max-[680px]:flex-col max-[680px]:items-start max-[680px]:mx-auto max-[680px]:max-w-[160px]">
+            <li className="hover:text-white">
               <Link href={"#"}>Pricing</Link>
             </li>
-            <li>
+            <li className="hover:text-white">
               <Link href={"#"}>Terms and conditions</Link>
             </li>
-            <li>
+            <li className="hover:text-white">
               <Link href={"#"}>Privacy policy</Link>
             </li>
           </ul>
-          <ul>
+          <ul className="flex gap-3 items-center max-[680px]:mx-auto max-[680px]:min-w-[139.09px]">
             <li>
               <Link href={"#"}>
                 <TwitterIcon />
@@ -90,8 +98,10 @@ export default function HomePageLayout({
             </li>
           </ul>
         </div>
-        <p>© {new Date().getFullYear()} Sprekar. All Rights Reserved.</p>
-      </div>
+        <p className="mt-6 text-[#B1B1B161] text-center text-[12px]">
+          © {new Date().getFullYear()} Sprekar. All Rights Reserved.
+        </p>
+      </footer>
     </div>
   );
 }
