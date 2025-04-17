@@ -37,6 +37,7 @@ export default function HeroVideo() {
           width: "100%",
           marginTop: "60px",
           marginBottom: "20px",
+          maxHeight: "580px",
         }}
       >
         <ReactPlayer

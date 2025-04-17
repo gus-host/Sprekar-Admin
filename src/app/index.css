@@ -25,3 +25,27 @@
   max-height: 769px !important;
   height: auto !important;
 }
+
+@media (max-width: 957px) {
+  .swiper,
+  .swiper-wrapper {
+    max-height: 639.2px !important;
+    height: auto !important;
+  }
+}
+
+@media (max-width: 744px) {
+  .swiper,
+  .swiper-wrapper {
+    max-height: 1053px !important;
+    height: auto !important;
+  }
+}
+
+@media (max-width: 450px) {
+  .swiper,
+  .swiper-wrapper {
+    max-height: 784.48px !important;
+    height: auto !important;
+  }
+}

@@ -36,15 +36,15 @@ export default function Swiper() {
         {features.map((feature, i) => (
           <SwiperSlide key={i}>
             <div
-              className="flex items-center mx-auto max-w-[1300px] justify-between gap-[50px]
+              className="flex items-center mx-auto max-w-[1300px] justify-between gap-[50px] max-[744px]:flex-col max-[744px]:items-start max-[744px]:gap-0
             "
             >
               <div>
-                <h3 className="text-[16px] font-medium text-[#01388F] mb-2">
+                <h3 className="text-[16px] font-medium text-[#01388F] mb-2 max-[744px]:mt-6">
                   Features
                 </h3>
                 <h2
-                  className={`${robotoSerif.className} text-[30px] font-black max-w-[400px] leading-[1.3] mb-[20px]`}
+                  className={`${robotoSerif.className} text-[30px] max-[744px]:text-[20px] font-black max-w-[400px] leading-[1.3] mb-[20px]`}
                 >
                   Your Language. Your World. No Barriers.
                 </h2>
