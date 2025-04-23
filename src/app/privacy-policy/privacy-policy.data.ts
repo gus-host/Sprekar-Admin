@@ -1,0 +1,62 @@
+import { PolicySection } from "./privacy-policy.types";
+
+export const privacyPolicySections: PolicySection[] = [
+  {
+    id: 1,
+    title: "Information We Collect",
+    items: [
+      "Personal Information: Name, email, language preferences, and optionally a profile picture.",
+      "Audio Data: Real-time speech input for transcription and translation purposes (not stored permanently).",
+      "Usage Data: Device information, app usage statistics, crash logs and interaction history.",
+    ],
+  },
+  {
+    id: 2,
+    title: "How We Use Your Information",
+    items: [
+      "To provide real-time translation and transcription service.",
+      "To personalize user experience and language settings.",
+      "To improve our app functionality and troubleshoot issues.",
+      "To analyze aggregate usage for performance monitoring.",
+    ],
+  },
+  {
+    id: 3,
+    title: "Data Sharing & Third Parties",
+    items: [
+      "We use trusted third-party services such as Google Speech-to-Text and DeepL for translation and speech processing.",
+      "We do not sell your personal information.",
+    ],
+  },
+  {
+    id: 4,
+    title: "Data Retention",
+    items: [
+      "Transcriptions and translations are processed in real time and discarded unless saved by the user.",
+      "User account data is retained as long as the account is active.",
+    ],
+  },
+  {
+    id: 5,
+    title: "Security",
+    text: "We use industry standard encryption and secure cloud infrastructure to protect your data.",
+  },
+  {
+    id: 6,
+    title: "Your Rights",
+    items: [
+      "You may request access, correction, or deletion of your data.",
+      "You may deactivate your account at anytime.",
+    ],
+  },
+  {
+    id: 7,
+    title: "Changes To This Policy",
+    text: "We may update the Privacy Policy and will notify users of material changes via the app or email.",
+  },
+  {
+    id: 8,
+    title: "Contact Us",
+    text: `For questions about this policy, email: <strong>hello@sprekar.com</strong>.`,
+  },
+];
