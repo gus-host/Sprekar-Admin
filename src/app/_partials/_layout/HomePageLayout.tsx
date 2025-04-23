@@ -34,10 +34,12 @@ export default function HomePageLayout({
                 <NavLinkHomeLayout href="#">Features</NavLinkHomeLayout>
               </li>
               <li>
-                <NavLinkHomeLayout href="#">Join event</NavLinkHomeLayout>
+                <NavLinkHomeLayout href="/#">Join eventz</NavLinkHomeLayout>
               </li>
               <li>
-                <NavLinkHomeLayout href="#">Host an event</NavLinkHomeLayout>
+                <NavLinkHomeLayout href="/login">
+                  Host an event
+                </NavLinkHomeLayout>
               </li>
               <li>
                 <NavLinkHomeLayout href="#">About Us</NavLinkHomeLayout>
@@ -46,7 +48,9 @@ export default function HomePageLayout({
                 <NavLinkHomeLayout href="#">FAQs</NavLinkHomeLayout>
               </li>
               <li>
-                <NavLinkHomeLayout href="#">Contact</NavLinkHomeLayout>
+                <NavLinkHomeLayout href="/contact-us">
+                  Contact
+                </NavLinkHomeLayout>
               </li>
             </ul>
           </nav>
@@ -66,33 +70,33 @@ export default function HomePageLayout({
           </span>
           <ul className="text-[#DDDDDD] flex gap-3 items-center text-[14px] max-[680px]:flex-col max-[680px]:items-start max-[680px]:mx-auto max-[680px]:max-w-[160px]">
             <li className="hover:text-white">
-              <Link href={"#"}>Pricing</Link>
+              <Link href={"/#"}>Pricing</Link>
             </li>
             <li className="hover:text-white">
-              <Link href={"#"}>Terms and conditions</Link>
+              <Link href={"/terms-and-conditions"}>Terms and conditions</Link>
             </li>
             <li className="hover:text-white">
-              <Link href={"#"}>Privacy policy</Link>
+              <Link href={"/privacy-policy"}>Privacy policy</Link>
             </li>
           </ul>
           <ul className="flex gap-3 items-center max-[680px]:mx-auto max-[680px]:min-w-[139.09px]">
             <li>
-              <Link href={"#"}>
+              <Link href={"/#"}>
                 <TwitterIcon />
               </Link>
             </li>
             <li>
-              <Link href={"#"}>
+              <Link href={"/#"}>
                 <HistagramIcon />
               </Link>
             </li>
             <li>
-              <Link href={"#"}>
+              <Link href={"/#"}>
                 <FacebookIcon />
               </Link>
             </li>
             <li>
-              <Link href={"#"}>
+              <Link href={"/#"}>
                 <LinkedIn />
               </Link>
             </li>

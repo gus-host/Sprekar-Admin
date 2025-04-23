@@ -13,7 +13,7 @@ export default function Header() {
   return (
     <div
       className={cn(
-        "max-w-[1000px] p-[20px] mx-auto",
+        "max-w-[1069px] p-[20px] mx-auto",
         "max-[750px]:fixed max-[750px]:w-full max-[750px]:z-9999 max-[750px]:top-0"
       )}
     >
@@ -41,7 +41,10 @@ export default function Header() {
                 </NavLinkHomeLayout>
               </li>
               <li>
-                <NavLinkHomeLayout className={"hover:opacity-[100]"} href="#">
+                <NavLinkHomeLayout
+                  className={"hover:opacity-[100]"}
+                  href="/login"
+                >
                   Host an event
                 </NavLinkHomeLayout>
               </li>
@@ -56,7 +59,10 @@ export default function Header() {
                 </NavLinkHomeLayout>
               </li>
               <li>
-                <NavLinkHomeLayout className={"hover:opacity-[100]"} href="#">
+                <NavLinkHomeLayout
+                  className={"hover:opacity-[100]"}
+                  href="/contact-us"
+                >
                   Contact
                 </NavLinkHomeLayout>
               </li>
@@ -84,7 +90,7 @@ function MobileNav() {
           </NavLinkHomeLayout>
         </li>
         <li>
-          <NavLinkHomeLayout className={"hover:opacity-[100]"} href="#">
+          <NavLinkHomeLayout className={"hover:opacity-[100]"} href="/login">
             Host an event
           </NavLinkHomeLayout>
         </li>
