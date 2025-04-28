@@ -13,7 +13,7 @@ export default function Header() {
   return (
     <div
       className={cn(
-        "max-w-[1000px] p-[20px] mx-auto",
+        "max-w-[1069px] p-[20px] mx-auto",
         "max-[750px]:fixed max-[750px]:w-full max-[750px]:z-9999 max-[750px]:top-0"
       )}
     >
