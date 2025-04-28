@@ -20,53 +20,8 @@ export default function HomePageLayout({
   return (
     <div className="relative">
       {/* Header */}
-<<<<<<< HEAD
       <div className={cn("", `${showedHeroBg ? "hidden" : "block"}`)}>
         <Header />
-=======
-      <div
-        className={cn(
-          "absolute p-[20px] top-[20px] max-w-[1000px] min-w-[1000px] left-[50%] -translate-x-1/2 ",
-          `${showedHeroBg ? "hidden" : "block"}`
-        )}
-      >
-        <header className="flex gap-3 justify-between items-center">
-          <Logo color="text-white" type="home-logo" />
-          <nav>
-            <ul className="flex items-center gap-2">
-              <li>
-                <NavLinkHomeLayout href="#">Features</NavLinkHomeLayout>
-              </li>
-              <li>
-                <NavLinkHomeLayout href="/#">Join eventz</NavLinkHomeLayout>
-              </li>
-              <li>
-                <NavLinkHomeLayout href="/login">
-                  Host an event
-                </NavLinkHomeLayout>
-              </li>
-              <li>
-                <NavLinkHomeLayout href="#">About Us</NavLinkHomeLayout>
-              </li>
-              <li>
-                <NavLinkHomeLayout href="#">FAQs</NavLinkHomeLayout>
-              </li>
-              <li>
-                <NavLinkHomeLayout href="/contact-us">
-                  Contact
-                </NavLinkHomeLayout>
-              </li>
-            </ul>
-          </nav>
-        </header>
-      </div>
-      <div
-        style={{
-          minHeight: showedHeroBg ? "" : "80vh",
-        }}
-      >
-        {children}
->>>>>>> 138c1a6dd866a68dca218a22d042a93d6ff5ded5
       </div>
       <div>{children}</div>
       <footer className="px-[20px] bg-[#010E24] py-[40px]">
