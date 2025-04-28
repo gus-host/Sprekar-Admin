@@ -30,36 +30,7 @@ export default function Header() {
         {(clientWidth as number) >= 750 && (
           <nav className={cn("text-white")}>
             <ul className="flex items-center gap-[20px] text-[14px]">
-              <li>
-                <NavLinkHomeLayout className="hover:opacity-[100]" href="#">
-                  Features
-                </NavLinkHomeLayout>
-              </li>
-              <li>
-                <NavLinkHomeLayout className={"hover:opacity-[100]"} href="#">
-                  Join event
-                </NavLinkHomeLayout>
-              </li>
-              <li>
-                <NavLinkHomeLayout className={"hover:opacity-[100]"} href="#">
-                  Host an event
-                </NavLinkHomeLayout>
-              </li>
-              <li>
-                <NavLinkHomeLayout className={"hover:opacity-[100]"} href="#">
-                  About Us
-                </NavLinkHomeLayout>
-              </li>
-              <li>
-                <NavLinkHomeLayout className={"hover:opacity-[100]"} href="#">
-                  FAQs
-                </NavLinkHomeLayout>
-              </li>
-              <li>
-                <NavLinkHomeLayout className={"hover:opacity-[100]"} href="#">
-                  Contact
-                </NavLinkHomeLayout>
-              </li>
+              <NavLinks />
             </ul>
           </nav>
         )}
@@ -73,37 +44,45 @@ function MobileNav() {
   return (
     <nav className={cn("text-white mt-6")}>
       <ul className="flex gap-[20px] text-[14px] flex-col items-start">
-        <li>
-          <NavLinkHomeLayout className="hover:opacity-[100]" href="#">
-            Features
-          </NavLinkHomeLayout>
-        </li>
-        <li>
-          <NavLinkHomeLayout className={"hover:opacity-[100]"} href="#">
-            Join event
-          </NavLinkHomeLayout>
-        </li>
-        <li>
-          <NavLinkHomeLayout className={"hover:opacity-[100]"} href="#">
-            Host an event
-          </NavLinkHomeLayout>
-        </li>
-        <li>
-          <NavLinkHomeLayout className={"hover:opacity-[100]"} href="#">
-            About Us
-          </NavLinkHomeLayout>
-        </li>
-        <li>
-          <NavLinkHomeLayout className={"hover:opacity-[100]"} href="#">
-            FAQs
-          </NavLinkHomeLayout>
-        </li>
-        <li>
-          <NavLinkHomeLayout className={"hover:opacity-[100]"} href="#">
-            Contact
-          </NavLinkHomeLayout>
-        </li>
+        <NavLinks />
       </ul>
     </nav>
+  );
+}
+
+function NavLinks() {
+  return (
+    <>
+      <li>
+        <NavLinkHomeLayout className="hover:opacity-[100]" href="#">
+          Features
+        </NavLinkHomeLayout>
+      </li>
+      <li>
+        <NavLinkHomeLayout className={"hover:opacity-[100]"} href="/join-event">
+          Join event
+        </NavLinkHomeLayout>
+      </li>
+      <li>
+        <NavLinkHomeLayout className={"hover:opacity-[100]"} href="#">
+          Host an event
+        </NavLinkHomeLayout>
+      </li>
+      <li>
+        <NavLinkHomeLayout className={"hover:opacity-[100]"} href="#">
+          About Us
+        </NavLinkHomeLayout>
+      </li>
+      <li>
+        <NavLinkHomeLayout className={"hover:opacity-[100]"} href="#">
+          FAQs
+        </NavLinkHomeLayout>
+      </li>
+      <li>
+        <NavLinkHomeLayout className={"hover:opacity-[100]"} href="#">
+          Contact
+        </NavLinkHomeLayout>
+      </li>
+    </>
   );
 }
