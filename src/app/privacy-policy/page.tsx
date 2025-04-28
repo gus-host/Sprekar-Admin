@@ -21,10 +21,10 @@ export default function page() {
                 Privacy Policy
               </h1>
               <p className="text-[#323232B2] text-[16px] md:text-[18px] text-center max-w-[806px] mb-[30px] md:mb-[60px] mx-auto mt-[37px]">
-                Sprekar ("we", "our", or "us") is committed to protecting your
-                privacy. This Privacy Policy explains how we collect, use, and
-                safeguard your information when you use our mobile app and web
-                services.
+                Sprekar (&apos;we&apos;, &apos;our&apos;, or &apos;us&apos;) is
+                committed to protecting your privacy. This Privacy Policy
+                explains how we collect, use, and safeguard your information
+                when you use our mobile app and web services.
               </p>
             </div>
           </div>

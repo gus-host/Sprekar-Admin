@@ -4,7 +4,7 @@ import AppleHome from "./_svgs/AppleHome";
 import bgImg from "@/../public/bgImg.png";
 import phoneWithLanguages from "@/../public/PhoneWithLanguages.png";
 import Header from "./_partials/Header";
-import { nunitoSans, robotoSerif } from "./_partials/fontFamilies";
+import { robotoSerif } from "./_partials/fontFamilies";
 import GooglePlayHome from "./_svgs/GooglePlayHome";
 import Link from "next/link";
 import HeroVideo from "./_partials/HeroVideo";
@@ -12,6 +12,7 @@ import JoinOrHostEventSteps from "./_partials/JoinOrHostEventSteps";
 import Swiper from "./_partials/Swiper";
 import { cn } from "@/lib/utils";
 import { subscriptionPlans } from "./_partials/homePageData";
+import H1 from "./_partials/H1";
 
 export default function Home() {
   return (
@@ -24,11 +25,7 @@ export default function Home() {
             <div className="relative z-10">
               <Header />
               <div className="mx-auto px-[20px]">
-                <h1
-                  className={`mt-[60px] ${robotoSerif.className} text-[44px] text-center font-black max-[820px]:text-[26px] max-[820px]:${nunitoSans.className}`}
-                >
-                  Speak. Understand. Connect.
-                </h1>
+                <H1>Speak. Understand. Connect.</H1>
                 <p className="text-[#323232B2] text-[16px] text-center max-w-[520px] mx-auto mt-1">
                   Instantly translate speech, live events, and conversations in
                   real-time with AI-powered accuracy
@@ -70,7 +67,6 @@ export default function Home() {
             <Image
               src={bgImg}
               alt="Hero background image"
-              placeholder="blur"
               fill
               className="object-cover object-top"
               quality={100}
