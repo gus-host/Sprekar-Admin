@@ -18,7 +18,7 @@ export default function HomePageLayout({
   children: ReactNode;
 }) {
   return (
-    <div className="relative">
+    <div className="relative h-dvh flex flex-col justify-between">
       {/* Header */}
       <div className={cn("", `${showedHeroBg ? "hidden" : "block"}`)}>
         <Header />
@@ -26,9 +26,12 @@ export default function HomePageLayout({
       <div>{children}</div>
       <footer className="px-[20px] bg-[#010E24] py-[40px]">
         <div className="mx-auto max-w-[1300px] flex items-center justify-between pb-[30px] border-b border-b-[#BABABAA3] max-[680px]:flex-col max-[680px]:items-start max-[680px]:gap-[40px]">
-          <span className="max-[680px]:mx-auto max-[680px]:min-w-[139.09px]">
+          <Link
+            href={"/"}
+            className="max-[680px]:mx-auto max-[680px]:min-w-[139.09px]"
+          >
             <Logo color="text-white" type="home-logo" />
-          </span>
+          </Link>
           <ul className="text-[#DDDDDD] flex gap-3 items-center text-[14px] max-[680px]:flex-col max-[680px]:items-start max-[680px]:mx-auto max-[680px]:max-w-[160px]">
             <li className="hover:text-white">
               <Link href={"/#"}>Pricing</Link>

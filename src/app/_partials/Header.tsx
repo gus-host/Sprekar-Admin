@@ -6,6 +6,7 @@ import Logo from "./Logo";
 import NavLinkHomeLayout from "./NavLinkHomeLayout";
 import useResponsiveSizes from "@/utils/helper/general/useResponsiveSizes";
 import { useState } from "react";
+import Link from "next/link";
 
 export default function Header() {
   const { clientWidth } = useResponsiveSizes();
@@ -19,7 +20,9 @@ export default function Header() {
     >
       <header className="flex gap-3 justify-between items-center px-[30px] py-[15px] bg-[#1D1D1D] rounded-[15px] max-[750px]:flex-col max-[750px]:items-start max-[750px]:justify-center transition-all relative">
         <div className="max-[750px]:flex max-[750px]:justify-between max-[750px]:items-center max-[750px]:w-full">
-          <Logo color="text-white" type="home-logo" />
+          <Link href={"/"}>
+            <Logo color="text-white" type="home-logo" />
+          </Link>
           <span
             className="hidden max-[750px]:inline-block cursor-pointer"
             onClick={() => setIsShowMobileNav((show) => !show)}
@@ -79,7 +82,7 @@ function NavLinks() {
         </NavLinkHomeLayout>
       </li>
       <li>
-        <NavLinkHomeLayout className={"hover:opacity-[100]"} href="#">
+        <NavLinkHomeLayout className={"hover:opacity-[100]"} href="/contact-us">
           Contact
         </NavLinkHomeLayout>
       </li>

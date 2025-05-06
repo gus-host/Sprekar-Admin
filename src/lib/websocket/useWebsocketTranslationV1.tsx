@@ -21,33 +21,17 @@ export type OptionType = {
   label: string;
 };
 
-/**
- * Custom hook for real-time translation via WebSocket.
- */
 export default function useWebsocketTranslation(
   adminId: string,
   eventCodeServer: string
+  // translationLang?: string
 ) {
-  // ===== Persisted participantId from localStorage =====
-  const [participantId, setParticipantId] = useState<string>(() => {
-    if (typeof window !== "undefined") {
-      return localStorage.getItem("participantId") || "";
-    }
-    return "";
-  });
-
-  // Synchronize state to localStorage whenever it changes
-  useEffect(() => {
-    if (participantId) {
-      localStorage.setItem("participantId", participantId);
-    }
-  }, [participantId]);
-
   // Real-time message histories:
   const [transcription, setTranscription] = useState<string>("");
   const [translation, setTranslation] = useState<string>("");
   // Basic event & user states:
   const eventCode = eventCodeServer;
+  const [participantId, setParticipantId] = useState<string>("");
   const [participantCount, setParticipantCount] = useState<number>(0);
   const [translationLanguage, setTranslationLanguage] =
     useState<OptionType | null>(null);
@@ -71,20 +55,18 @@ export default function useWebsocketTranslation(
   const [audioDevices, setAudioDevices] = useState<MediaDeviceInfo[]>([]);
   const [selectedDeviceId, setSelectedDeviceId] = useState("");
   const [loadingMore, setLoadingMore] = useState<boolean>(false);
-
   const websocketUrl = process.env.NEXT_PUBLIC_WEBSOCKET_BASE_URL;
   const restApi = process.env.NEXT_PUBLIC_API_BASE_URL;
 
   const adminUserId: string = adminId;
 
-  // Load older messages (reverse infinite scroll)
+  // Function to load older messages (reverse infinite scroll)
   const loadOlderMessages = async () => {
     if (!eventCode) return;
     setLoadingMore(true);
     try {
       const response = await fetch(
-        `${restApi}/conversations/${eventCode}?page=$
-{currentPage + 1}&limit=10`
+        `${restApi}/conversations/${eventCode}?page=${currentPage + 1}&limit=10`
       );
       if (!response.ok) {
         console.error("Error loading older messages", response.statusText);
@@ -104,7 +86,7 @@ export default function useWebsocketTranslation(
     setLoadingMore(false);
   };
 
-  // Scroll handler
+  // Handler for scrolling on the chat container
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const container = e.currentTarget;
     if (container.scrollTop < 10 && hasMore && !loadingMore) {
@@ -112,7 +94,7 @@ export default function useWebsocketTranslation(
     }
   };
 
-  // Initial load of conversation history
+  // Fetch conversation history when user joins (initial load)
   const fetchInitialConversations = useCallback(async () => {
     if (!eventCode) return;
     try {
@@ -141,7 +123,7 @@ export default function useWebsocketTranslation(
     }
   }, [hasJoinedEvent, eventCode, fetchInitialConversations]);
 
-  // Connect to WebSocket
+  // Function to connect (or reconnect) to the WebSocket
   const connectWebSocket = useCallback((): Promise<WebSocket> => {
     return new Promise((resolve, reject) => {
       const socket = new WebSocket(websocketUrl || "");
@@ -162,7 +144,8 @@ export default function useWebsocketTranslation(
     });
   }, [websocketUrl]);
 
-  // Send message helper with reconnect
+  // Helper function to send a message over WebSocket.
+  // If ws is not open, it will try to reconnect and then send.
   const sendWsMessage = async (message: string) => {
     if (ws && ws.readyState === WebSocket.OPEN) {
       ws.send(message);
@@ -176,7 +159,7 @@ export default function useWebsocketTranslation(
     }
   };
 
-  // Load audio devices
+  // List available audio input devices when the component mounts
   useEffect(() => {
     async function getAudioDevices() {
       try {
@@ -185,6 +168,7 @@ export default function useWebsocketTranslation(
           (device) => device.kind === "audioinput"
         );
         setAudioDevices(audioInputs);
+        // Optionally select the first device by default
         if (audioInputs.length > 0) {
           setSelectedDeviceId(audioInputs[0].deviceId);
         }
@@ -195,14 +179,14 @@ export default function useWebsocketTranslation(
     getAudioDevices();
   }, []);
 
-  // Open WebSocket on mount
+  // On mount: check for participant query and establish WebSocket connection.
   useEffect(() => {
     connectWebSocket().catch((err) => {
       console.error("Initial WebSocket connection failed:", err);
     });
   }, [connectWebSocket]);
 
-  // Handle incoming messages
+  // Whenever ws changes, attach the onmessage handler.
   useEffect(() => {
     if (!ws) return;
     ws.onmessage = (event: MessageEvent) => {
@@ -211,15 +195,10 @@ export default function useWebsocketTranslation(
       setIsLoading(false);
       setMessage(data.message);
       setError("");
-
-      // participantId: prefer stored value
-      const stored = localStorage.getItem("participantId");
-      if (!stored && data.participantId) {
+      if (!participantId && data.participantId) {
         console.log("Setting participantId from server:", data.participantId);
         setParticipantId(data.participantId);
       }
-
-      // Error handling
       if (
         data.type === "error" &&
         (data.message === "You must join an event first" ||
@@ -227,13 +206,10 @@ export default function useWebsocketTranslation(
       ) {
         setMessage("needs-to-rejoin");
       }
-
-      // participant count update
       if (data.type === "participant-count") {
+        // Update the participant count from the server
         setParticipantCount(data.count);
       }
-
-      // transcription & translation
       if (data.type === "transcription") {
         setTranscription(data.text);
       } else if (data.type === "translation") {
@@ -251,8 +227,6 @@ export default function useWebsocketTranslation(
             timestamp: new Date(),
           },
         ]);
-
-        // event started
       } else if (
         (data.type === "info" && data.message === "The event has started") ||
         (data.type === "success" && data.message === "Event has started")
@@ -261,15 +235,12 @@ export default function useWebsocketTranslation(
         if (data.conversations) {
           setChatMessages(data.conversations);
         }
-
-        // joined event
       } else if (
         data.type === "success" &&
         data.message === "Successfully joined event"
       ) {
-        const storedJoin = localStorage.getItem("participantId");
-        if (!storedJoin && data.participantId) {
-          console.log("Setting participantId on join:", data.participantId);
+        if (!participantId && data.participantId) {
+          console.log("Setting participantId from server:", data.participantId);
           setParticipantId(data.participantId);
         }
         setHasJoinedEvent(true);
@@ -277,92 +248,110 @@ export default function useWebsocketTranslation(
           setChatMessages(data.conversations);
         }
       }
-
-      // reconnection logic for speech errors...
-      if (
+      // Reconnection logic on speech recognition error
+      else if (
         data.type === "error" &&
         (data.message === "Speech recognition error" ||
           data.message === "You must start audio recognition first")
       ) {
         console.warn(
-          "Speech recognition error or start-first. Reconnecting..."
+          "Speech recognition error received or You must start audio recognition first. Reconnecting..."
         );
-        if (ws) ws.close();
+        if (ws) {
+          ws.close();
+        }
         connectWebSocket().then((newSocket) => {
+          // Optionally, if an event code exists, re-join the event automatically.
           if (eventCode) {
-            newSocket.send(
-              JSON.stringify({
-                type: "join",
-                eventCode,
-                language: translationLanguage?.value || "AR",
-                participantId,
-                conversationPage: 1,
-                conversationLimit: 10,
-              })
-            );
-            console.log("Rejoined after speech error.");
+            const joinMessage = JSON.stringify({
+              type: "join",
+              eventCode,
+              language: translationLanguage?.value || "AR",
+              participantId,
+              conversationPage: 1,
+              conversationLimit: 10,
+            });
+            newSocket.send(joinMessage);
+            console.log("Rejoined event after speech recognition error.");
           }
         });
       }
     };
   }, [ws, participantId, eventCode, translationLanguage, connectWebSocket]);
 
-  // Message senders
+  // Functions to send messages via WebSocket.
   const joinEvent = async () => {
-    if (!eventCode) return console.error("Missing event code.");
-    const messageObj = {
+    if (!eventCode) {
+      console.error("Event code is missing.");
+      return;
+    }
+    const message = JSON.stringify({
       type: "join",
       eventCode,
       language: translationLanguage?.value || "AR",
       participantId,
       conversationPage: 1,
       conversationLimit: 10,
-    };
+    });
     setIsLoading(true);
-    await sendWsMessage(JSON.stringify(messageObj));
+    await sendWsMessage(message);
   };
 
   const rejoinEvent = async () => {
-    if (!eventCode || !participantId)
-      return console.error("Missing event code or participantId.");
+    if (!eventCode || !participantId) {
+      console.error("Missing event code or participantId.");
+      return;
+    }
+    const message = JSON.stringify({
+      type: "join",
+      eventCode,
+      language: translationLanguage?.value || "AR",
+      participantId,
+      conversationPage: 1,
+      conversationLimit: 10,
+    });
     setIsLoading(true);
-    await sendWsMessage(
-      JSON.stringify({
-        type: "join",
-        eventCode,
-        language: translationLanguage?.value || "AR",
-        participantId,
-        conversationPage: 1,
-        conversationLimit: 10,
-      })
-    );
+    await sendWsMessage(message);
   };
 
   const startEvent = async () => {
-    if (!eventCode) return console.error("Missing event code.");
+    if (!eventCode) {
+      console.error("Event code is missing.");
+      return;
+    }
+    const message = JSON.stringify({
+      type: "event-start",
+      eventCode,
+      userId: adminUserId,
+      conversationPage: 1,
+      conversationLimit: 10,
+    });
     setIsLoading(true);
-    await sendWsMessage(
-      JSON.stringify({
-        type: "event-start",
-        eventCode,
-        userId: adminUserId,
-        conversationPage: 1,
-        conversationLimit: 10,
-      })
-    );
+    await sendWsMessage(message);
   };
 
+  // Function for admin to stop the event (new functionality)
   const stopEvent = async () => {
-    if (!eventCode) return console.error("Missing event code.");
-    await sendWsMessage(
-      JSON.stringify({ type: "event-end", eventCode, userId: adminUserId })
-    );
+    if (!eventCode) {
+      console.error("Event code is missing.");
+      return;
+    }
+    const message = JSON.stringify({
+      type: "event-end",
+      eventCode,
+      userId: adminUserId,
+    });
+    await sendWsMessage(message);
   };
 
   const startRecording = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
-        audio: { channelCount: 1, sampleRate: 16000, sampleSize: 16 },
+        audio: {
+          channelCount: 1,
+          sampleRate: 16000,
+          sampleSize: 16,
+        },
       });
       const audioContext = new AudioContext({ sampleRate: 16000 });
       const source = audioContext.createMediaStreamSource(stream);
@@ -371,7 +360,6 @@ export default function useWebsocketTranslation(
       processor.connect(audioContext.destination);
       setMediaRecorder({ stream, audioContext, processor });
 
-      setIsRecording(true);
       await sendWsMessage(JSON.stringify({ type: "audio-start", eventCode }));
 
       processor.onaudioprocess = (e: AudioProcessingEvent) => {
@@ -389,6 +377,8 @@ export default function useWebsocketTranslation(
           );
         }
       };
+
+      setIsRecording(true);
     } catch (error) {
       console.error("Error accessing microphone:", error);
     }
@@ -398,25 +388,31 @@ export default function useWebsocketTranslation(
     if (mediaRecorder) {
       mediaRecorder.processor.disconnect();
       mediaRecorder.audioContext.close();
-      mediaRecorder.stream.getTracks().forEach((t) => t.stop());
+      mediaRecorder.stream.getTracks().forEach((track) => track.stop());
     }
     setIsRecording(false);
     setMediaRecorder(null);
   };
 
+  // For participants: handle translation language change.
   const handleTranslationLanguageChange = (
     option: SingleValue<OptionType>,
     actionMeta?: ActionMeta<OptionType>
   ) => {
+    console.log(actionMeta);
     setTranslationLanguage(option);
     if (isEventStarted || hasJoinedEvent) {
-      const msg = {
+      const message = JSON.stringify({
         type: "change-language",
         language: option?.value || "AR",
         participantId,
         eventCode,
-      };
-      sendWsMessage(JSON.stringify(msg));
+      });
+      sendWsMessage(message);
+    } else {
+      console.log(
+        "Event has not started or you have not joined the event yet."
+      );
     }
   };
 
