@@ -1,27 +1,11 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { Event } from "../[eventId]/EventGetter";
-import SpeakerIcon from "@/app/_svgs/SpeakerIcon";
-import Speakermain from "@/app/_svgs/Speakermain";
-import {
-  languageMap,
-  LanguageOption,
-  // languageMap,
-  SupportedLangaugesTranslation,
-} from "../../manageEvents/_partials/SupportedLanguagesSelect";
-import ErrorSetter from "../../_partials/ErrorSetter";
-import SpeakerIconPause from "@/app/_svgs/SpeakerIconPause";
+
 import dayjs from "dayjs";
-import SpeakerIconPlay from "@/app/_svgs/SpeakerIconPlay";
-import ButtonRed from "../../_partials/ButtonRed";
 import ModalMUI from "@/components/ModalMUI";
-import Spinner from "@/components/ui/Spinner";
 import useResponsiveSizes from "@/utils/helper/general/useResponsiveSizes";
 import useWebsocketTranslation from "@/lib/websocket/useWebsocketTranslation";
-import toast from "react-hot-toast";
-import RejoinEventModal from "./RejoinEventModal";
-import ButtonBlue from "../../_partials/ButtonBlue";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ActionMeta, SingleValue } from "react-select";
@@ -32,6 +16,17 @@ import {
   useFullScreenHandle,
 } from "react-full-screen";
 import { Skeleton } from "@mui/material";
+import { Event } from "@/app/dashboard/liveTranslation/[eventId]/EventGetter";
+import {
+  languageMap,
+  LanguageOption,
+  // languageMap,
+  SupportedLangaugesTranslation,
+} from "@/app/dashboard/manageEvents/_partials/SupportedLanguagesSelect";
+import ErrorSetter from "@/app/dashboard/_partials/ErrorSetter";
+import ButtonRed from "@/app/dashboard/_partials/ButtonRed";
+import RejoinEventModal from "@/app/dashboard/liveTranslation/_partials/RejoinEventModal";
+import ButtonBlue from "@/app/dashboard/_partials/ButtonBlue";
 
 // prettier-ignore
 const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -50,25 +45,18 @@ export default function EventTranslation({
     rejoinEvent,
     startEvent,
     stopEvent,
-    startRecording,
     stopRecording,
     handleTranslationLanguageChange,
-    isLoading,
     message,
     handleScroll,
     chatMessages,
-    error: errorTranslation,
     participantCount,
-    audioDevices,
-    selectedDeviceId,
-    setSelectedDeviceId,
   } = useWebsocketTranslation(event?.createdBy || "", event?.eventCode || "");
   const endDate = new Date(event?.endDate || "");
   const endDateString = `${
     months[endDate.getMonth()]
   } ${endDate.getDate()}, ${endDate.getFullYear()}`;
 
-  const [speakerIcon, setSpeakerIcon] = useState("");
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isOpenRejoinModal, setIsOpenRejoinModal] = useState(false);
   const [isDeletingEvent, setIsDeletingEvent] = useState(false);
@@ -131,10 +119,6 @@ export default function EventTranslation({
     function () {
       if (!event?.eventIsOngoing || event?.status === "ended") return;
       function messageSetter() {
-        // if (message === "websocket-closed" ) {
-        //   stopRecording();
-        //   setSpeakerIcon("play");
-        // }
         if (
           message === "Event has ended" ||
           message === "Event ended. Translations stopped."
@@ -162,20 +146,7 @@ export default function EventTranslation({
     stopRecording();
     setTranslationLanguage((lang) => lang);
     await rejoinEvent();
-    setSpeakerIcon("play");
     setIsOpenRejoinModal(false);
-  }
-  async function handleClickSpeaker() {
-    await startRecording();
-    setTranslationLanguage((lang) => lang);
-    if (errorTranslation) return toast.error(errorTranslation);
-    return setSpeakerIcon("pause");
-  }
-  function handleClickSpeakerPause() {
-    stopRecording();
-    setTranslationLanguage((lang) => lang);
-    if (errorTranslation) return toast.error(errorTranslation);
-    return setSpeakerIcon("play");
   }
 
   function handleChangeFullScreen(
@@ -211,12 +182,7 @@ export default function EventTranslation({
             backgroundColor: `${isShowFullScreen ? "#fff" : "transparent"}`,
           }}
         >
-          <EventController
-            speakerIcon={speakerIcon}
-            handleClickSpeaker={handleClickSpeaker}
-            handleClickSpeakerPause={handleClickSpeakerPause}
-            isLoading={isLoading}
-            error={error}
+          <EventControllerForVistors
             event={event}
             endDateString={endDateString}
             formattedLanguages={formattedLanguages}
@@ -232,19 +198,6 @@ export default function EventTranslation({
           <div className="mt-[10px]">
             <div className="flex justify-end">
               <div className="flex gap-3 items-end ">
-                <select
-                  value={selectedDeviceId}
-                  onChange={(e) => setSelectedDeviceId(e.target.value)}
-                  className="border border-gray-50 bg-gray-50 rounded hover:bg-gray-100 text-[12px] py-1 px-2"
-                >
-                  {audioDevices.map((device) => (
-                    <option key={device.deviceId} value={device.deviceId}>
-                      {(clientWidth as number) <= 620
-                        ? truncateText(device.label || "Unknown Device", 15)
-                        : device.label || "Unknown Device"}
-                    </option>
-                  ))}
-                </select>
                 <>
                   {!isShowFullScreen && (
                     <div
@@ -341,12 +294,7 @@ export default function EventTranslation({
   );
 }
 
-function EventController({
-  speakerIcon,
-  handleClickSpeaker,
-  handleClickSpeakerPause,
-  isLoading,
-  error,
+function EventControllerForVistors({
   event,
   endDateString,
   formattedLanguages,
@@ -358,11 +306,6 @@ function EventController({
   handleDelete,
   participantCount,
 }: {
-  speakerIcon: string;
-  handleClickSpeaker: () => Promise<string | void>;
-  handleClickSpeakerPause: () => string | void;
-  isLoading: boolean;
-  error?: string;
   event?: Event;
   endDateString: string;
   formattedLanguages?: LanguageOption[];
@@ -378,39 +321,20 @@ function EventController({
   participantCount?: number;
 }) {
   const { clientWidth } = useResponsiveSizes();
+  const router = useRouter();
 
   return (
     <div className="flex justify-between items-end max-[915px]:flex-col max-[915px]:items-start max-[915px]:gap-3">
-      <div className="flex gap-3 items-center">
-        <div className="cursor-pointer">
-          {speakerIcon === "" && !isLoading && !error ? (
-            <span onClick={() => handleClickSpeaker()}>
-              <SpeakerIcon />
-            </span>
-          ) : speakerIcon === "pause" && !isLoading && !error ? (
-            <span onClick={() => handleClickSpeakerPause()}>
-              <SpeakerIconPause />
-            </span>
-          ) : isLoading ? (
-            <div className="h-[53px] w-[53px] flex justify-center items-center">
-              <Spinner size={30} color="#024dc4" strokeWidth={3} />
-            </div>
-          ) : (
-            <span onClick={() => handleClickSpeaker()}>
-              <SpeakerIconPlay />
-            </span>
-          )}
-        </div>
-
-        <div className="py-[10px] px-[12px] border border-[#025FF34D] bg-[#E4EFFF] rounded flex gap-2 items-center min-w-[286.23px] max-[470px]:hidden">
-          <Speakermain />
-          <p className="text-[12px] text-[#575757]">
-            {speakerIcon === ""
-              ? "Tap the Mic to start the event translation!"
-              : speakerIcon === "pause"
-              ? "Pause to take a break"
-              : "Play back to continue"}
-          </p>
+      <div>
+        <p className="text-[#676767] text-[12px] mb-1">
+          Supported Languages ({event?.supportedLanguages?.length})
+        </p>
+        <div className="max-w-[300px]">
+          <SupportedLangaugesTranslation
+            options={formattedLanguages}
+            translationLanguage={translationLanguage as LanguageOption}
+            handleTranslationLanguageChange={handleTranslationLanguageChange}
+          />
         </div>
       </div>
       <div className="flex gap-[40px] items-end">
@@ -431,17 +355,6 @@ function EventController({
               {`${dayjs(event?.endTime).format("hh:mma")}`}
             </span>
           </p>
-
-          <p className="text-[#676767] text-[12px] mb-1">
-            Supported Languages ({event?.supportedLanguages?.length})
-          </p>
-          <div className="max-w-[300px]">
-            <SupportedLangaugesTranslation
-              options={formattedLanguages}
-              translationLanguage={translationLanguage as LanguageOption}
-              handleTranslationLanguageChange={handleTranslationLanguageChange}
-            />
-          </div>
         </div>
         <div>
           <h4 className="text-[12px] text-[#7F7F7F] max-[470px]:hidden">
@@ -453,7 +366,7 @@ function EventController({
             )}
           </p>
           <ButtonRed onClick={() => setIsDeleteModalOpen((open) => !open)}>
-            End Event
+            Leave Event
           </ButtonRed>
         </div>
         {isDeleteModalOpen && (
@@ -464,8 +377,7 @@ function EventController({
             <div className="flex flex-col px-[30px] py-[20px] items-center justify-center text-center">
               <h2 className="text-[20px] text-[#000] font-medium">End Event</h2>
               <p className="mt-4 text-[#404040] text-center leading-[1.5]">
-                Are you sure you want to end this event? All translation of this
-                event stops here.
+                Are you sure you want to leave this event?
               </p>
               <div className="mt-7 flex gap-3 items-center w-full">
                 <button
@@ -488,14 +400,9 @@ function EventController({
                     cursor: isDeletingEvent ? "not-allowed" : "pointer",
                     opacity: isDeletingEvent ? "0.5" : "1",
                   }}
-                  onClick={() => handleDelete()}
+                  onClick={() => router.push("/")}
                 >
-                  {isDeletingEvent ? (
-                    <Spinner size={12} color="#fff" strokeWidth={2} />
-                  ) : (
-                    ""
-                  )}
-                  <span>{isDeletingEvent ? "Ending" : "End"}</span>
+                  Leave
                 </button>
               </div>
             </div>

@@ -60,7 +60,7 @@ export default function Home() {
                   </Link>
                 </div>
               </div>
-              <div className="px-[30px] max-w-[1300px] mx-auto rounded-[30px] overflow-hidden max-h-[580px]">
+              <div className="px-[30px] max-w-[1300px] mx-auto rounded-[30px] overflow-hidden max-h-[580px] mb-[40px]">
                 <HeroVideo />
               </div>
             </div>
