@@ -20,7 +20,12 @@ export default function Page() {
 
   return (
     <>
-      <video ref={ref} />
+      <video
+        ref={(instance) => {
+          (ref as React.MutableRefObject<HTMLVideoElement | null>).current =
+            instance;
+        }}
+      />
       <p>
         <span>Last result:</span>
         <span>{result}</span>
