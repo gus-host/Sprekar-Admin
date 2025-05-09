@@ -73,7 +73,7 @@ export default function ScannerPage({
     <div className="fixed inset-0 overflow-hidden">
       {/* 1️⃣ Background video */}
       <video
-        ref={ref}
+        ref={ref as React.Ref<HTMLVideoElement>}
         className="absolute inset-0 w-full h-full object-cover"
         muted
         playsInline
