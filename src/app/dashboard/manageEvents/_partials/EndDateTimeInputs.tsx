@@ -3,16 +3,19 @@
 import * as React from "react";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { TimePicker } from "@mui/x-date-pickers/TimePicker";
+import {
+  DatePicker,
+  TimePicker,
+  MobileDatePicker,
+  MobileTimePicker,
+} from "@mui/x-date-pickers";
 import { Dayjs } from "dayjs";
-import useResponsiveSizes from "@/utils/helper/general/useResponsiveSizes";
+import { useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 interface EndDateTimeSelectorProps {
   dateError?: boolean | string;
   timeError?: boolean | string;
-  dateError2?: boolean | string;
-  timeError2?: boolean | string;
   dateValue?: Dayjs | null;
   timeValue?: Dayjs | null;
   onChangeDate?: (newValue: Dayjs | null) => void;
@@ -23,34 +26,27 @@ interface EndDateTimeSelectorProps {
 export default function EndDateTimeSelector({
   dateError,
   timeError,
-  dateError2,
-  timeError2,
   dateValue,
   timeValue,
   onChangeDate,
   onChangeTime,
   isEdit,
 }: EndDateTimeSelectorProps) {
-  const { clientWidth } = useResponsiveSizes();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
+  const DateComp = isMobile ? MobileDatePicker : DatePicker;
+  const TimeComp = isMobile ? MobileTimePicker : TimePicker;
+
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <div
-        className="flex gap-4"
-        style={{
-          alignItems:
-            clientWidth && clientWidth > 760 && !isEdit
-              ? dateError || timeError || dateError2 || timeError2
-                ? "flex-start"
-                : "flex-end"
-              : "flex-start",
-        }}
-      >
-        {/* Date Picker */}
-        <div className="flex flex-col gap-2">
+      <div className="flex flex-wrap gap-4">
+        {/* End Date */}
+        <div className="flex flex-col gap-2 flex-1 min-w-[200px]">
           <label className="text-gray-700 text-sm font-medium mb-1">
             End <span className="text-red-500">*</span>
           </label>
-          <DatePicker
+          <DateComp
             label="Select Date"
             value={dateValue}
             onChange={onChangeDate}
@@ -60,19 +56,19 @@ export default function EndDateTimeSelector({
                 error: !!dateError,
                 helperText: dateError,
                 sx: {
-                  "& .MuiInputBase-root": { backgroundColor: "#E1E1E1" }, // Apply bg color only to input
+                  "& .MuiInputBase-root": { backgroundColor: "#E1E1E1" },
                 },
               },
             }}
           />
         </div>
 
-        {/* Time Picker */}
-        <div className="flex flex-col gap-2">
+        {/* End Time */}
+        <div className="flex flex-col gap-2 flex-1 min-w-[200px]">
           <label className="text-gray-700 text-sm font-medium mb-1">
             Time <span className="text-red-500">*</span>
           </label>
-          <TimePicker
+          <TimeComp
             label="Select Time"
             value={timeValue}
             onChange={onChangeTime}
@@ -82,7 +78,7 @@ export default function EndDateTimeSelector({
                 error: !!timeError,
                 helperText: timeError,
                 sx: {
-                  "& .MuiInputBase-root": { backgroundColor: "#E1E1E1" }, // Apply bg color only to input
+                  "& .MuiInputBase-root": { backgroundColor: "#E1E1E1" },
                 },
               },
             }}

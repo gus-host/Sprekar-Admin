@@ -2,6 +2,7 @@
 import axios from "axios";
 import { Formik, Form, Field } from "formik";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import toast from "react-hot-toast";
 import * as Yup from "yup";
 
@@ -13,9 +14,11 @@ const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export default function JoinEventForm({ token }: { token: string }) {
   const router = useRouter();
+  const [isJoining, setIsJoining] = useState(false);
 
   async function joinEvent(values: { eventCode: string }) {
     try {
+      setIsJoining(true);
       const response = await fetch(`${BASE_URL}/events/${values.eventCode}`, {
         method: "GET",
         headers: {
@@ -27,10 +30,12 @@ export default function JoinEventForm({ token }: { token: string }) {
 
       const data = await response.json();
       const id = data?.data?.event?.id;
+
       if (!id)
         return toast.error(
           data.message || "Could not join event. Please try again"
         );
+      toast.success("Successfully joined the event!");
       router.push(`/join-event/${id}`); // Adjust if needed
     } catch (err) {
       if (axios.isAxiosError(err)) {
@@ -43,6 +48,8 @@ export default function JoinEventForm({ token }: { token: string }) {
         toast.error("An error occurred!");
         console.log("Unknown Error:", err);
       }
+    } finally {
+      setIsJoining(false);
     }
   }
 
@@ -70,8 +77,13 @@ export default function JoinEventForm({ token }: { token: string }) {
             <button
               type="submit"
               className="absolute right-[-35px] bg-[#0255DA] top-[50%] -translate-1/2 py-[12px] flex justify-center items-center rounded text-white text-[12px] font-semibold px-[20px] cursor-pointer outline-none focus-visible:border-none"
+              style={{
+                cursor: isJoining ? "not-allowed" : "pointer",
+                opacity: isJoining ? "0.5" : "1",
+              }}
+              disabled={isJoining}
             >
-              <span className="">Join now</span>
+              <span className="">{isJoining ? "Joining..." : "Join now"}</span>
             </button>
           </Form>
           <>

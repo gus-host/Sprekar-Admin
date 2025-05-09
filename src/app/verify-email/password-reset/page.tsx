@@ -1,14 +1,18 @@
 import AuthLayout from "@/app/_partials/_layout/AuthLayout";
 import VerifyEmail from "../_partials/VerifyEmailPasswordReset";
+import { Suspense } from "react";
+import Loader from "@/app/_partials/Loader";
 
 export const metadata = {
-  title: "Verify Email - Password Reset"
-}
+  title: "Verify Email - Password Reset",
+};
 
 export default function page() {
   return (
     <AuthLayout>
-      <VerifyEmail />
+      <Suspense fallback={<Loader />}>
+        <VerifyEmail />
+      </Suspense>
     </AuthLayout>
   );
 }
