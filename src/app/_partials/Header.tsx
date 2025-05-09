@@ -67,7 +67,7 @@ function NavLinks() {
         </NavLinkHomeLayout>
       </li>
       <li>
-        <NavLinkHomeLayout className={"hover:opacity-[100]"} href="#">
+        <NavLinkHomeLayout className={"hover:opacity-[100]"} href="/dashboard">
           Host an event
         </NavLinkHomeLayout>
       </li>
