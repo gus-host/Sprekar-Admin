@@ -1,5 +1,3 @@
-// "use client";
-
 import { Suspense } from "react";
 import Spinner from "@/components/ui/Spinner";
 import { unstable_noStore as noStore } from "next/cache";
