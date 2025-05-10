@@ -1,3 +1,5 @@
+// "use client";
+
 import { Suspense } from "react";
 import Spinner from "@/components/ui/Spinner";
 import { unstable_noStore as noStore } from "next/cache";
@@ -32,8 +34,7 @@ export default async function EventGetter({ id }: { id: string }) {
 
   // Ensure token is defined
   const token = VISITOR_TOKEN;
-  console.log("VISITOR_ACCESS_TOKEN =", process.env.VISITOR_ACCESS_TOKEN);
-  console.log("BASE_URL =", process.env.BASE_URL);
+
   if (!token) {
     console.error("Visitor token is missing");
     return notFound();
@@ -53,8 +54,6 @@ export default async function EventGetter({ id }: { id: string }) {
       },
       cache: "no-store",
     });
-
-    console.log(response.ok, "response>>>>>>>>>>>>>>>>");
 
     if (!response.ok) {
       console.error("Fetch failed with status:", response.status);
