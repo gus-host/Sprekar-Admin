@@ -32,6 +32,7 @@ export default async function EventGetter({ id }: { id: string }) {
 
   // Ensure token is defined
   const token = VISITOR_TOKEN;
+
   if (!token) {
     console.error("Visitor token is missing");
     return notFound();
