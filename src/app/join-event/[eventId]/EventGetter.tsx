@@ -52,6 +52,8 @@ export default async function EventGetter({ id }: { id: string }) {
       cache: "no-store",
     });
 
+    console.log(response.ok, "response>>>>>>>>>>>>>>>>");
+
     if (!response.ok) {
       console.error("Fetch failed with status:", response.status);
       return notFound();
