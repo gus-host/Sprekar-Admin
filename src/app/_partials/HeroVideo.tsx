@@ -37,23 +37,16 @@ export default function HeroVideo() {
           width: "100%",
           marginTop: "60px",
           marginBottom: "20px",
+          maxHeight: "580px",
         }}
       >
-        <ReactPlayer
-          url="/videos/heroVideo.mp4"
-          style={{
-            width: "100%",
-            position: "relative",
-            borderRadius: "10px",
-            overflow: "hidden",
-            maxHeight: "500px",
-          }}
-          width="100%"
-          height={"auto"}
-          loop={true}
-          // controls={true}
-          playing={true}
-          muted={true}
+        <video
+          src="/videos/heroVideo.mp4"
+          muted
+          loop
+          autoPlay
+          playsInline
+          style={{ width: "100%", borderRadius: 10 }}
         />
       </div>
     </>

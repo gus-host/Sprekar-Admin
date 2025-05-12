@@ -176,12 +176,6 @@ export default function CreateEventForm() {
               timeError={
                 eventFormIk.submitCount > 0 && eventFormIk.errors.startTime
               }
-              dateError2={
-                eventFormIk.submitCount > 0 && eventFormIk.errors.endDate
-              }
-              timeError2={
-                eventFormIk.submitCount > 0 && eventFormIk.errors.endTime
-              }
               dateValue={eventFormIk.values.startDate}
               timeValue={eventFormIk.values.startTime}
               onChangeDate={(newValue) =>
@@ -197,12 +191,6 @@ export default function CreateEventForm() {
               }
               timeError={
                 eventFormIk.submitCount > 0 && eventFormIk.errors.endTime
-              }
-              dateError2={
-                eventFormIk.submitCount > 0 && eventFormIk.errors.startDate
-              }
-              timeError2={
-                eventFormIk.submitCount > 0 && eventFormIk.errors.startTime
               }
               dateValue={eventFormIk.values.endDate}
               timeValue={eventFormIk.values.endTime}

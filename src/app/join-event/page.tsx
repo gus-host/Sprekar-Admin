@@ -1,22 +1,7 @@
-import HomePageLayout from "../_partials/_layout/HomePageLayout";
+import React from "react";
+import ScannerComponent from "./_partials/ScannerComponent";
+const VISITOR_TOKEN = process.env.VISITOR_ACCESS_TOKEN;
 
-export const metadata = {
-  title: "Join Event",
-};
 export default function page() {
-  return (
-    <HomePageLayout>
-      <div>
-        <h1>Join a Live Event Instantly!</h1>
-        <p>
-          No signup needed. Just scan the QR code or enter the event code to
-          join.
-        </p>
-        <div>
-          <input type="text" />
-          <button type="submit">Join now</button>
-        </div>
-      </div>
-    </HomePageLayout>
-  );
+  return <ScannerComponent token={VISITOR_TOKEN as string} />;
 }
