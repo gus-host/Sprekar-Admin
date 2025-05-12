@@ -83,8 +83,7 @@ export default function useWebsocketTranslation(
     setLoadingMore(true);
     try {
       const response = await fetch(
-        `${restApi}/conversations/${eventCode}?page=$
-{currentPage + 1}&limit=10`
+        `${restApi}/conversations/${eventCode}?page=${currentPage + 1}&limit=10`
       );
       if (!response.ok) {
         console.error("Error loading older messages", response.statusText);
@@ -294,7 +293,7 @@ export default function useWebsocketTranslation(
               JSON.stringify({
                 type: "join",
                 eventCode,
-                language: translationLanguage?.value || "AR",
+                language: translationLanguage?.value || "EN_GB",
                 participantId,
                 conversationPage: 1,
                 conversationLimit: 10,
@@ -313,7 +312,7 @@ export default function useWebsocketTranslation(
     const messageObj = {
       type: "join",
       eventCode,
-      language: translationLanguage?.value || "AR",
+      language: translationLanguage?.value || "EN_GB",
       participantId,
       conversationPage: 1,
       conversationLimit: 10,
@@ -330,7 +329,7 @@ export default function useWebsocketTranslation(
       JSON.stringify({
         type: "join",
         eventCode,
-        language: translationLanguage?.value || "AR",
+        language: translationLanguage?.value || "EN_GB",
         participantId,
         conversationPage: 1,
         conversationLimit: 10,
@@ -412,7 +411,7 @@ export default function useWebsocketTranslation(
     if (isEventStarted || hasJoinedEvent) {
       const msg = {
         type: "change-language",
-        language: option?.value || "AR",
+        language: option?.value || "EN_GB",
         participantId,
         eventCode,
       };

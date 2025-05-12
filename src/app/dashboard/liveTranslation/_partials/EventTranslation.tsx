@@ -93,7 +93,7 @@ export default function EventTranslation({
     if (chatEndRef.current) {
       chatEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
-  }, [chatMessages]);
+  }, [chatMessages, event?.eventIsOngoing, event?.status]);
 
   useEffect(function () {
     if (!event?.eventIsOngoing || event?.status === "ended") return;
