@@ -4,8 +4,6 @@ import React, { useState, useMemo, useRef } from "react";
 import Link from "next/link";
 import dayjs from "dayjs";
 import { useRouter } from "next/navigation";
-import toast from "react-hot-toast";
-import axios from "axios";
 import {
   useReactTable,
   ColumnDef,
@@ -21,15 +19,13 @@ import classNames from "classnames";
 import dynamic from "next/dynamic";
 import { SingleValue } from "react-select";
 
-import ModalMUI from "@/components/ModalMUI";
-import Spinner from "@/components/ui/Spinner";
-
 import EditIcon from "@/app/_svgs/EditIcon";
 import DeleteIcon from "@/app/_svgs/DeleteIcon";
 import StartIcon from "@/app/_svgs/StartIcon";
-import DeleteIconRed from "@/app/_svgs/DeleteIconRed";
 
 import SearchIcon from "@/app/_svgs/SearchIcon";
+import useDeleteEventHook from "./useDeleteEventHook";
+import DeleteEventModalTable from "./DeleteEventModalTable";
 
 // The server's event shape
 interface ServerEvent {
@@ -41,7 +37,7 @@ interface ServerEvent {
 }
 
 // The shape we use in the table
-interface EventData {
+export interface EventData {
   id: string;
   name: string;
   date: string;
@@ -106,9 +102,28 @@ export default function EventsTable({ events, error }: EventsTableProps) {
   }
 
   // 5) Row selection, filters, etc.
-  const [selectedRows, setSelectedRows] = useState<string[]>([]);
+  const [selectedRowsId, setSelectedRowsId] = useState<string[]>([]);
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
+
+  const [selectedRow, setSelectedRow] = useState<EventData | null>(null);
+  const router = useRouter();
+  console.log(selectedRowsId);
+
+  const actionIcons = [
+    {
+      icon: <EditIcon />,
+      text: "Edit",
+    },
+    {
+      icon: <DeleteIcon />,
+      text: "Delete",
+    },
+    {
+      icon: <StartIcon />,
+      text: "Start Live",
+    },
+  ];
 
   // 6) Define columns
   const columns = useMemo<ColumnDef<EventData>[]>(
@@ -120,8 +135,8 @@ export default function EventsTable({ events, error }: EventsTableProps) {
           <input
             type="checkbox"
             className="row-checkbox"
-            checked={selectedRows.includes(row.original.id)}
-            onChange={() => handleSelectRow(row.original.id)}
+            checked={selectedRowsId.includes(row.original.id)}
+            onChange={() => handleSelectRow(row.original.id, row.original)}
           />
         ),
       },
@@ -161,7 +176,7 @@ export default function EventsTable({ events, error }: EventsTableProps) {
         ),
       },
     ],
-    [selectedRows]
+    [selectedRowsId]
   );
 
   // 7) Build the table
@@ -174,10 +189,12 @@ export default function EventsTable({ events, error }: EventsTableProps) {
   });
 
   // 8) Row selection toggling
-  function handleSelectRow(id: string) {
-    setSelectedRows((prev) =>
-      prev.includes(id) ? prev.filter((rowId) => rowId !== id) : [...prev, id]
+  function handleSelectRow(id: string, row?: EventData) {
+    setSelectedRowsId((prev) =>
+      prev.includes(id) ? prev.filter((rowId) => rowId !== id) : [id]
     );
+    if (!row || !selectedRowsId[0]) return;
+    setSelectedRow(row);
   }
 
   // 9) Drag & drop reorder
@@ -206,11 +223,28 @@ export default function EventsTable({ events, error }: EventsTableProps) {
     setStatusFilter(typedSelected?.value || null);
   };
 
+  const {
+    isDeleteModalOpen,
+    isDeletingEvent,
+    handleDelete,
+    setIsDeleteModalOpen,
+  } = useDeleteEventHook(selectedRow as EventData, setData, selectedRowsId[0]);
+
+  function handleActions(i: number) {
+    if (i === 0)
+      router.push(`/dashboard/manageEvents/${selectedRowsId?.at(0)}`);
+    if (i === 1) setIsDeleteModalOpen((open) => !open);
+    if (i === 2)
+      router.push(
+        `/dashboard/liveTranslation?eventId=${selectedRowsId?.at(0)}`
+      );
+  }
+
   return (
     <DndProvider backend={HTML5Backend}>
       <div className="max-w-7xl mx-auto py-6 space-y-4 w-full">
         {/* Filters & Create button always visible */}
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-8">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-2">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
             <div className="text-gray-600 font-medium">Filter by</div>
             <ReactSelect
@@ -243,6 +277,30 @@ export default function EventsTable({ events, error }: EventsTableProps) {
             Create event
           </Link>
         </div>
+        {selectedRowsId?.at(0) && (
+          <>
+            <div className="flex gap-3 items-center mb-8 flex-wrap">
+              {actionIcons.map((detail, i) => (
+                <span
+                  key={i}
+                  className="flex items-center gap-2 text-gray-600 font-semibold px-2 py-1 hover:bg-gray-100 cursor-pointer text-[14px] rounded"
+                  onClick={() => handleActions(i)}
+                >
+                  {detail.icon}
+                  <span>{detail.text}</span>
+                </span>
+              ))}
+            </div>
+            {isDeleteModalOpen && (
+              <DeleteEventModalTable
+                isDeleteModalOpen={isDeleteModalOpen}
+                isDeletingEvent={isDeletingEvent}
+                setIsDeleteModalOpen={setIsDeleteModalOpen}
+                handleDelete={handleDelete}
+              />
+            )}
+          </>
+        )}
 
         <div className="overflow-x-auto w-full mt-5">
           {/* If there's a serverError, show it instead of the table */}
@@ -302,7 +360,7 @@ export default function EventsTable({ events, error }: EventsTableProps) {
                     row={row}
                     index={index}
                     moveRow={moveRow}
-                    selected={selectedRows.includes(row.original.id)}
+                    selected={selectedRowsId.includes(row.original.id)}
                     onSelect={() => handleSelectRow(row.original.id)}
                     id={data[index].id}
                   />
@@ -324,32 +382,12 @@ function ActionsDropdown({
   row: EventData;
   setData: React.Dispatch<React.SetStateAction<EventData[]>>;
 }) {
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [isDeletingEvent, setIsDeletingEvent] = useState(false);
-  async function handleDelete() {
-    try {
-      setIsDeletingEvent(true);
-      const response = await axios.delete(
-        `/api/event/delete-event?id=${row.id}`,
-
-        { withCredentials: true }
-      );
-      if (response.status === 201 || response.status === 200) {
-        console.log(response.data);
-        toast.success("Event deleted successfully");
-        setData((data) => data.filter((d) => d.id !== row.id));
-        setIsDeleteModalOpen((open) => !open);
-      } else {
-        toast.error("An error occured, couldnot delete event");
-      }
-    } catch (error) {
-      if (axios.isAxiosError(error))
-        toast.error(error?.response?.data?.message || "An error occured.");
-      if (error instanceof Error) console.log(error);
-    } finally {
-      setIsDeletingEvent(false);
-    }
-  }
+  const {
+    isDeleteModalOpen,
+    isDeletingEvent,
+    handleDelete,
+    setIsDeleteModalOpen,
+  } = useDeleteEventHook(row, setData);
 
   const router = useRouter();
   return (
@@ -395,49 +433,12 @@ function ActionsDropdown({
         </DropdownMenu.Portal>
       </DropdownMenu.Root>
       {isDeleteModalOpen && (
-        <ModalMUI
-          isModalOpen={isDeleteModalOpen}
-          setIsModalOpen={setIsDeleteModalOpen}
-        >
-          <div className="flex flex-col px-[30px] py-[20px] items-center justify-center text-center">
-            <DeleteIconRed />
-            <p className="mt-4 text-center leading-[1.5]">
-              Are you sure you want to delete this event? This action cannot be
-              undone.
-            </p>
-            <div className="mt-7 flex gap-3 items-center w-full">
-              <button
-                type="button"
-                className="focus-visible:outline-none px-3 py-2 bg-white border border-[#858585] text-[14px] rounded-sm hover:bg-gray-100flex justify-center items-center w-full"
-                disabled={isDeletingEvent}
-                style={{
-                  cursor: isDeletingEvent ? "not-allowed" : "pointer",
-                }}
-                onClick={() => setIsDeleteModalOpen((open) => !open)}
-              >
-                Cancel
-              </button>
-              <button
-                type="button"
-                className="focus:border-none focus-visible:outline-none px-3 py-2 text-[14px] text-white bg-[#FF0000] font-bold tracking-[-1px] rounded-sm hover:bg-[#e60000] flex justify-center items-center gap-3 w-full"
-                style={{
-                  fontFamily: "Helvetica Compressed, sans-serif",
-                  boxShadow: "0px 0px 6.4px 4px #FF000033",
-                  cursor: isDeletingEvent ? "not-allowed" : "pointer",
-                  opacity: isDeletingEvent ? "0.5" : "1",
-                }}
-                onClick={() => handleDelete()}
-              >
-                {isDeletingEvent ? (
-                  <Spinner size={12} color="#fff" strokeWidth={2} />
-                ) : (
-                  ""
-                )}
-                <span>{isDeletingEvent ? "Deleting" : "Delete"}</span>
-              </button>
-            </div>
-          </div>
-        </ModalMUI>
+        <DeleteEventModalTable
+          isDeleteModalOpen={isDeleteModalOpen}
+          isDeletingEvent={isDeletingEvent}
+          setIsDeleteModalOpen={setIsDeleteModalOpen}
+          handleDelete={handleDelete}
+        />
       )}
     </>
   );
