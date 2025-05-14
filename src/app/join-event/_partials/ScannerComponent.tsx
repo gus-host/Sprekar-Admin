@@ -15,6 +15,7 @@ import GooglePlayHome from "@/app/_svgs/GooglePlayHome";
 import AppleHome from "@/app/_svgs/AppleHome";
 import JoinEventForm from "./JoinEventForm";
 import ScannerPage from "./ScannerPage";
+import useResponsiveSizes from "@/utils/helper/general/useResponsiveSizes";
 
 export type Anchor = "right";
 
@@ -22,6 +23,8 @@ export default function ScannerComponent({ token }: { token: string }) {
   const [state, setState] = useState({
     right: false,
   });
+
+  const { clientWidth } = useResponsiveSizes();
 
   const toggleDrawer =
     (anchor: Anchor, open: boolean) =>
@@ -123,14 +126,16 @@ export default function ScannerComponent({ token }: { token: string }) {
               />
             </div>
           </HomePageLayout>
-          <SwipeableDrawer
-            anchor={anchor}
-            open={state[anchor]}
-            onClose={toggleDrawer(anchor, false)}
-            onOpen={toggleDrawer(anchor, true)}
-          >
-            {list(anchor)}
-          </SwipeableDrawer>
+          {(clientWidth as number) < 675 && (
+            <SwipeableDrawer
+              anchor={anchor}
+              open={state[anchor]}
+              onClose={toggleDrawer(anchor, false)}
+              onOpen={toggleDrawer(anchor, true)}
+            >
+              {list(anchor)}
+            </SwipeableDrawer>
+          )}
         </React.Fragment>
       ))}
     </div>
