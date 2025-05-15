@@ -2,7 +2,6 @@
 "use client";
 
 import React, { useState } from "react";
-import { Download, Share2, Play } from "lucide-react";
 import {
   languageMap,
   LanguageOption,
@@ -15,6 +14,12 @@ import USA from "@/app/_svgs/USA";
 import SPAIN from "@/app/_svgs/SPAIN";
 import ChevronDownFull from "@/app/_svgs/ChevronDownFull";
 import Link from "next/link";
+import CopyIcon from "@/app/_svgs/CopyIcon";
+import SummaryIcon from "@/app/_svgs/SummaryIcon";
+import DownloadIcon2 from "@/app/_svgs/DownloadIcon2";
+import PlayIcon from "@/app/_svgs/PlayIcon";
+import Audiowaves from "@/assets/Audiowaves.png";
+import Image from "next/image";
 
 // Simple hover tooltip wrapper
 function HoverIcon({
@@ -25,7 +30,7 @@ function HoverIcon({
   label: string;
 }) {
   return (
-    <div className="relative group inline-block">
+    <div className="relative group inline-block cursor-pointer">
       <Icon className="w-5 h-5 text-gray-600 hover:text-gray-800 cursor-pointer" />
       <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 whitespace-nowrap">
         {label}
@@ -58,9 +63,9 @@ export default function PastTranslationDetails() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto p-6 space-y-8">
+    <div className="w-full mx-auto py-6 space-y-12 max-[790px]:pt-0">
       {/* Header: Title, Date, Languages, Stats, Actions, Audio */}
-      <div className="flex gap-6 items-end w-full">
+      <div className="flex gap-8 items-end w-full mb-[60px] max-[790px]:flex-col max-[790px]:items-start">
         {/* Left: Title & Date */}
         <div className="">
           <h1 className="text-[18px] text-[#323232] mb-3">
@@ -71,7 +76,7 @@ export default function PastTranslationDetails() {
             2025 - 08:00am
           </p>
           <div>
-            <p className="text-[#676767] text-[14px] mb-1">
+            <p className="text-[#676767] text-[14px] mb-1 mt-5">
               Supported Languages
             </p>
             <div className="max-w-[300px]">
@@ -87,16 +92,16 @@ export default function PastTranslationDetails() {
         </div>
 
         {/* Right: Stats and controls */}
-        <div className="justify-between flex grow-1 items-end">
+        <div className="justify-between flex grow-1 items-end mb-2 max-[790px]:w-full max-[790px]:gap-5 max-[515px]:gap-7 max-[515px]:justify-start ">
           <div>
             {/* Attendees */}
-            <div className="">
-              <p className="text-sm text-gray-600 mb-3">
+            <div className="mb-4">
+              <p className="text-sm text-gray-600 mb-1 max-[790px]:hidden">
                 Total attendees connected:
               </p>
               <span className="text-2xl font-semibold text-[#323232]">325</span>
               <Link
-                href={"/"}
+                href={"/dashboard/attendeeManagement"}
                 className="text-[12px] text-blue-600 hover:font-medium pl-2"
               >
                 View attendees
@@ -104,7 +109,7 @@ export default function PastTranslationDetails() {
             </div>
 
             {/* Language selection / flags / icons */}
-            <div className="flex items-end">
+            <div className="flex items-center">
               {/* Supported Languages Dropdown */}
 
               {/* Flags & language pair with dropdown arrow */}
@@ -115,7 +120,7 @@ export default function PastTranslationDetails() {
                 <div className="rounded-full overflow-hidden ml-2 mr-4">
                   <SPAIN />
                 </div>
-                <span className="text-[12px] text-[#808080]">
+                <span className="text-[12px] text-[#808080] max-[940px]:hidden">
                   English (USA)-Spanish (Spain)
                 </span>
                 <span className="ml-1">
@@ -124,23 +129,23 @@ export default function PastTranslationDetails() {
               </div>
 
               {/* Action Icons */}
-              <div className="flex items-center space-x-4 ml-4">
-                <HoverIcon icon={Share2} label="Share" />
-                <HoverIcon icon={Share2} label="Summarize" />
-                <HoverIcon icon={Download} label="Download" />
+              <div className="flex items-center gap-2 ml-4">
+                <HoverIcon icon={CopyIcon} label="Share" />
+                <HoverIcon icon={SummaryIcon} label="Summarize" />
+                <HoverIcon icon={DownloadIcon2} label="Download" />
               </div>
             </div>
           </div>
 
           {/* Audio Player */}
           <div className="flex items-center space-x-4">
-            <button className="p-2 bg-blue-600 rounded-full text-white hover:bg-blue-700 focus:outline-none">
-              <Play className="w-5 h-5" />
-            </button>
-            <div className="flex-1 h-8 bg-gray-200 rounded overflow-hidden">
-              <div className="h-full bg-blue-600" style={{ width: "40%" }} />
+            <PlayIcon />
+            <div className="w-[150px] max-[515px]:hidden">
+              <Image src={Audiowaves} alt="Audio waves" className="w-full" />
             </div>
-            <span className="text-sm text-gray-600">04:03:09</span>
+            <span className="text-sm text-gray-600 max-[515px]:hidden">
+              04:03:09
+            </span>
           </div>
         </div>
       </div>
@@ -150,7 +155,8 @@ export default function PastTranslationDetails() {
         {transcriptBlocks.map((text, idx) => (
           <div
             key={idx}
-            className="bg-white rounded-lg shadow border border-gray-100 p-4 text-sm text-gray-800"
+            className="bg-white rounded-lg shadow border-gray-100 p-4 text-sm text-[#5E5D5D] max-w-[800px]"
+            style={{ boxShadow: "0px 7px 20.8px 0px #0000000D" }}
           >
             <p className="whitespace-pre-line leading-relaxed">{text}</p>
           </div>

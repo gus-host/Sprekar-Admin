@@ -1,4 +1,4 @@
-// components/EventsTable.tsx
+// components/PastTranslations.tsx
 "use client";
 
 import React, { useState } from "react";
@@ -121,24 +121,18 @@ export default function PastTranslations() {
         {/* Ensure the table is at least as wide as its content */}
         <div className="min-w-[600px]">
           <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="border-b border-gray-300">
+            <thead className="text-[14px]">
+              <tr className="border-b border-b-[#000000] border-gray-300 text-[#323232]">
                 <th className="px-4 py-2">
                   <input type="checkbox" />
                 </th>
-                <th className="px-4 py-2 font-medium text-gray-700">
-                  Event Name
-                </th>
-                <th className="px-4 py-2 font-medium text-gray-700">
-                  Date &amp; Time
-                </th>
-                <th className="px-4 py-2 font-medium text-gray-700">
-                  Number of attendees
-                </th>
-                <th className="px-4 py-2 font-medium text-gray-700">Actions</th>
+                <th className="px-4 py-2 font-medium">Event Name</th>
+                <th className="px-4 py-2 font-medium">Date &amp; Time</th>
+                <th className="px-4 py-2 font-medium">Number of attendees</th>
+                <th className="px-4 py-2 font-medium">Actions</th>
               </tr>
             </thead>
-            <tbody className="text-[14px]">
+            <tbody className="text-[14px] text-[#6F6F6F]">
               {data.map((row, idx) => (
                 <tr
                   key={row.id}

@@ -5,7 +5,6 @@ import bgImg from "@/../public/bgImg.png";
 import Link from "next/link";
 import Button from "@mui/material/Button";
 
-import Box from "@mui/material/Box";
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 import React, { useState } from "react";
 import HomePageLayout from "@/app/_partials/_layout/HomePageLayout";

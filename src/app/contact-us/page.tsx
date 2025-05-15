@@ -14,7 +14,7 @@ import axios from "axios";
 import { useState } from "react";
 import toast from "react-hot-toast";
 
-export default function page() {
+export default function Page() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const formik = useFormik({
     validationSchema: validationSchema,
