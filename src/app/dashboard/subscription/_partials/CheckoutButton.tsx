@@ -2,13 +2,17 @@
 
 import { cn } from "@/lib/utils";
 import axios from "axios";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
 
-export default function CheckoutButton({ priceId }: { priceId: string }) {
+export default function CheckoutButton({
+  priceId,
+  text,
+}: {
+  priceId: string;
+  text?: string;
+}) {
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
   const handleClick = async () => {
     try {
       setLoading(true);
@@ -24,7 +28,8 @@ export default function CheckoutButton({ priceId }: { priceId: string }) {
         // setIsSuccessModalOpen((open) => !open);
         console.log(response.data.data.data);
         if (response.data.data.data?.url) {
-          router.push(response.data.data.data?.url);
+          window.open(response.data.data.data?.url, "_blank");
+          // router.replace();
         }
       } else {
         toast.error(response.data.data.message || "An error occured");
@@ -51,7 +56,7 @@ export default function CheckoutButton({ priceId }: { priceId: string }) {
         loading ? "opacity-50" : "opacity-100"
       )}
     >
-      {loading ? "Redirecting..." : "Subscribe"}
+      {loading ? "Redirecting..." : text || "Subscribe"}
     </button>
   );
 }

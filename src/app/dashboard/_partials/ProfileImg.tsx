@@ -10,15 +10,16 @@ interface User {
   lastName?: string;
 }
 
-export default function ProfileImg({ user }: { user: User }) {
-  const svg = `
-  <svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <circle cx="50" cy="50" r="50" fill="#025FF321"/>
-    <circle cx="50" cy="40" r="12" fill="#0827F6"/>
-    <path d="M30 75 C30 65, 70 65, 70 75 C70 82, 30 82, 30 75 Z" fill="#0827F6"/>
-  </svg>
+const svg = `
+<svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="50" cy="50" r="50" fill="#025FF321"/>
+  <circle cx="50" cy="40" r="12" fill="#0827F6"/>
+  <path d="M30 75 C30 65, 70 65, 70 75 C70 82, 30 82, 30 75 Z" fill="#0827F6"/>
+</svg>
 `;
-  const encodedSvg = encodeURIComponent(svg);
+export const encodedSvg = encodeURIComponent(svg);
+
+export default function ProfileImg({ user }: { user: User }) {
   return (
     <Suspense fallback={<Skeleton variant="circular" width={28} height={28} />}>
       <>

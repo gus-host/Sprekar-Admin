@@ -1,11 +1,6 @@
 import SprekarLogo from "@/app/_svgs/SprekarLogo";
 import SprekarLogoHome from "../_svgs/SprekarLogoHome";
-import { Roboto_Serif } from "next/font/google";
-
-const robotoSerif = Roboto_Serif({
-  subsets: ["latin"],
-  display: "swap",
-});
+import { robotoSerif } from "./fontFamilies";
 
 export default function Logo({
   color = "font-black",

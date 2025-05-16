@@ -2,7 +2,6 @@
 
 import ActiveCheckedSub from "@/app/_svgs/ActiveCheckedSub";
 import UncheckedSub from "@/app/_svgs/UncheckedSub";
-// import { cn } from "@/lib/utils";
 import React from "react";
 import { useState } from "react";
 
