@@ -177,16 +177,8 @@ export default function Subscription({ priceId }: { priceId: string }) {
           <div className="flex flex-col px-[30px] py-[20px] items-center justify-center text-center">
             <FailedIcon />
             <p className="mt-4 text-center">Subscription failed</p>
-            <button
-              type="button"
-              className="focus:border-none focus-visible:outline-none px-3 py-2 text-[14px] text-white bg-[#025FF3] font-bold tracking-[-1px] rounded-sm flex justify-center items-center gap-2 w-full mt-7 cursor-pointer"
-              style={{
-                fontFamily: "Helvetica Compressed, sans-serif",
-                boxShadow: "0px 0px 6.4px 4px #0255DA57",
-              }}
-            >
-              <CheckoutButton priceId={priceId} text="Retry" />
-            </button>
+
+            <CheckoutButton priceId={priceId} text="Retry" />
           </div>
         </ModalMUI>
       )}

@@ -52,9 +52,15 @@ export default function CheckoutButton({
       disabled={loading}
       onClick={handleClick}
       className={cn(
-        "px-2 py-1 bg-[#025FF3] text-white rounded text-[14px] cursor-pointer",
+        text
+          ? "focus:border-none focus-visible:outline-none px-3 py-2 text-[14px] text-white bg-[#025FF3] font-bold tracking-[-1px] rounded-sm flex justify-center items-center gap-2 w-full mt-7 cursor-pointer"
+          : "px-2 py-1 bg-[#025FF3] text-white rounded text-[14px] cursor-pointer",
         loading ? "opacity-50" : "opacity-100"
       )}
+      style={{
+        fontFamily: text ? "Helvetica Compressed, sans-serif" : "",
+        boxShadow: text ? "0px 0px 6.4px 4px #0255DA57" : "",
+      }}
     >
       {loading ? "Redirecting..." : text || "Subscribe"}
     </button>
