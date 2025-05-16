@@ -43,7 +43,7 @@ export default function Sidebar() {
             <PastIcon /> <span>Past Translations</span>
           </NavLink>
           <NavLink
-            href={"/dashboard/attendeeMangement"}
+            href={"/dashboard/attendeeManagement"}
             className="flex items-center gap-[10px] hover:opacity-[100]"
           >
             <PeopleIcon /> <span>Attendee Management </span>

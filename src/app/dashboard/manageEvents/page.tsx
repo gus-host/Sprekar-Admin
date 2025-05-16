@@ -2,6 +2,8 @@ import EventsGetter from "./_partials/EventsGetter";
 
 export const metadata = {
   title: "Manage Event",
+  description:
+    "View and edit the primary details of your events including date, title and time",
 };
 
 export default async function Page() {
