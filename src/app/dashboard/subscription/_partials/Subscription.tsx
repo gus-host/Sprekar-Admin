@@ -184,7 +184,6 @@ export default function Subscription({ priceId }: { priceId: string }) {
                 fontFamily: "Helvetica Compressed, sans-serif",
                 boxShadow: "0px 0px 6.4px 4px #0255DA57",
               }}
-              onClick={() => router.push("/dashboard")}
             >
               <CheckoutButton priceId={priceId} text="Retry" />
             </button>
