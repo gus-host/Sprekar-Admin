@@ -29,13 +29,6 @@ export default function RootLayout({
   return (
     <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID as string}>
       <html lang="en">
-        <head>
-          <meta
-            name="google-site-verification"
-            content="p38Suhq8BedpYPBwD5WIf8IQl52vNcV5ajP2VzmFmy4"
-          />
-        </head>
-
         <body className={`${openSans.className} bg-[#FCFCFC]`}>
           <>
             <Toaster position="top-right" />
