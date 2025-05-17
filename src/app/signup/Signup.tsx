@@ -13,10 +13,10 @@ import Button from "@/components/Button";
 import AuthButton from "../_partials/AuthButton";
 import { signupValidationSchema } from "./signupValidationSchema";
 
-import {
-  setRefreshTokenCookie,
-  setUserTokenCookie,
-} from "@/utils/helper/auth/cookieUtility";
+// import {
+//   setRefreshTokenCookie,
+//   setUserTokenCookie,
+// } from "@/utils/helper/auth/cookieUtility";
 import { handleAxiosError } from "@/utils/helper/general/errorHandler";
 
 export default function Signup() {
@@ -65,13 +65,13 @@ export default function Signup() {
       });
 
       if (response.status === 201 || response.status === 200) {
-        const accessToken = response?.data?.data?.tokens?.access?.token || "";
-        const refreshToken = response?.data?.data?.tokens?.refresh;
+        // const accessToken = response?.data?.data?.tokens?.access?.token || "";
+        // const refreshToken = response?.data?.data?.tokens?.refresh;
 
-        if (accessToken) {
-          setUserTokenCookie(accessToken);
-          setRefreshTokenCookie(refreshToken);
-        }
+        // if (accessToken) {
+        //   setUserTokenCookie(accessToken);
+        //   setRefreshTokenCookie(refreshToken);
+        // }
         toast.success(response?.data?.message || "Login Successful");
         router.push("/dashboard");
       } else {

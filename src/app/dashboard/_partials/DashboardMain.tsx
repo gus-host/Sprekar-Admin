@@ -5,7 +5,16 @@ import { useWindowSize } from "react-use";
 import MobileSidebar from "./MobileSidebar";
 import ChevronLeftRounded from "@/app/_svgs/ChevronLeftRounded";
 
-export default function DashboardMain({ children }: { children: ReactNode }) {
+export default function DashboardMain({
+  plan,
+  error,
+  children,
+}: {
+  plan: "free" | "monthly pro" | "none" | undefined;
+  error: string;
+
+  children: ReactNode;
+}) {
   const [isShowNav, setIsShowNav] = useState(true);
   const { height, width } = useWindowSize();
   const [clientHeight, setClientHeight] = useState<number | null>(null);
@@ -31,6 +40,8 @@ export default function DashboardMain({ children }: { children: ReactNode }) {
             classNames={`${
               isShowNav ? "translate-x-[-100%]" : "translate-x-[0]"
             }`}
+            plan={plan}
+            error={error}
           />
         )}
 

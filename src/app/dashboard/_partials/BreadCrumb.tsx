@@ -9,17 +9,18 @@ import SeperatorNext from "@/app/_svgs/SeperatorNext";
 export default function BreadCrumb({
   links,
   active,
+  href,
 }: {
   links: string[];
   active: string;
+  href: string[];
 }) {
   const l = links.map((link, i) => (
     <Link
-      underline="hover"
       key={i}
       color="inherit"
-      href="/dashboard/manageEvents"
-      sx={{ fontSize: "14px" }}
+      href={href[i]}
+      sx={{ fontSize: "14px", textDecoration: "none" }}
     >
       {link}
     </Link>

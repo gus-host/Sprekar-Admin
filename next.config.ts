@@ -11,6 +11,17 @@ const nextConfig: NextConfig = {
   env: {
     VISITOR_ACCESS_TOKEN: process.env.VISITOR_ACCESS_TOKEN,
     NEXT_PUBLIC_API_BASE_URL: process.env.NEXT_PUBLIC_API_BASE_URL,
+    PRICEID: process.env.PRICEID,
+  },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "lh3.googleusercontent.com",
+        port: "",
+        pathname: "/**",
+      },
+    ],
   },
 };
 

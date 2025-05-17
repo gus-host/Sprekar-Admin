@@ -112,7 +112,7 @@ export default function EditEventForm({
           { withCredentials: true }
         );
         if (response.status === 201 || response.status === 200) {
-          console.log(response.data);
+          // console.log(response.data);
 
           setIsSuccessModalOpen((open) => !open);
         } else {

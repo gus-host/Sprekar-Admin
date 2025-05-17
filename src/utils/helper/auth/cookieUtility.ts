@@ -46,7 +46,8 @@ export const getUserTokenCookie = (): string | undefined => {
 export const setRefreshTokenCookie = (refreshToken: string): void => {
   Cookies.set(REFRESH_TOKEN_KEY, refreshToken, {
     secure: process.env.NEXT_APP_ENV === "production",
-    sameSite: "strict",
+    sameSite: "none",
+    path: "/",
   });
 };
 
