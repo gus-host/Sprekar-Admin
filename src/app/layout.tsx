@@ -19,6 +19,9 @@ export const metadata: Metadata = {
   },
   description:
     "Instantly translate speech, live events, and conversations in real-time with AI-powered accuracy",
+  verification: {
+    google: "fNO-1fdMHzhCv02tq6LzpNQ39FZDxoQs2-ggdE6oZwY",
+  },
 };
 
 export default function RootLayout({
