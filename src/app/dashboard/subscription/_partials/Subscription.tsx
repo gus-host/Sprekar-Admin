@@ -7,9 +7,27 @@ import ActiveCheckedSub from "@/app/_svgs/ActiveCheckedSub";
 import UncheckedSub from "@/app/_svgs/UncheckedSub";
 import CheckoutButton from "./CheckoutButton";
 import { LucideMessageCircleWarning } from "lucide-react";
+import ModalMUI from "@/components/ModalMUI";
+import SuccessIcon from "@/app/_svgs/SuccessIcon";
+import { useRouter, useSearchParams } from "next/navigation";
+import FailedIcon from "@/app/_svgs/FailedIcon";
 
 export default function Subscription({ priceId }: { priceId: string }) {
-  const [plan, setPlan] = useState("yearly");
+  const [plan, setPlan] = useState("monthly");
+  const router = useRouter();
+
+  const searchParams = useSearchParams();
+
+  const status = searchParams.get("subscriptionStatus");
+  const period = searchParams.get("period");
+  const [isFailedModalOpen, setIsFailedModalOpen] = useState(
+    status === "canceled" && period === "monthly"
+  );
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(
+    status === "success" && period === "monthly"
+  );
+
+  console.log(status, period);
 
   const plans = [
     {
@@ -22,7 +40,7 @@ export default function Subscription({ priceId }: { priceId: string }) {
     {
       id: "monthly",
       label: "Monthly",
-      price: "$9.99",
+      price: "$49.00",
       period: "Month",
       discount: null,
     },
@@ -126,6 +144,44 @@ export default function Subscription({ priceId }: { priceId: string }) {
           </ul>
         </div>
       </div>
+      {isSuccessModalOpen && (
+        <ModalMUI
+          isModalOpen={isSuccessModalOpen}
+          setIsModalOpen={setIsSuccessModalOpen}
+        >
+          <div className="flex flex-col px-[30px] py-[20px] items-center justify-center text-center">
+            <SuccessIcon />
+            <p className="mt-4 text-center">
+              You have successfully subscribed to <strong>monthly</strong>{" "}
+              <strong>pro</strong> plan
+            </p>
+            <button
+              type="button"
+              className="focus:border-none focus-visible:outline-none px-3 py-2 text-[14px] text-white bg-[#025FF3] font-bold tracking-[-1px] rounded-sm hover:bg-[#024dc4] flex justify-center items-center gap-2 w-full mt-7 cursor-pointer"
+              style={{
+                fontFamily: "Helvetica Compressed, sans-serif",
+                boxShadow: "0px 0px 6.4px 4px #0255DA57",
+              }}
+              onClick={() => router.push("/dashboard")}
+            >
+              <span>Go to dashboard</span>
+            </button>
+          </div>
+        </ModalMUI>
+      )}
+      {isFailedModalOpen && (
+        <ModalMUI
+          isModalOpen={isFailedModalOpen}
+          setIsModalOpen={setIsFailedModalOpen}
+        >
+          <div className="flex flex-col px-[30px] py-[20px] items-center justify-center text-center">
+            <FailedIcon />
+            <p className="mt-4 text-center">Subscription failed</p>
+
+            <CheckoutButton priceId={priceId} text="Retry" />
+          </div>
+        </ModalMUI>
+      )}
     </div>
   );
 }

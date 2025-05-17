@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useFormik } from "formik";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { useGoogleLogin } from "@react-oauth/google";
 
 import Button from "@/components/Button";
@@ -17,7 +17,6 @@ import {
   setUserTokenCookie,
 } from "@/utils/helper/auth/cookieUtility";
 import AuthButton from "@/app/_partials/AuthButton";
-import { handleAxiosError } from "@/utils/helper/general/errorHandler";
 
 export default function Login() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -89,9 +88,14 @@ export default function Login() {
       }
     } catch (error) {
       console.error("Error:", error);
-      handleAxiosError(error);
-      toast.error("Unable to login!");
-      alert("Something went wrong!");
+      // handleAxiosError(error);
+      if (error instanceof AxiosError) {
+        const errorMessage =
+          error.response?.data.message ||
+          error.response?.data.error ||
+          "An unknown error occurred";
+        toast.error(errorMessage);
+      }
     } finally {
       setLoading(false);
     }
