@@ -13,8 +13,8 @@ import { loginValidationSchema } from "../loginValidation";
 import {
   getRefreshTokenCookie,
   removeUserTokenCookie,
-  setRefreshTokenCookie,
-  setUserTokenCookie,
+  // setRefreshTokenCookie,
+  // setUserTokenCookie,
 } from "@/utils/helper/auth/cookieUtility";
 import AuthButton from "@/app/_partials/AuthButton";
 
@@ -37,13 +37,13 @@ export default function Login() {
           ...values,
         });
         if (response.status === 201 || response.status === 200) {
-          const accessToken = response?.data?.data?.tokens?.access?.token || "";
-          const refreshToken = response?.data?.data?.tokens?.refresh;
+          // const accessToken = response?.data?.data?.tokens?.access?.token || "";
+          // const refreshToken = response?.data?.data?.tokens?.refresh;
 
-          if (accessToken) {
-            setUserTokenCookie(accessToken);
-            setRefreshTokenCookie(refreshToken);
-          }
+          // if (accessToken) {
+          //   setUserTokenCookie(accessToken);
+          //   setRefreshTokenCookie(refreshToken);
+          // }
           toast.success(response.data.message || "Login Successful");
           router.push(`/dashboard`);
         } else {
@@ -72,13 +72,13 @@ export default function Login() {
       });
 
       if (response.status === 201 || response.status === 200) {
-        const accessToken = response?.data?.data?.tokens?.access?.token || "";
-        const refreshToken = response?.data?.data?.tokens?.refresh;
+        // const accessToken = response?.data?.data?.tokens?.access?.token || "";
+        // const refreshToken = response?.data?.data?.tokens?.refresh;
 
-        if (accessToken) {
-          setUserTokenCookie(accessToken);
-          setRefreshTokenCookie(refreshToken);
-        }
+        // if (accessToken) {
+        //   setUserTokenCookie(accessToken);
+        //   setRefreshTokenCookie(refreshToken);
+        // }
         toast.success(response?.data?.message || "Login Successful");
         router.push("/dashboard");
       } else {
