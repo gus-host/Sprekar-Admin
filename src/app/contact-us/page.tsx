@@ -5,7 +5,6 @@ import { useFormik } from "formik";
 
 import Header from "../_partials/Header";
 import HomePageLayout from "../_partials/_layout/HomePageLayout";
-import { nunitoSans, robotoSerif } from "../_partials/fontFamilies";
 
 import bgImg from "@/../public/bgImg.png";
 import { validationSchema } from "./contact-us.validation";
@@ -13,8 +12,9 @@ import { FormField } from "../_partials/FormField";
 import axios from "axios";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import H1 from "../_partials/H1";
 
-export default function page() {
+export default function Page() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const formik = useFormik({
     validationSchema: validationSchema,
@@ -56,11 +56,7 @@ export default function page() {
             <div className="relative z-10">
               <Header />
               <div className="mx-auto px-[20px]">
-                <h1
-                  className={`mt-[146px] ${robotoSerif.className} text-[48px] text-center font-black max-[820px]:text-[48px] max-[820px]:${nunitoSans.className}`}
-                >
-                  We’d love to help
-                </h1>
+                <H1>We’d love to help</H1>
                 <p className="text-[#323232B2] text-[16px] text-center max-w-[520px] mx-auto mb-[60px]">
                   Reach out and we’ll get back to you within 24 hours!
                 </p>
