@@ -2,7 +2,7 @@
 
 // import RadioInput from "./_partials/RadioInput";
 import CheckIcon from "@/app/_svgs/CheckIcon";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ActiveCheckedSub from "@/app/_svgs/ActiveCheckedSub";
 import UncheckedSub from "@/app/_svgs/UncheckedSub";
 import CheckoutButton from "./CheckoutButton";
@@ -20,6 +20,18 @@ export default function Subscription({ priceId }: { priceId: string }) {
 
   const status = searchParams.get("subscriptionStatus");
   const period = searchParams.get("period");
+
+  useEffect(() => {
+    if ((status === "success" || status === "canceled") && period) {
+      if (!sessionStorage.getItem("stripeReloaded")) {
+        sessionStorage.setItem("stripeReloaded", "1");
+        router.refresh();
+      } else {
+        sessionStorage.removeItem("stripeReloaded");
+      }
+    }
+  }, [status, period, router]);
+
   const [isFailedModalOpen, setIsFailedModalOpen] = useState(
     status === "canceled" && period === "monthly"
   );
