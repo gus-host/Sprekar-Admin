@@ -114,10 +114,10 @@ export default function EventTranslation({
           hasRunDefaultTransLangRef.current === false &&
           message === "Event has started"
         ) {
-          const defaultCode = event?.supportedLanguages?.at(0);
+          // const defaultCode = event?.supportedLanguages?.at(0);
           handleTranslationLanguageChange({
-            value: defaultCode || "AR",
-            label: languageMap[defaultCode || "AR"] || defaultCode || "AR", // Fallback to code if label isn't found
+            value: "EN_GB",
+            label: languageMap["EN_GB"] || "EN_GB", // Fallback to code if label isn't found
           });
           hasRunDefaultTransLangRef.current = true;
         }
