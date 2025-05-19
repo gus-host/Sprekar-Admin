@@ -19,6 +19,9 @@ export const metadata: Metadata = {
   },
   description:
     "Instantly translate speech, live events, and conversations in real-time with AI-powered accuracy",
+  verification: {
+    google: "fNO-1fdMHzhCv02tq6LzpNQ39FZDxoQs2-ggdE6oZwY",
+  },
 };
 
 export default function RootLayout({
@@ -29,13 +32,6 @@ export default function RootLayout({
   return (
     <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID as string}>
       <html lang="en">
-        <head>
-          <meta
-            name="google-site-verification"
-            content="p38Suhq8BedpYPBwD5WIf8IQl52vNcV5ajP2VzmFmy4"
-          />
-        </head>
-
         <body className={`${openSans.className} bg-[#FCFCFC]`}>
           <>
             <Toaster position="top-right" />

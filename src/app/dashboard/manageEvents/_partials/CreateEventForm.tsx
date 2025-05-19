@@ -25,6 +25,17 @@ import QrCode from "./QrCode";
 
 import CalenderBlue from "@/app/_svgs/CalenderBlue";
 
+export const downloadQrcodeImage = (base64QRCode?: string) => {
+  // Create a temporary link element
+  if (!base64QRCode) return toast.error("No qrcode found");
+  const a = document.createElement("a");
+  a.href = base64QRCode || "";
+  a.download = "qrcode.png";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+};
+
 export default function CreateEventForm() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCreatingEvent, setIsCreatingEvent] = useState(false);
@@ -120,17 +131,6 @@ export default function CreateEventForm() {
     const gmtOffset = `GMT${sign}${hours}${minutes > 0 ? ":" + minutes : ""}`;
     return gmtOffset;
   }
-
-  const downloadQrcodeImage = (base64QRCode?: string) => {
-    // Create a temporary link element
-    if (!base64QRCode) return toast.error("No qrcode found");
-    const a = document.createElement("a");
-    a.href = base64QRCode || "";
-    a.download = "qrcode.png";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-  };
 
   return (
     <FormikProvider value={eventFormIk}>

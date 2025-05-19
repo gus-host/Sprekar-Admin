@@ -45,7 +45,7 @@ export default function Subscription({ priceId }: { priceId: string }) {
     {
       id: "yearly",
       label: "Yearly",
-      price: "$79.99",
+      price: "$490.00",
       period: "Yearly",
       discount: "30% off",
     },
