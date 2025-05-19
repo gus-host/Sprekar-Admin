@@ -32,6 +32,9 @@ import {
   useFullScreenHandle,
 } from "react-full-screen";
 import { Skeleton } from "@mui/material";
+import { QrCodeIcon } from "lucide-react";
+import QrCode from "../../manageEvents/_partials/QrCode";
+import { downloadQrcodeImage } from "../../manageEvents/_partials/CreateEventForm";
 
 // prettier-ignore
 const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -86,6 +89,7 @@ export default function EventTranslation({
   const route = useRouter();
   const handleFullScreen = useFullScreenHandle();
   const [isShowFullScreen, setIsShowFullScreen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   // Auto-scroll to bottom when new messages arrive.
   useEffect(() => {
@@ -114,10 +118,10 @@ export default function EventTranslation({
           hasRunDefaultTransLangRef.current === false &&
           message === "Event has started"
         ) {
-          const defaultCode = event?.supportedLanguages?.at(0);
+          // const defaultCode = event?.supportedLanguages?.at(0);
           handleTranslationLanguageChange({
-            value: defaultCode || "AR",
-            label: languageMap[defaultCode || "AR"] || defaultCode || "AR", // Fallback to code if label isn't found
+            value: "EN_GB",
+            label: languageMap["EN_GB"] || "EN_GB", // Fallback to code if label isn't found
           });
           hasRunDefaultTransLangRef.current = true;
         }
@@ -231,7 +235,12 @@ export default function EventTranslation({
 
           <div className="mt-[10px]">
             <div className="flex justify-end">
-              <div className="flex gap-3 items-end ">
+              <div className="flex gap-3 items-center ">
+                <QrCodeIcon
+                  className="cursor-pointer"
+                  size={16}
+                  onClick={() => setIsModalOpen(true)}
+                />
                 <select
                   value={selectedDeviceId}
                   onChange={(e) => setSelectedDeviceId(e.target.value)}
@@ -337,6 +346,41 @@ export default function EventTranslation({
           )}
         </div>
       </FullScreen>
+      {isModalOpen && (
+        <ModalMUI isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen}>
+          <div className="flex flex-col items-center gap-6">
+            <QrCode
+              eventCode={event.eventCode}
+              qrCode={event.qrCode}
+              description={event.description}
+            />
+            <div className="flex gap-4">
+              <button
+                type="button"
+                className="focus-visible:outline-none px-8 py-2 bg-white border border-[#858585] text-[12px] rounded-sm hover:bg-gray-100"
+                onClick={() => {
+                  setIsModalOpen(false);
+                }}
+              >
+                {event.qrCode ? "Cancel" : "Back to events"}
+              </button>
+              {event.qrCode && (
+                <button
+                  type="button"
+                  className="focus:border-none focus-visible:outline-none px-2 py-2 text-[12px] text-white bg-[#025FF3] font-bold tracking-[-1px] rounded-sm hover:bg-[#024dc4]"
+                  style={{
+                    fontFamily: "Helvetica Compressed, sans-serif",
+                    boxShadow: "0px 0px 6.4px 4px #0255DA57",
+                  }}
+                  onClick={() => downloadQrcodeImage(event?.qrCode)}
+                >
+                  Download QR code
+                </button>
+              )}
+            </div>
+          </div>
+        </ModalMUI>
+      )}
     </div>
   );
 }
