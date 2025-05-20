@@ -6,7 +6,7 @@ import { cookies } from "next/headers";
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 export const revalidate = 0;
 
-export interface User {
+interface User {
   profilePicture?: string;
   firstName?: string;
   lastName?: string;
