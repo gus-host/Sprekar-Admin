@@ -1,11 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-
 import dayjs from "dayjs";
-import ModalMUI from "@/components/ModalMUI";
-import useResponsiveSizes from "@/utils/helper/general/useResponsiveSizes";
-import useWebsocketTranslation from "@/lib/websocket/useWebsocketTranslation";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ActionMeta, SingleValue } from "react-select";
@@ -15,14 +11,25 @@ import {
   // FullScreenHandle,
   useFullScreenHandle,
 } from "react-full-screen";
+import dynamic from "next/dynamic";
+
+import ModalMUI from "@/components/ModalMUI";
+import useResponsiveSizes from "@/utils/helper/general/useResponsiveSizes";
+import useWebsocketTranslation from "@/lib/websocket/useWebsocketTranslation";
 import { Skeleton } from "@mui/material";
 import { Event } from "@/app/dashboard/liveTranslation/[eventId]/EventGetter";
 import {
   languageMap,
   LanguageOption,
-  // languageMap,
-  SupportedLangaugesTranslation,
 } from "@/app/dashboard/manageEvents/_partials/SupportedLanguagesSelect";
+const SupportedLangaugesTranslation = dynamic(
+  () =>
+    import(
+      "@/app/dashboard/manageEvents/_partials/SupportedLanguagesSelect"
+    ).then((mod) => mod.SupportedLangaugesTranslation),
+  { ssr: false }
+);
+
 import ErrorSetter from "@/app/dashboard/_partials/ErrorSetter";
 import ButtonRed from "@/app/dashboard/_partials/ButtonRed";
 import RejoinEventModal from "@/app/dashboard/liveTranslation/_partials/RejoinEventModal";
@@ -43,15 +50,18 @@ export default function EventTranslation({
     translationLanguage,
     setTranslationLanguage,
     rejoinEvent,
-    startEvent,
-    stopEvent,
     stopRecording,
     handleTranslationLanguageChange,
     message,
     handleScroll,
     chatMessages,
     participantCount,
-  } = useWebsocketTranslation(event?.createdBy || "", event?.eventCode || "");
+    joinEvent,
+  } = useWebsocketTranslation(
+    null,
+    event?.createdBy || "",
+    event?.eventCode || ""
+  );
   const endDate = new Date(event?.endDate || "");
   const endDateString = `${
     months[endDate.getMonth()]
@@ -66,7 +76,7 @@ export default function EventTranslation({
     label: languageMap[code] || code, // Fallback to code if label isn't found
   }));
   const { clientHeight, clientWidth } = useResponsiveSizes();
-  const hasRunDefaultTransLangRef = useRef<boolean>(false);
+  // const hasRunDefaultTransLangRef = useRef<boolean>(false);
   const rejoinAttemptRef = useRef<number>(0);
   // Refs for the chat container and end-of-chat marker
   const chatContainerRef = useRef<HTMLDivElement>(null);
@@ -74,6 +84,23 @@ export default function EventTranslation({
   const route = useRouter();
   const handleFullScreen = useFullScreenHandle();
   const [isShowFullScreen, setIsShowFullScreen] = useState(false);
+
+  const hasTriedJoinRef = useRef(false);
+
+  useEffect(() => {
+    if (event?.eventIsOngoing && !hasTriedJoinRef.current) {
+      joinEvent();
+      function defaultLangSetter() {
+        const defaultCode = event?.supportedLanguages?.at(0);
+        handleTranslationLanguageChange({
+          value: defaultCode || "AR",
+          label: languageMap[defaultCode || "AR"] || defaultCode || "AR", // Fallback to code if label isn't found
+        });
+      }
+      defaultLangSetter();
+      hasTriedJoinRef.current = true;
+    }
+  }, [event?.eventIsOngoing, joinEvent]);
 
   // Auto-scroll to bottom when new messages arrive.
   useEffect(() => {
@@ -83,37 +110,26 @@ export default function EventTranslation({
     }
   }, [chatMessages]);
 
-  useEffect(function () {
-    if (!event?.eventIsOngoing || event?.status === "ended") return;
-    if (message !== "Event has started") {
-      async function eventStarter() {
-        await startEvent();
-      }
-      eventStarter();
-      setTranslationLanguage((lang) => lang);
-    }
-  }, []);
-
-  useEffect(
-    function () {
-      if (!event?.eventIsOngoing || event?.status === "ended") return;
-      function defaultLangSetter() {
-        if (
-          hasRunDefaultTransLangRef.current === false &&
-          message === "Event has started"
-        ) {
-          const defaultCode = event?.supportedLanguages?.at(0);
-          handleTranslationLanguageChange({
-            value: defaultCode || "AR",
-            label: languageMap[defaultCode || "AR"] || defaultCode || "AR", // Fallback to code if label isn't found
-          });
-          hasRunDefaultTransLangRef.current = true;
-        }
-      }
-      defaultLangSetter();
-    },
-    [message]
-  );
+  // useEffect(
+  //   function () {
+  //     if (!event?.eventIsOngoing || event?.status === "ended") return;
+  //     function defaultLangSetter() {
+  //       if (
+  //         hasRunDefaultTransLangRef.current === false &&
+  //         message === "Event has started"
+  //       ) {
+  //         const defaultCode = event?.supportedLanguages?.at(0);
+  //         handleTranslationLanguageChange({
+  //           value: defaultCode || "AR",
+  //           label: languageMap[defaultCode || "AR"] || defaultCode || "AR", // Fallback to code if label isn't found
+  //         });
+  //         hasRunDefaultTransLangRef.current = true;
+  //       }
+  //     }
+  //     defaultLangSetter();
+  //   },
+  //   [message]
+  // );
 
   useEffect(
     function () {
@@ -125,7 +141,7 @@ export default function EventTranslation({
         ) {
           setIsDeletingEvent(false);
           stopRecording();
-          route.replace(`/dashboard/manageEvents`);
+          route.replace(`/`);
           setIsDeleteModalOpen(false);
         }
         if (message === "needs-to-rejoin" && rejoinAttemptRef.current > 0)
@@ -139,7 +155,6 @@ export default function EventTranslation({
 
   async function handleDelete() {
     setIsDeletingEvent(true);
-    await stopEvent();
   }
 
   async function handleRejoin() {
@@ -400,7 +415,9 @@ function EventControllerForVistors({
                     cursor: isDeletingEvent ? "not-allowed" : "pointer",
                     opacity: isDeletingEvent ? "0.5" : "1",
                   }}
-                  onClick={() => router.push("/")}
+                  onClick={() => {
+                    router.push("/");
+                  }}
                 >
                   Leave
                 </button>
