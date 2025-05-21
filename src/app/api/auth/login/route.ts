@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import axios from "axios";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+const isProd = process.env.NODE_ENV === "production";
 
 export async function POST(req: Request) {
   try {
@@ -25,18 +26,20 @@ export async function POST(req: Request) {
 
     const res = NextResponse.json(response.data, { status: 200 });
 
+    const sameSite = isProd ? "none" : "lax";
+
     res.cookies.set("refreshToken", refreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "none",
+      secure: isProd,
+      sameSite,
       path: "/",
       maxAge: 60 * 60 * 24 * 7,
     });
 
     res.cookies.set("defaultToken", accessToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "none",
+      secure: isProd,
+      sameSite,
       path: "/",
       maxAge: 60 * 60 * 24 * 7,
     });
