@@ -6,10 +6,11 @@ import { cookies } from "next/headers";
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 export const revalidate = 0;
 
-interface User {
+export interface User {
   profilePicture?: string;
   firstName?: string;
   lastName?: string;
+  _id?: string;
 }
 
 export default async function ProfileImgGetter() {
