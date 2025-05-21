@@ -13,10 +13,10 @@ import Button from "@/components/Button";
 import AuthButton from "../_partials/AuthButton";
 import { signupValidationSchema } from "./signupValidationSchema";
 
-// import {
-//   setRefreshTokenCookie,
-//   setUserTokenCookie,
-// } from "@/utils/helper/auth/cookieUtility";
+import {
+  setRefreshTokenCookie,
+  setUserTokenCookie,
+} from "@/utils/helper/auth/cookieUtility";
 import { handleAxiosError } from "@/utils/helper/general/errorHandler";
 
 export default function Signup() {
@@ -60,18 +60,22 @@ export default function Signup() {
       setLoading(true);
       const payload = { token: token, role: "ADMIN" };
 
-      const response = await axios.post("/api/auth/googleSignUp", {
-        ...payload,
-      });
+      const response = await axios.post(
+        "/api/auth/googleSignUp",
+        {
+          ...payload,
+        },
+        { withCredentials: true }
+      );
 
       if (response.status === 201 || response.status === 200) {
-        // const accessToken = response?.data?.data?.tokens?.access?.token || "";
-        // const refreshToken = response?.data?.data?.tokens?.refresh;
+        const accessToken = response?.data?.data?.tokens?.access?.token || "";
+        const refreshToken = response?.data?.data?.tokens?.refresh;
 
-        // if (accessToken) {
-        //   setUserTokenCookie(accessToken);
-        //   setRefreshTokenCookie(refreshToken);
-        // }
+        if (accessToken) {
+          setUserTokenCookie(accessToken);
+          setRefreshTokenCookie(refreshToken);
+        }
         toast.success(response?.data?.message || "Login Successful");
         router.push("/dashboard");
       } else {
