@@ -24,8 +24,8 @@ export async function POST(req: Request) {
     ] as const) {
       res.cookies.set(name, value, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "none",
+        // secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
         path: "/",
         maxAge: 60 * 60 * 24 * 7,
       });

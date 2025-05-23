@@ -26,20 +26,20 @@ export async function POST(req: Request) {
 
     const res = NextResponse.json(response.data, { status: 200 });
 
-    const sameSite = isProd ? "none" : "lax";
+    // const sameSite = isProd ? "none" : "lax";
 
     res.cookies.set("refreshToken", refreshToken, {
       httpOnly: true,
-      secure: isProd,
-      sameSite,
+      // secure: isProd,
+      sameSite: "lax",
       path: "/",
       maxAge: 60 * 60 * 24 * 7,
     });
 
     res.cookies.set("defaultToken", accessToken, {
       httpOnly: true,
-      secure: isProd,
-      sameSite,
+      // secure: ,
+      sameSite: "lax",
       path: "/",
       maxAge: 60 * 60 * 24 * 7,
     });
