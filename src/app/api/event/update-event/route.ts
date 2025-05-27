@@ -16,6 +16,7 @@ export async function POST(req: Request) {
       supportedLanguages,
       timezone,
       isQRCodeEnabled,
+      isReoccuring,
       id,
     } = await req.json();
 
@@ -33,6 +34,7 @@ export async function POST(req: Request) {
         supportedLanguages,
         timezone,
         isQRCodeEnabled,
+        isRecurring: isReoccuring,
       },
       {
         headers: {
