@@ -24,6 +24,7 @@ import Spinner from "@/components/ui/Spinner";
 
 import SuccessIcon from "@/app/_svgs/SuccessIcon";
 import FailedIcon from "@/app/_svgs/FailedIcon";
+import ToggleRecurring from "./ToggleRecurring";
 
 interface Event {
   status: string;
@@ -39,6 +40,7 @@ interface Event {
   qrCode: string;
   eventCode: string;
   isQRCodeEnabled: boolean;
+  isRecurring?: boolean;
 }
 
 export default function EditEventForm({
@@ -66,6 +68,7 @@ export default function EditEventForm({
       timezone: { value: "", label: "" },
       description: "",
       isQRCodeEnabled: true,
+      isReoccuring: true,
     },
     onSubmit: async (values) => {
       const name = values.name;
@@ -91,6 +94,7 @@ export default function EditEventForm({
       );
       const timezone = values.timezone.value;
       const isQRCodeEnabled = values.isQRCodeEnabled;
+      const isReoccuring = values.isReoccuring;
       const id = eventData.id;
 
       try {
@@ -107,6 +111,7 @@ export default function EditEventForm({
             supportedLanguages,
             timezone,
             isQRCodeEnabled,
+            isReoccuring,
             id,
           },
           { withCredentials: true }
@@ -138,6 +143,7 @@ export default function EditEventForm({
     eventFormIk.setFieldValue("name", eventData.name);
     eventFormIk.setFieldValue("description", eventData.description);
     eventFormIk.setFieldValue("isQRCodeEnabled", eventData.isQRCodeEnabled);
+    eventFormIk.setFieldValue("isReoccuring", eventData.isRecurring);
 
     // Set other fields
     eventFormIk.setFieldValue("startDate", dayjs(eventData.startDate));
@@ -236,9 +242,15 @@ export default function EditEventForm({
             />
           </div>
         </div>
-        <div className="flex gap-2 text-[14px] mb-9">
-          <strong>Enable QR Code </strong>
-          <Toggle name="isQRCodeEnabled" />
+        <div className="mb-9 flex flex-wrap gap-4">
+          <div className="flex gap-2 text-[14px] ">
+            <strong>Enable QR Code </strong>
+            <Toggle name="isQRCodeEnabled" />
+          </div>
+          <div className="flex gap-2 text-[14px] ">
+            <strong>Is Reoccuring? </strong>
+            <ToggleRecurring name="isReoccuring" />
+          </div>
         </div>
         <div className="flex gap-3 items-start max-w-[800px] mb-[50px] flex-wrap">
           <SupportedLanguagesSelect

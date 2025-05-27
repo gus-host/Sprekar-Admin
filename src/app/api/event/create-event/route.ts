@@ -16,6 +16,7 @@ export async function POST(req: Request) {
       supportedLanguages,
       timezone,
       isQRCodeEnabled,
+      isReoccuring,
     } = await req.json();
 
     const cookieStore = cookies();
@@ -32,6 +33,7 @@ export async function POST(req: Request) {
         supportedLanguages,
         timezone,
         isQRCodeEnabled,
+        isRecurring: isReoccuring,
       },
       {
         headers: {

@@ -24,6 +24,7 @@ import useResponsiveSizes from "@/utils/helper/general/useResponsiveSizes";
 import QrCode from "./QrCode";
 
 import CalenderBlue from "@/app/_svgs/CalenderBlue";
+import ToggleRecurring from "./ToggleRecurring";
 
 export const downloadQrcodeImage = (base64QRCode?: string) => {
   // Create a temporary link element
@@ -58,6 +59,7 @@ export default function CreateEventForm() {
       timezone: { value: "", label: "" },
       description: "",
       isQRCodeEnabled: true,
+      isReoccuring: true,
     },
     onSubmit: async (values) => {
       const name = values.name;
@@ -83,6 +85,7 @@ export default function CreateEventForm() {
       );
       const timezone = values.timezone.value;
       const isQRCodeEnabled = values.isQRCodeEnabled;
+      const isReoccuring = values.isReoccuring;
 
       try {
         setIsCreatingEvent(true);
@@ -98,6 +101,7 @@ export default function CreateEventForm() {
             supportedLanguages,
             timezone,
             isQRCodeEnabled,
+            isReoccuring,
           },
           { withCredentials: true }
         );
@@ -203,10 +207,17 @@ export default function CreateEventForm() {
             />
           </div>
         </div>
-        <div className="flex gap-2 text-[14px] mb-9">
-          <strong>Enable QR Code </strong>
-          <Toggle name="isQRCodeEnabled" />
+        <div className="mb-9 flex flex-wrap gap-4">
+          <div className="flex gap-2 text-[14px] ">
+            <strong>Enable QR Code </strong>
+            <Toggle name="isQRCodeEnabled" />
+          </div>
+          <div className="flex gap-2 text-[14px] ">
+            <strong>Is Reoccuring? </strong>
+            <ToggleRecurring name="isReoccuring" />
+          </div>
         </div>
+
         <div className="flex gap-3 items-start max-w-[800px] mb-[50px] max-[760px]:flex-wrap">
           <SupportedLanguagesSelect
             name="supportedLanguages"
@@ -267,7 +278,7 @@ export default function CreateEventForm() {
                 className="focus-visible:outline-none px-8 py-2 bg-white border border-[#858585] text-[12px] rounded-sm hover:bg-gray-100"
                 onClick={() => {
                   router.push("/dashboard/manageEvents");
-                  setIsModalOpen(false);
+                  // setIsModalOpen(false);
                 }}
               >
                 {event.qrCode ? "Cancel" : "Back to events"}
