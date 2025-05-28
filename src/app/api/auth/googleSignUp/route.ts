@@ -13,7 +13,25 @@ export async function POST(req: Request) {
       role,
     });
 
-    return NextResponse.json(response.data, { status: response.status });
+    const refreshToken = response.data.data.tokens.refresh;
+    const accessToken = response.data.data.tokens.access.token;
+
+    const res = NextResponse.json(response.data, { status: response.status });
+
+    for (const [name, value] of [
+      ["refreshToken", refreshToken],
+      ["defaultToken", accessToken],
+    ] as const) {
+      res.cookies.set(name, value, {
+        httpOnly: true,
+        // secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        path: "/",
+        maxAge: 60 * 60 * 24 * 7,
+      });
+    }
+
+    return res;
   } catch (error: unknown) {
     let errorMessage = "Error occurred";
     let statusCode = 500;

@@ -13,6 +13,7 @@ import ReloadComp from "./_partials/ReloadComp";
 import ProfileImg from "./_partials/ProfileImg";
 import { redirect } from "next/navigation";
 import toast from "react-hot-toast";
+import { UserProvider } from "../context/UserContext";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 export const revalidate = 0;
@@ -91,32 +92,34 @@ export default async function layout({ children }: { children: ReactNode }) {
 
   if (user)
     return (
-      <div className="flex flex-col h-dvh">
-        <div className="flex justify-between items-center px-[30px] py-[15px] border-b-[#A6A6A654] border-solid border-b-[1px] max-[1200px]:pl-[50px] z-[997]">
-          <Link
-            href={"/dashboard"}
-            className="font-bold text-[20px] text-[#000000]"
-          >
-            SPREKAR
-          </Link>
-          <div className="flex items-center gap-[38px]">
-            <NotificationIcon />
-            <div className="flex items-center gap-[10px]">
-              <ProfileImg user={user} />
-              <ChevronDown />
+      <UserProvider user={user as User}>
+        <div className="flex flex-col h-dvh">
+          <div className="flex justify-between items-center px-[30px] py-[15px] border-b-[#A6A6A654] border-solid border-b-[1px] max-[1200px]:pl-[50px] z-[997]">
+            <Link
+              href={"/dashboard"}
+              className="font-bold text-[20px] text-[#000000]"
+            >
+              SPREKAR
+            </Link>
+            <div className="flex items-center gap-[38px]">
+              <NotificationIcon />
+              <div className="flex items-center gap-[10px]">
+                <ProfileImg user={user} />
+                <ChevronDown />
+              </div>
             </div>
           </div>
-        </div>
-        <DashboardMain plan={plan} error={error as string}>
-          {error ? <ReloadComp /> : children}
-        </DashboardMain>
-        {/* {error ? (
+          <DashboardMain plan={plan} error={error as string}>
+            {error ? <ReloadComp /> : children}
+          </DashboardMain>
+          {/* {error ? (
         <div className="fixed bg-[#1E1E1E] left-[15px] top-[80.67px] px-[15px] pt-[30px] pb-[50px] text-[#fff] text-[16px] flex flex-col">
          
         </div>
       ) : ( */}
-        <Sidebar plan={plan} error={error as string} />
-        {/* )} */}
-      </div>
+          <Sidebar plan={plan} error={error as string} />
+          {/* )} */}
+        </div>
+      </UserProvider>
     );
 }

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import axios from "axios";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+const isProd = process.env.NODE_ENV === "production";
 
 export async function POST(req: Request) {
   try {
@@ -12,7 +13,38 @@ export async function POST(req: Request) {
       password,
     });
 
-    return NextResponse.json(response.data, { status: 200 });
+    const {
+      data: {
+        data: {
+          tokens: {
+            refresh: refreshToken,
+            access: { token: accessToken },
+          },
+        },
+      },
+    } = response;
+
+    const res = NextResponse.json(response.data, { status: 200 });
+
+    // const sameSite = isProd ? "none" : "lax";
+
+    res.cookies.set("refreshToken", refreshToken, {
+      httpOnly: true,
+      // secure: isProd,
+      sameSite: "lax",
+      path: "/",
+      maxAge: 60 * 60 * 24 * 7,
+    });
+
+    res.cookies.set("defaultToken", accessToken, {
+      httpOnly: true,
+      // secure: ,
+      sameSite: "lax",
+      path: "/",
+      maxAge: 60 * 60 * 24 * 7,
+    });
+
+    return res;
   } catch (error: unknown) {
     let errorMessage = "Error occurred";
     let statusCode = 500;

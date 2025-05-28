@@ -18,6 +18,8 @@ import {
 } from "@/utils/helper/auth/cookieUtility";
 import AuthButton from "@/app/_partials/AuthButton";
 
+axios.defaults.withCredentials = true;
+
 export default function Login() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -33,9 +35,13 @@ export default function Login() {
     onSubmit: async (values) => {
       try {
         setIsSubmitting(true);
-        const response = await axios.post("/api/auth/login", {
-          ...values,
-        });
+        const response = await axios.post(
+          "/api/auth/login",
+          {
+            ...values,
+          },
+          { withCredentials: true }
+        );
         if (response.status === 201 || response.status === 200) {
           const accessToken = response?.data?.data?.tokens?.access?.token || "";
           const refreshToken = response?.data?.data?.tokens?.refresh;
@@ -67,9 +73,13 @@ export default function Login() {
       setLoading(true);
       const payload = { token: token };
 
-      const response = await axios.post("/api/auth/googleSignin", {
-        ...payload,
-      });
+      const response = await axios.post(
+        "/api/auth/googleSignin",
+        {
+          ...payload,
+        },
+        { withCredentials: true }
+      );
 
       if (response.status === 201 || response.status === 200) {
         const accessToken = response?.data?.data?.tokens?.access?.token || "";

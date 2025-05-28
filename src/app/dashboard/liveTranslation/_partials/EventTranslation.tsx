@@ -1,40 +1,45 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { ActionMeta, SingleValue } from "react-select";
+import { FullScreen, useFullScreenHandle } from "react-full-screen";
+import dynamic from "next/dynamic";
+import { QrCodeIcon } from "lucide-react";
+import toast from "react-hot-toast";
+import dayjs from "dayjs";
+
 import { Event } from "../[eventId]/EventGetter";
 import SpeakerIcon from "@/app/_svgs/SpeakerIcon";
 import Speakermain from "@/app/_svgs/Speakermain";
 import {
   languageMap,
   LanguageOption,
-  // languageMap,
-  SupportedLangaugesTranslation,
 } from "../../manageEvents/_partials/SupportedLanguagesSelect";
+const SupportedLangaugesTranslation = dynamic(
+  () =>
+    import(
+      "@/app/dashboard/manageEvents/_partials/SupportedLanguagesSelect"
+    ).then((mod) => mod.SupportedLangaugesTranslation),
+  { ssr: false }
+);
 import ErrorSetter from "../../_partials/ErrorSetter";
-import SpeakerIconPause from "@/app/_svgs/SpeakerIconPause";
-import dayjs from "dayjs";
-import SpeakerIconPlay from "@/app/_svgs/SpeakerIconPlay";
 import ButtonRed from "../../_partials/ButtonRed";
 import ModalMUI from "@/components/ModalMUI";
 import Spinner from "@/components/ui/Spinner";
 import useResponsiveSizes from "@/utils/helper/general/useResponsiveSizes";
 import useWebsocketTranslation from "@/lib/websocket/useWebsocketTranslation";
-import toast from "react-hot-toast";
 import RejoinEventModal from "./RejoinEventModal";
 import ButtonBlue from "../../_partials/ButtonBlue";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { ActionMeta, SingleValue } from "react-select";
 import { truncateText } from "@/utils/helper/general/truncateText";
-import {
-  FullScreen,
-  // FullScreenHandle,
-  useFullScreenHandle,
-} from "react-full-screen";
 import { Skeleton } from "@mui/material";
-import { QrCodeIcon } from "lucide-react";
 import QrCode from "../../manageEvents/_partials/QrCode";
 import { downloadQrcodeImage } from "../../manageEvents/_partials/CreateEventForm";
+
+import SpeakerIconPause from "@/app/_svgs/SpeakerIconPause";
+import SpeakerIconPlay from "@/app/_svgs/SpeakerIconPlay";
+import { useUser } from "@/app/context/UserContext";
 
 // prettier-ignore
 const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -46,11 +51,13 @@ export default function EventTranslation({
   event?: Event;
   error?: string;
 }) {
+  const user = useUser();
   const {
     translation,
     translationLanguage,
     setTranslationLanguage,
     rejoinEvent,
+    joinEvent,
     startEvent,
     stopEvent,
     startRecording,
@@ -65,7 +72,11 @@ export default function EventTranslation({
     audioDevices,
     selectedDeviceId,
     setSelectedDeviceId,
-  } = useWebsocketTranslation(event?.createdBy || "", event?.eventCode || "");
+  } = useWebsocketTranslation(
+    user,
+    event?.createdBy || "",
+    event?.eventCode || ""
+  );
   const endDate = new Date(event?.endDate || "");
   const endDateString = `${
     months[endDate.getMonth()]
@@ -100,13 +111,28 @@ export default function EventTranslation({
   }, [chatMessages, event?.eventIsOngoing, event?.status]);
 
   useEffect(function () {
-    if (!event?.eventIsOngoing || event?.status === "ended") return;
-    if (message !== "Event has started") {
+    if (!event) return;
+
+    if (event.status === "ended") return;
+
+    if (event.status === "live") {
+      joinEvent();
+      handleTranslationLanguageChange({
+        value: "EN_GB",
+        label: languageMap["EN_GB"] || "EN_GB",
+      });
+    } else if (
+      user._id === event?.createdBy &&
+      message !== "Event has started"
+    ) {
       async function eventStarter() {
         await startEvent();
       }
       eventStarter();
-      setTranslationLanguage((lang) => lang);
+      handleTranslationLanguageChange({
+        value: "EN_GB",
+        label: languageMap["EN_GB"] || "EN_GB",
+      });
     }
   }, []);
 

@@ -60,9 +60,13 @@ export default function Signup() {
       setLoading(true);
       const payload = { token: token, role: "ADMIN" };
 
-      const response = await axios.post("/api/auth/googleSignUp", {
-        ...payload,
-      });
+      const response = await axios.post(
+        "/api/auth/googleSignUp",
+        {
+          ...payload,
+        },
+        { withCredentials: true }
+      );
 
       if (response.status === 201 || response.status === 200) {
         const accessToken = response?.data?.data?.tokens?.access?.token || "";

@@ -5,7 +5,14 @@ import type { NextRequest } from "next/server";
 export const revalidate = 0;
 
 export function middleware(req: NextRequest) {
-  const { pathname } = req.nextUrl;
+  const { pathname, searchParams } = req.nextUrl;
+
+  if (
+    pathname === "/dashboard/subscription" &&
+    searchParams.has("subscriptionStatus")
+  ) {
+    return NextResponse.next();
+  }
 
   // 2️⃣ Everything else under /dashboard → always enforce
   if (pathname.startsWith("/dashboard")) {

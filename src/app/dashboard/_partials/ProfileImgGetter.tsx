@@ -10,6 +10,7 @@ export interface User {
   profilePicture?: string;
   firstName?: string;
   lastName?: string;
+  _id?: string;
 }
 
 export default async function ProfileImgGetter() {
