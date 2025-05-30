@@ -22,7 +22,7 @@ export default function JoinEventForm({ token }: { token: string }) {
       const response = await fetch(`${BASE_URL}/events/${values.eventCode}`, {
         method: "GET",
         headers: {
-          Authorization: `Bearer ${token}`,
+          // Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
         cache: "no-store",
