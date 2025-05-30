@@ -12,7 +12,10 @@ import {
   useFullScreenHandle,
 } from "react-full-screen";
 import dynamic from "next/dynamic";
-
+import ErrorSetter from "@/app/dashboard/_partials/ErrorSetter";
+import ButtonRed from "@/app/dashboard/_partials/ButtonRed";
+import RejoinEventModal from "@/app/dashboard/liveTranslation/_partials/RejoinEventModal";
+import ButtonBlue from "@/app/dashboard/_partials/ButtonBlue";
 import ModalMUI from "@/components/ModalMUI";
 import useResponsiveSizes from "@/utils/helper/general/useResponsiveSizes";
 import useWebsocketTranslation from "@/lib/websocket/useWebsocketTranslation";
@@ -29,11 +32,6 @@ const SupportedLangaugesTranslation = dynamic(
     ).then((mod) => mod.SupportedLangaugesTranslation),
   { ssr: false }
 );
-
-import ErrorSetter from "@/app/dashboard/_partials/ErrorSetter";
-import ButtonRed from "@/app/dashboard/_partials/ButtonRed";
-import RejoinEventModal from "@/app/dashboard/liveTranslation/_partials/RejoinEventModal";
-import ButtonBlue from "@/app/dashboard/_partials/ButtonBlue";
 
 // prettier-ignore
 const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -181,8 +179,8 @@ export default function EventTranslation({
           <strong>has ended</strong>. If the event hasn&apos;t reach its start
           time come back later
         </p>
-        <Link href={"/dashboard/manageEvents"} className="cursor-pointer">
-          <ButtonBlue>Check out events</ButtonBlue>
+        <Link href={"/join-event"} className="cursor-pointer">
+          <ButtonBlue>Go back</ButtonBlue>
         </Link>
       </div>
     );

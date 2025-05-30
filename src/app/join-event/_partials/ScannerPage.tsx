@@ -1,16 +1,12 @@
 "use client";
 
-import { useState } from "react";
 import { useZxing } from "react-zxing";
-import toast from "react-hot-toast";
-import axios from "axios";
+
 import Spinner from "@/components/ui/Spinner";
-import { useRouter } from "next/navigation";
 import ScanningFrame from "@/app/_svgs/ScanningFrame";
 import ArrowLeft from "@/app/_svgs/ArrowLeft";
 import { Anchor } from "./ScannerComponent";
-
-const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+import useJoinEvent, { getEventCode } from "./useJoinEvent";
 
 export default function ScannerPage({
   eventName = "Morning Service",
@@ -23,8 +19,7 @@ export default function ScannerPage({
   toggleDrawer: (anchor: Anchor, open: boolean) => void;
   anchor: Anchor;
 }) {
-  const [isJoining, setIsJoining] = useState(false);
-  const router = useRouter();
+  const { isJoining, getEventByCode } = useJoinEvent();
 
   const { ref } = useZxing({
     constraints: {
@@ -32,40 +27,8 @@ export default function ScannerPage({
       audio: false,
     },
     async onDecodeResult(r) {
-      try {
-        setIsJoining(true);
-        const response = await fetch(`${BASE_URL}/events/${r.getText()}`, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-          cache: "no-store",
-        });
-
-        const data = await response.json();
-        const id = data?.data?.event?.id;
-
-        if (!id)
-          return toast.error(
-            data.message || "Could not join event. Please try again"
-          );
-        toast.success("Successfully joined the event!");
-        router.push(`/join-event/${id}`); // Adjust if needed
-      } catch (err) {
-        if (axios.isAxiosError(err)) {
-          console.log("Axios Error:", err.message);
-          toast.error("An error occurred!");
-        } else if (err instanceof Error) {
-          toast.error(err.message);
-          console.log("Fetch Error:", err);
-        } else {
-          toast.error("An error occurred!");
-          console.log("Unknown Error:", err);
-        }
-      } finally {
-        setIsJoining(false);
-      }
+      const eventCode = getEventCode(r.getText());
+      await getEventByCode(eventCode as string);
     },
   });
 
