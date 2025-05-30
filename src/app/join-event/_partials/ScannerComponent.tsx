@@ -6,7 +6,7 @@ import Link from "next/link";
 import Button from "@mui/material/Button";
 
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import HomePageLayout from "@/app/_partials/_layout/HomePageLayout";
 import Header from "@/app/_partials/Header";
 import H1 from "@/app/_partials/H1";
@@ -15,6 +15,10 @@ import AppleHome from "@/app/_svgs/AppleHome";
 import JoinEventForm from "./JoinEventForm";
 import ScannerPage from "./ScannerPage";
 import useResponsiveSizes from "@/utils/helper/general/useResponsiveSizes";
+import useJoinEvent from "./useJoinEvent";
+import { useSearchParams } from "next/navigation";
+import LinearProgress from "@mui/material/LinearProgress";
+import { cn } from "@/lib/utils";
 
 export type Anchor = "right";
 
@@ -22,6 +26,13 @@ export default function ScannerComponent({ token }: { token: string }) {
   const [state, setState] = useState({
     right: false,
   });
+  const searchParams = useSearchParams();
+
+  const eventCode = searchParams.get("eventCode");
+  const { isJoining, getEventByCode } = useJoinEvent();
+  console.log(eventCode);
+
+  useEffect(function () {}, []);
 
   const { clientWidth } = useResponsiveSizes();
 
@@ -55,12 +66,29 @@ export default function ScannerComponent({ token }: { token: string }) {
       />
     </div>
   );
+
+  useEffect(function () {
+    if (!eventCode) return;
+    async function getEvent() {
+      await getEventByCode(eventCode as string);
+    }
+    getEvent();
+  }, []);
+
   return (
     <div>
       {(["right"] as const).map((anchor) => (
         <React.Fragment key={anchor}>
+          {isJoining ? <LinearProgress /> : null}
           <HomePageLayout>
-            <div className="min-h-[80vh] relative max-[750px]:pt-[80px] pb-[100px]">
+            <div
+              className={cn(
+                "min-h-[80vh] relative max-[750px]:pt-[80px] pb-[100px] cursor-not-allowed",
+                isJoining
+                  ? "cursor-not-allowed opacity-50"
+                  : "cursor-auto opacity-100"
+              )}
+            >
               <div className="relative z-10">
                 <Header />
                 <div className="mx-auto px-[20px]">
