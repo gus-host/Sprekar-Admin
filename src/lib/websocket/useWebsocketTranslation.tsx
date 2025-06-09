@@ -21,6 +21,12 @@ interface ChatMessage {
   translation: string;
   timestamp: Date;
 }
+interface ChatMessageOptimized {
+  text: string;
+  translation: string | { text: string };
+  createdAt?: string;
+  timestamp?: string;
+}
 
 export type OptionType = {
   value: string;
@@ -62,7 +68,7 @@ export default function useWebsocketTranslation(
   const [isRecording, setIsRecording] = useState<boolean>(false);
   const [hasJoinedEvent, setHasJoinedEvent] = useState<boolean>(false);
   const [message, setMessage] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [genIsLoading, setGenIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [mediaRecorder, setMediaRecorder] = useState<MediaRecorderState | null>(
     null
@@ -76,6 +82,10 @@ export default function useWebsocketTranslation(
   const [audioDevices, setAudioDevices] = useState<MediaDeviceInfo[]>([]);
   const [selectedDeviceId, setSelectedDeviceId] = useState("");
   const [loadingMore, setLoadingMore] = useState<boolean>(false);
+  const [streamingLanguage, setStreamingLanguage] = useState<"EN_GB" | "NL">(
+    "EN_GB"
+  );
+  const [isLoading, setIsLoading] = useState(false);
 
   const websocketUrl = process.env.NEXT_PUBLIC_WEBSOCKET_BASE_URL;
   const restApi = process.env.NEXT_PUBLIC_API_BASE_URL;
@@ -104,7 +114,16 @@ export default function useWebsocketTranslation(
         return;
       }
       const data = await response.json();
-      const olderConversations: ChatMessage[] = data.data.conversations || [];
+      const olderConversations: ChatMessage[] = data.data.conversations.map(
+        (c: ChatMessageOptimized) => ({
+          text: c.text || "",
+          translation:
+            typeof c.translation === "string"
+              ? c.translation
+              : c.translation?.text || "",
+          timestamp: c.createdAt || new Date().toISOString(),
+        })
+      );
       if (olderConversations.length < 10) {
         setHasMore(false);
       }
@@ -127,6 +146,7 @@ export default function useWebsocketTranslation(
   // Initial load of conversation history
   const fetchInitialConversations = useCallback(async () => {
     if (!eventCode) return;
+    setGenIsLoading(true);
     try {
       const response = await fetch(
         `${restApi}/conversations/${eventCode}?page=1&limit=10`
@@ -139,11 +159,21 @@ export default function useWebsocketTranslation(
         return;
       }
       const data = await response.json();
-      setChatMessages(data.data.conversations || []);
+      const mapped = data.data.conversations.map((c: ChatMessageOptimized) => ({
+        text: c.text || "",
+        translation:
+          typeof c.translation === "string"
+            ? c.translation
+            : c.translation?.text || "",
+        timestamp: c.createdAt || new Date().toISOString(),
+      }));
+      setChatMessages(mapped);
       setCurrentPage(1);
-      setHasMore((data.data.conversations || []).length === 10);
+      setHasMore(mapped.length === 10);
     } catch (error) {
       console.error("Error fetching conversation history:", error);
+    } finally {
+      setGenIsLoading(false);
     }
   }, [eventCode, restApi]);
 
@@ -159,15 +189,18 @@ export default function useWebsocketTranslation(
       const socket = new WebSocket(websocketUrl || "");
       socket.onopen = () => {
         console.log("Connected to server");
+        setGenIsLoading(false);
         setWs(socket);
         resolve(socket);
       };
       socket.onerror = (err) => {
         console.error("WebSocket connection error:", err);
+        setGenIsLoading(true);
         reject(err);
       };
       socket.onclose = () => {
         console.warn("WebSocket closed.");
+        setGenIsLoading(true);
         setMessage("websocket-closed");
         setWs(null);
       };
@@ -179,11 +212,14 @@ export default function useWebsocketTranslation(
     if (ws && ws.readyState === WebSocket.OPEN) {
       ws.send(message);
     } else {
+      setGenIsLoading(true);
       try {
         const socket = await connectWebSocket();
         socket.send(message);
       } catch (error) {
         console.error("Failed to reconnect and send message:", error);
+      } finally {
+        setGenIsLoading(false);
       }
     }
   };
@@ -265,8 +301,16 @@ export default function useWebsocketTranslation(
         (data.type === "success" && data.message === "Event has started")
       ) {
         setIsEventStarted(true);
-        if (data.conversations) {
-          setChatMessages(data.conversations);
+        if (Array.isArray(data.conversations)) {
+          const mapped = data.conversations.map((c: ChatMessageOptimized) => ({
+            text: c.text || "",
+            translation:
+              typeof c.translation === "string"
+                ? c.translation
+                : c.translation?.text || "",
+            timestamp: c.timestamp || new Date().toISOString(),
+          }));
+          setChatMessages(mapped);
         }
 
         // joined event
@@ -275,8 +319,16 @@ export default function useWebsocketTranslation(
         data.message === "Successfully joined event"
       ) {
         setHasJoinedEvent(true);
-        if (data.conversations) {
-          setChatMessages(data.conversations);
+        if (Array.isArray(data.conversations)) {
+          const mapped = data.conversations.map((c: ChatMessageOptimized) => ({
+            text: c.text || "",
+            translation:
+              typeof c.translation === "string"
+                ? c.translation
+                : c.translation?.text || "",
+            timestamp: c.timestamp || new Date().toISOString(),
+          }));
+          setChatMessages(mapped);
         }
         if (user?._id) return;
         setParticipantId(data.participantId as string);
@@ -295,6 +347,7 @@ export default function useWebsocketTranslation(
         if (ws) ws.close();
         connectWebSocket().then((newSocket) => {
           if (eventCode) {
+            setGenIsLoading(true);
             newSocket.send(
               JSON.stringify({
                 type: "join",
@@ -306,6 +359,7 @@ export default function useWebsocketTranslation(
                 conversationLimit: 10,
               })
             );
+            setGenIsLoading(false);
             console.log("Rejoined after speech error.");
           }
         });
@@ -377,9 +431,17 @@ export default function useWebsocketTranslation(
     // 1) Fire off your audio‐start
     const sock = wsRef.current!;
     if (sock.readyState === WebSocket.OPEN) {
-      sock.send(JSON.stringify({ type: "audio-start", eventCode }));
+      sock.send(
+        JSON.stringify({ type: "audio-start", eventCode, streamingLanguage })
+      );
     } else {
-      await sendWsMessage(JSON.stringify({ type: "audio-start", eventCode }));
+      await sendWsMessage(
+        JSON.stringify({
+          type: "audio-start",
+          eventCode,
+          streamingLanguage,
+        })
+      );
     }
 
     // 2) Immediately ask for the mic and hook up onaudioprocess
@@ -472,5 +534,9 @@ export default function useWebsocketTranslation(
     audioDevices,
     selectedDeviceId,
     setSelectedDeviceId,
+    streamingLanguage,
+    setStreamingLanguage,
+    genIsLoading,
+    loadingMore,
   };
 }
