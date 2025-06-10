@@ -71,6 +71,7 @@ export default function Swiper() {
               src={feature.img}
               alt={feature.alt}
               quality={100}
+              className="min-[744px]:hidden"
               placeholder="blur"
             />
           </div>

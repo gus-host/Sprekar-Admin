@@ -13,6 +13,7 @@ import Swiper from "./_partials/Swiper";
 import { cn } from "@/lib/utils";
 import { subscriptionPlans } from "./_partials/homePageData";
 import H1 from "./_partials/H1";
+import FeatureScroll from "@/components/FeatureScroll";
 
 export default function Home() {
   return (
@@ -93,9 +94,10 @@ export default function Home() {
               <JoinOrHostEventSteps />
             </div>
           </section>
-          <section className="px-[20px]">
+          <section className="px-[20px] relative">
             {/* FEATURES SECTION */}
-            <Swiper />
+            {/* <Swiper /> */}
+            <FeatureScroll />
           </section>
           <section
             style={{
