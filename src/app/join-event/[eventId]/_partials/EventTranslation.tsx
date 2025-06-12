@@ -44,7 +44,6 @@ export default function EventTranslation({
   error?: string;
 }) {
   const {
-    translation,
     translationLanguage,
     setTranslationLanguage,
     rejoinEvent,
@@ -107,6 +106,13 @@ export default function EventTranslation({
       chatEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [chatMessages]);
+
+  useEffect(() => {
+    if (!event?.eventIsOngoing || event?.status === "ended") return;
+    if (event.name) {
+      document.title = `${event.name} | Join Event | Sprekar`;
+    }
+  }, [event?.name, event?.eventIsOngoing, event?.status]);
 
   // useEffect(
   //   function () {
@@ -246,7 +252,7 @@ export default function EventTranslation({
               onScroll={handleScroll}
             >
               <div>
-                {translation.length === 0 ? (
+                {chatMessages.length === 0 ? (
                   <p className="text-center mt-8 text-[#676767]">
                     No translations yet.
                   </p>

@@ -28,7 +28,7 @@ export const removeUserTokenCookie = (
   options?: Cookies.CookieAttributes
 ): void => {
   Cookies.remove(USER_TOKEN_KEY, options);
-  Cookies.remove(REFRESH_TOKEN_KEY);
+  Cookies.remove(REFRESH_TOKEN_KEY, options);
 };
 
 /**
