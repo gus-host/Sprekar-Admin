@@ -495,6 +495,7 @@ export default function useWebsocketTranslation(
     actionMeta?: ActionMeta<OptionType>
   ) => {
     setTranslationLanguage(option);
+    console.log(option?.value);
     if (isEventStarted || hasJoinedEvent) {
       const msg: any = {
         type: "change-language",

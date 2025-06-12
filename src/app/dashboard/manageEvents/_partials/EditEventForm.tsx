@@ -156,6 +156,12 @@ export default function EditEventForm({
     });
   }, []);
 
+  useEffect(() => {
+    if (eventData.name) {
+      document.title = `${eventData.name} | Edit Event | Sprekar`;
+    }
+  }, [eventData?.name]);
+
   function getGmtOffset(timezone: string): string {
     const offsetMinutes = moment.tz(timezone).utcOffset();
     const sign = offsetMinutes >= 0 ? "+" : "-";
