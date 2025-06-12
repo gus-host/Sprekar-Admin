@@ -1,6 +1,5 @@
 "use client";
 
-import { useUser } from "@/app/context/UserContext";
 import { User } from "@/app/dashboard/_partials/ProfileImgGetter";
 import {
   getSavedParticipantId,
@@ -495,7 +494,6 @@ export default function useWebsocketTranslation(
     actionMeta?: ActionMeta<OptionType>
   ) => {
     setTranslationLanguage(option);
-    console.log(option?.value);
     if (isEventStarted || hasJoinedEvent) {
       const msg: any = {
         type: "change-language",
