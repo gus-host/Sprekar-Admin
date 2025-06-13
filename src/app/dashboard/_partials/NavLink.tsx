@@ -9,6 +9,7 @@ export interface NavLinkProps {
   href: string;
   children: React.ReactNode;
   className?: string;
+  onClick?: any;
   activeClassName?: string;
 }
 
