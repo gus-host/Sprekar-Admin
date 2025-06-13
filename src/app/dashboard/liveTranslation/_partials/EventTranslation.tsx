@@ -114,6 +114,13 @@ export default function EventTranslation({
     }
   }, [chatMessages, event?.eventIsOngoing, event?.status]);
 
+  useEffect(() => {
+    if (!event?.eventIsOngoing || event?.status === "ended") return;
+    if (event.name) {
+      document.title = `${event.name} | Event Translation | Sprekar`;
+    }
+  }, [event?.name, event?.eventIsOngoing, event?.status]);
+
   useEffect(function () {
     if (!event) return;
 

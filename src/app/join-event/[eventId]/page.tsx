@@ -3,7 +3,7 @@ import EventGetter from "./EventGetter";
 
 type Params = Promise<{ eventId: string }>;
 export const metadata = {
-  title: "Event Translation",
+  title: "Join Event",
 };
 
 export default async function page(props: { params: Params }) {

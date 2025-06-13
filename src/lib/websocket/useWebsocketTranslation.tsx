@@ -1,6 +1,5 @@
 "use client";
 
-import { useUser } from "@/app/context/UserContext";
 import { User } from "@/app/dashboard/_partials/ProfileImgGetter";
 import {
   getSavedParticipantId,
