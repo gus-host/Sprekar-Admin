@@ -22,7 +22,7 @@ export default function NavLinkHomeLayout({
         `${className}`,
         isActive
           ? activeClassName
-          : href === "/login"
+          : href === "/login" || href === "/contact-us"
           ? "opacity-100"
           : "opacity-50"
       )}

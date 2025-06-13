@@ -28,6 +28,7 @@ export type Steps = {
   alt?: string;
 };
 export type Feature = {
+  id?: string;
   title: string;
   desc: string;
   img: StaticImageData;
@@ -108,6 +109,7 @@ export const hostEventSteps: Steps[] = [
 
 export const features: Feature[] = [
   {
+    id: "feat-1",
     title: "Real-Time Translations",
     desc: "Instant Speech-to-Speech & Speech-to-Text – Talk freely, and let Craysoft translate on the fly.",
     img: featureRealTimeImgLarge,
@@ -116,6 +118,7 @@ export const features: Feature[] = [
     alt: "Phones showing chat room and conversation",
   },
   {
+    id: "feat-2",
     title: "Event Translations",
     desc: "QR Code Event Access – Scan & join live multilingual conversations in seconds.",
     img: featureEventImg,
@@ -124,6 +127,7 @@ export const features: Feature[] = [
     alt: "Phones showing join event screen and live translations",
   },
   {
+    id: "feat-3",
     title: "AI-Powered Summaries",
     desc: "Missed a Meeting? No Problem. AI generates key takeaways & action points from conversations.",
     img: featureSummaryImgLarge,

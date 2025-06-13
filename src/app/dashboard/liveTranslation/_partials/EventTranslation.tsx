@@ -40,6 +40,7 @@ import { downloadQrcodeImage } from "../../manageEvents/_partials/CreateEventFor
 import SpeakerIconPause from "@/app/_svgs/SpeakerIconPause";
 import SpeakerIconPlay from "@/app/_svgs/SpeakerIconPlay";
 import { useUser } from "@/app/context/UserContext";
+import LinearProgress from "@mui/material/LinearProgress";
 
 // prettier-ignore
 const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -53,7 +54,6 @@ export default function EventTranslation({
 }) {
   const user = useUser();
   const {
-    translation,
     translationLanguage,
     setTranslationLanguage,
     rejoinEvent,
@@ -72,6 +72,10 @@ export default function EventTranslation({
     audioDevices,
     selectedDeviceId,
     setSelectedDeviceId,
+    streamingLanguage,
+    setStreamingLanguage,
+    genIsLoading,
+    loadingMore,
   } = useWebsocketTranslation(
     user,
     event?.createdBy || "",
@@ -233,6 +237,12 @@ export default function EventTranslation({
 
   return (
     <div className="text-[#323232]">
+      {loadingMore || genIsLoading ? (
+        <LinearProgress />
+      ) : (
+        <div className="h-[4px]"></div>
+      )}
+
       <FullScreen handle={handleFullScreen} onChange={handleChangeFullScreen}>
         <div
           style={{
@@ -262,6 +272,10 @@ export default function EventTranslation({
           <div className="mt-[10px]">
             <div className="flex justify-end">
               <div className="flex gap-3 items-center ">
+                <StreamingLanguageSelector
+                  language={streamingLanguage}
+                  setLanguage={setStreamingLanguage}
+                />
                 <QrCodeIcon
                   className="cursor-pointer"
                   size={16}
@@ -306,16 +320,16 @@ export default function EventTranslation({
                 height: `${
                   (clientWidth as number) > 915
                     ? (clientHeight as number) -
-                      (!isShowFullScreen ? 280.34 : 233.34)
+                      (!isShowFullScreen ? 290.34 : 233.34)
                     : (clientHeight as number) -
-                      (!isShowFullScreen ? 354.34 : 334.34)
+                      (!isShowFullScreen ? 364.34 : 334.34)
                 }px`,
               }}
               ref={chatContainerRef}
               onScroll={handleScroll}
             >
               <div>
-                {translation.length === 0 ? (
+                {chatMessages.length === 0 ? (
                   <p className="text-center mt-8 text-[#676767]">
                     No translations yet.
                   </p>
@@ -572,6 +586,28 @@ function EventController({
           </ModalMUI>
         )}
       </div>
+    </div>
+  );
+}
+
+function StreamingLanguageSelector({
+  language,
+  setLanguage,
+}: {
+  language: "EN_GB" | "NL";
+  setLanguage: React.Dispatch<React.SetStateAction<"EN_GB" | "NL">>;
+}) {
+  return (
+    <div>
+      <select
+        id="language-select"
+        value={language}
+        onChange={(e) => setLanguage(e.target.value as "EN_GB" | "NL")}
+        className="text-[12px] border border-gray-300 rounded p-0.5"
+      >
+        <option value="EN_GB">English</option>
+        <option value="NL">Dutch</option>
+      </select>
     </div>
   );
 }
