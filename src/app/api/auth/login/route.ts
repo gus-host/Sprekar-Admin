@@ -30,7 +30,7 @@ export async function POST(req: Request) {
 
     res.cookies.set("refreshToken", refreshToken, {
       httpOnly: true,
-      // secure: isProd,
+      secure: isProd,
       sameSite: "lax",
       path: "/",
       maxAge: 60 * 60 * 24 * 7,
@@ -38,7 +38,7 @@ export async function POST(req: Request) {
 
     res.cookies.set("defaultToken", accessToken, {
       httpOnly: true,
-      // secure: ,
+      secure: isProd,
       sameSite: "lax",
       path: "/",
       maxAge: 60 * 60 * 24 * 7,
@@ -46,6 +46,7 @@ export async function POST(req: Request) {
 
     return res;
   } catch (error: unknown) {
+    console.log(error, ">>>>>>>");
     let errorMessage = "Error occurred";
     let statusCode = 500;
 
