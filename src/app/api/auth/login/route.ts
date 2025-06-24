@@ -46,7 +46,6 @@ export async function POST(req: Request) {
 
     return res;
   } catch (error: unknown) {
-    console.log(error, ">>>>>>>");
     let errorMessage = "Error occurred";
     let statusCode = 500;
 

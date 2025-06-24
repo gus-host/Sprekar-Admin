@@ -14,24 +14,36 @@ export async function POST(req: Request) {
       role,
     });
 
-    const refreshToken = response.data.data.tokens.refresh;
-    const accessToken = response.data.data.tokens.access.token;
+    const {
+      data: {
+        data: {
+          tokens: {
+            refresh: refreshToken,
+            access: { token: accessToken },
+          },
+        },
+      },
+    } = response;
 
-    const res = NextResponse.json(response.data, { status: response.status });
+    const res = NextResponse.json(response.data, { status: 200 });
 
-    for (const [name, value] of [
-      ["refreshToken", refreshToken],
-      ["defaultToken", accessToken],
-    ] as const) {
-      res.cookies.set(name, value, {
-        httpOnly: true,
-        secure: isProd,
-        sameSite: isProd ? "none" : "lax",
-        domain: isProd ? ".sprekar.com" : undefined,
-        path: "/",
-        maxAge: 60 * 60 * 24 * 7,
-      });
-    }
+    res.cookies.set("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: isProd,
+      sameSite: isProd ? "none" : "lax",
+      domain: isProd ? ".sprekar.com" : undefined,
+      path: "/",
+      maxAge: 60 * 60 * 24 * 7,
+    });
+
+    res.cookies.set("defaultToken", accessToken, {
+      httpOnly: true,
+      secure: isProd,
+      sameSite: isProd ? "none" : "lax",
+      domain: isProd ? ".sprekar.com" : undefined,
+      path: "/",
+      maxAge: 60 * 60 * 24 * 7,
+    });
 
     return res;
   } catch (error: unknown) {

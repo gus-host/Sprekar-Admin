@@ -53,7 +53,6 @@ export default function Login() {
           toast.success(response.data.message || "Login Successful");
           router.push(`/dashboard`);
         } else {
-          console.log(response.data);
           toast.error(response.data.message || "An error occured");
           removeUserTokenCookie();
         }
@@ -89,12 +88,13 @@ export default function Login() {
           setUserTokenCookie(accessToken);
           setRefreshTokenCookie(refreshToken);
         }
-        toast.success(response?.data?.message || "Login Successful");
-        router.push("/dashboard");
+        toast.success(response.data.message || "Login Successful");
+        router.push(`/dashboard`);
       } else {
         toast.error(
           response.data.data.message || "Something went wrong! Try again"
         );
+        removeUserTokenCookie();
       }
     } catch (error) {
       console.error("Error:", error);
