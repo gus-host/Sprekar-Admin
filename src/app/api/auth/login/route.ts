@@ -26,12 +26,11 @@ export async function POST(req: Request) {
 
     const res = NextResponse.json(response.data, { status: 200 });
 
-    // const sameSite = isProd ? "none" : "lax";
-
     res.cookies.set("refreshToken", refreshToken, {
       httpOnly: true,
       secure: isProd,
-      sameSite: "lax",
+      sameSite: isProd ? "none" : "lax",
+      domain: isProd ? ".sprekar.com" : undefined,
       path: "/",
       maxAge: 60 * 60 * 24 * 7,
     });
@@ -39,7 +38,8 @@ export async function POST(req: Request) {
     res.cookies.set("defaultToken", accessToken, {
       httpOnly: true,
       secure: isProd,
-      sameSite: "lax",
+      sameSite: isProd ? "none" : "lax",
+      domain: isProd ? ".sprekar.com" : undefined,
       path: "/",
       maxAge: 60 * 60 * 24 * 7,
     });
