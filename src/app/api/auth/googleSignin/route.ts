@@ -3,6 +3,7 @@ import axios from "axios";
 import api from "@/utils/axios/api";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+const isProd = process.env.NODE_ENV === "production";
 
 export async function POST(req: Request) {
   try {
@@ -22,8 +23,9 @@ export async function POST(req: Request) {
     ] as const) {
       res.cookies.set(name, value, {
         httpOnly: true,
-        // secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
+        secure: isProd,
+        sameSite: isProd ? "none" : "lax",
+        domain: isProd ? ".sprekar.com" : undefined,
         path: "/",
         maxAge: 60 * 60 * 24 * 7,
       });
