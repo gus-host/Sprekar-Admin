@@ -34,7 +34,14 @@ export default function RootLayout({
       <html lang="en">
         <body className={`${openSans.className} bg-[#FCFCFC]`}>
           <>
-            <Toaster position="top-right" />
+            <Toaster
+              position="top-right"
+              toastOptions={{
+                style: {
+                  fontSize: "14px",
+                },
+              }}
+            />
             {children}
           </>
         </body>

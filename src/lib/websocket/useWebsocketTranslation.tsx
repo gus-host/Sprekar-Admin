@@ -223,6 +223,27 @@ export default function useWebsocketTranslation(
     }
   };
 
+  useEffect(() => {
+    // Attempt a reconnect every minute if socket is not open
+    const interval = setInterval(() => {
+      const socket = wsRef.current;
+      const isOpen = socket && socket.readyState === WebSocket.OPEN;
+
+      if (!isOpen) {
+        setGenIsLoading(true);
+        console.warn("WebSocket not open. Reconnecting...");
+        // You can also throttle retries or add a backoff here
+        connectWebSocket().catch((err) =>
+          console.error("Reconnection attempt failed:", err)
+        );
+      } else {
+        setGenIsLoading(false);
+      }
+    }, 5000); // 30 seconds
+
+    return () => clearInterval(interval);
+  }, [connectWebSocket]);
+
   // Load audio devices
   useEffect(() => {
     async function getAudioDevices() {
@@ -430,6 +451,7 @@ export default function useWebsocketTranslation(
     // 1) Fire off your audio‐start
     const sock = wsRef.current!;
     if (sock.readyState === WebSocket.OPEN) {
+      console.log(streamingLanguage);
       sock.send(
         JSON.stringify({ type: "audio-start", eventCode, streamingLanguage })
       );

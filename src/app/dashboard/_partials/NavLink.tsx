@@ -11,6 +11,7 @@ export interface NavLinkProps {
   className?: string;
   onClick?: any;
   activeClassName?: string;
+  onClick?: () => void;
 }
 
 export default function NavLink({
