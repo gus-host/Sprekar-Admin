@@ -7,7 +7,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 export async function POST(req: Request) {
   try {
     const cookieStore = cookies();
-    const token = (await cookieStore).get("refreshToken");
+    const token = (await cookieStore).get("refreshTokenNew");
 
     const { password, passwordConfirm, id } = await req.json();
 

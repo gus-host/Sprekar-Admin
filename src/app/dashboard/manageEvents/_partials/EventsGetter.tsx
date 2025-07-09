@@ -19,7 +19,7 @@ interface Event {
 export default async function EventsGetter() {
   noStore();
   const cookieStore = cookies();
-  const token = (await cookieStore).get("refreshToken")?.value;
+  const token = (await cookieStore).get("refreshTokenNew")?.value;
 
   let events: Event[] = [];
   let error: string | undefined;

@@ -12,7 +12,7 @@ export default function EventDescriptionInput({
     <div className="flex flex-col w-full gap-2">
       <label
         htmlFor="description"
-        className="text-gray-700 text-sm text-[#00000099] font-light]"
+        className="text-sm text-[#00000099] font-light]"
       >
         Leave a message on the QR code
       </label>

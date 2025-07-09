@@ -18,7 +18,7 @@ export async function DELETE(req: Request) {
     }
 
     const cookieStore = cookies();
-    const token = (await cookieStore).get("refreshToken")?.value;
+    const token = (await cookieStore).get("refreshTokenNew")?.value;
 
     if (!token) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });

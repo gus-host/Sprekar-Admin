@@ -3,7 +3,6 @@ import axios from "axios";
 import api from "@/utils/axios/api";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
-const isProd = process.env.NODE_ENV === "production";
 
 export async function POST(req: Request) {
   try {
@@ -14,36 +13,7 @@ export async function POST(req: Request) {
       role,
     });
 
-    const {
-      data: {
-        data: {
-          tokens: {
-            refresh: refreshToken,
-            access: { token: accessToken },
-          },
-        },
-      },
-    } = response;
-
     const res = NextResponse.json(response.data, { status: 200 });
-
-    res.cookies.set("refreshToken", refreshToken, {
-      httpOnly: true,
-      secure: isProd,
-      sameSite: isProd ? "none" : "lax",
-      domain: isProd ? ".sprekar.com" : undefined,
-      path: "/",
-      maxAge: 60 * 60 * 24 * 7,
-    });
-
-    res.cookies.set("defaultToken", accessToken, {
-      httpOnly: true,
-      secure: isProd,
-      sameSite: isProd ? "none" : "lax",
-      domain: isProd ? ".sprekar.com" : undefined,
-      path: "/",
-      maxAge: 60 * 60 * 24 * 7,
-    });
 
     return res;
   } catch (error: unknown) {

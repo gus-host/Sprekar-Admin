@@ -7,7 +7,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 export async function GET() {
   try {
     const cookieStore = cookies();
-    const token = (await cookieStore).get("refreshToken");
+    const token = (await cookieStore).get("refreshTokenNew");
     const response = await api.get(`${BASE_URL}/auth/me`, {
       headers: {
         Authorization: `Bearer ${token?.value}`, // Send the JWT token

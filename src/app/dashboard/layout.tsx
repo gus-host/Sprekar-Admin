@@ -21,7 +21,7 @@ export const revalidate = 0;
 export default async function layout({ children }: { children: ReactNode }) {
   noStore();
   const cookieStore = cookies();
-  const token = (await cookieStore).get("refreshToken")?.value;
+  const token = (await cookieStore).get("refreshTokenNew")?.value;
   let error,
     plan: "free" | "monthly pro" | "none" | undefined = undefined;
   let user: User = {

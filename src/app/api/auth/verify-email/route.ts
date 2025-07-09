@@ -17,8 +17,6 @@ export async function POST(req: Request) {
     let errorMessage = "Error occurred";
     let statusCode = 500;
 
-    // console.log(error);
-
     if (axios.isAxiosError(error)) {
       errorMessage = error.response?.data?.message || "An error occured";
       console.log(error.response);

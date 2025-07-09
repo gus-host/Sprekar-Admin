@@ -16,7 +16,7 @@ export interface User {
 export default async function ProfileImgGetter() {
   noStore();
   const cookieStore = cookies();
-  const token = (await cookieStore).get("refreshToken")?.value;
+  const token = (await cookieStore).get("refreshTokenNew")?.value;
   let user: User = {
     profilePicture: "",
   };

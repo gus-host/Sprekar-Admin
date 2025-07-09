@@ -1,7 +1,9 @@
 import Cookies from "js-cookie";
 
 export const USER_TOKEN_KEY = "defaultToken";
-export const REFRESH_TOKEN_KEY = "refreshToken";
+export const REFRESH_TOKEN_KEY = "refreshTokenNew";
+
+const isProd = process.env.NODE_ENV === "production";
 
 /**
  * Set the userToken cookie.
@@ -15,7 +17,7 @@ export const setUserTokenCookie = (
 ): void => {
   Cookies.set(USER_TOKEN_KEY, value, {
     ...options,
-    secure: process.env.NEXT_APP_ENV === "production", // Ensure secure transmission in production
+    secure: true, // Ensure secure transmission in production
   });
 };
 
@@ -45,9 +47,9 @@ export const getUserTokenCookie = (): string | undefined => {
  */
 export const setRefreshTokenCookie = (refreshToken: string): void => {
   Cookies.set(REFRESH_TOKEN_KEY, refreshToken, {
-    secure: process.env.NEXT_APP_ENV === "production",
-    sameSite: "none",
-    path: "/",
+    secure: isProd,
+    // sameSite: "none",
+    // path: "/",
   });
 };
 

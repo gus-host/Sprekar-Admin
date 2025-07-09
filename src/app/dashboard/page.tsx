@@ -28,7 +28,7 @@ type DashboardData = {
 export default async function Page() {
   noStore();
   const cookieStore = cookies();
-  const token = (await cookieStore).get("refreshToken")?.value;
+  const token = (await cookieStore).get("refreshTokenNew")?.value;
 
   let dashboardData: DashboardData = {};
   let error: string | undefined;

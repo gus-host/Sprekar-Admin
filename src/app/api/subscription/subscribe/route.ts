@@ -9,7 +9,7 @@ export async function POST(req: Request) {
     const { priceId } = await req.json();
 
     const cookieStore = cookies();
-    const token = (await cookieStore).get("refreshToken");
+    const token = (await cookieStore).get("refreshTokenNew");
     const response = await api.post(
       `${BASE_URL}/subscription/create-checkout-session`,
       {

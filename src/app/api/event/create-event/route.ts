@@ -20,7 +20,7 @@ export async function POST(req: Request) {
     } = await req.json();
 
     const cookieStore = cookies();
-    const token = (await cookieStore).get("refreshToken");
+    const token = (await cookieStore).get("refreshTokenNew");
     const response = await api.post(
       `${BASE_URL}/events`,
       {

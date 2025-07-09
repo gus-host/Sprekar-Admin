@@ -16,7 +16,7 @@ export function middleware(req: NextRequest) {
 
   // 2️⃣ Everything else under /dashboard → always enforce
   if (pathname.startsWith("/dashboard")) {
-    const token = req.cookies.get("refreshToken")?.value;
+    const token = req.cookies.get("refreshTokenNew")?.value;
     if (!token) {
       return NextResponse.redirect(new URL("/login", req.url));
     }
