@@ -1,10 +1,12 @@
+"use client";
+
 import Cookies from "js-cookie";
 
 export const USER_TOKEN_KEY = "defaultToken";
 export const REFRESH_TOKEN_KEY = "refreshTokenNew";
 
 const isProd = process.env.NODE_ENV === "production";
-
+console.log(process.env.NODE_ENV);
 /**
  * Set the userToken cookie.
  *
@@ -17,7 +19,10 @@ export const setUserTokenCookie = (
 ): void => {
   Cookies.set(USER_TOKEN_KEY, value, {
     ...options,
-    secure: true, // Ensure secure transmission in production
+    secure: isProd, // Ensure secure transmission in production
+    sameSite: isProd ? "none" : "lax",
+    domain: isProd ? ".sprekar.com" : undefined,
+    path: "/",
   });
 };
 
@@ -48,8 +53,9 @@ export const getUserTokenCookie = (): string | undefined => {
 export const setRefreshTokenCookie = (refreshToken: string): void => {
   Cookies.set(REFRESH_TOKEN_KEY, refreshToken, {
     secure: isProd,
-    // sameSite: "none",
-    // path: "/",
+    sameSite: isProd ? "none" : "lax",
+    domain: isProd ? ".sprekar.com" : undefined,
+    path: "/",
   });
 };
 

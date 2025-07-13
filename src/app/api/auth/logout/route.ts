@@ -11,12 +11,19 @@ export async function GET() {
       headers: {
         "Set-Cookie": [
           // Clear defaultToken (js-cookie default path=/, no sameSite override)
-          `defaultToken=; Path=/; ${isProd ? "Secure" : ""}`,
+          `defaultToken=; Path=/; SameSite=${isProd ? "none" : "lax"}; Domain=${
+            isProd ? ".sprekar.com" : "localhost"
+          }; ${isProd ? "Secure" : ""}`,
           // Clear refreshToken (js-cookie used sameSite=None; path=/)
-          `refreshTokenNew=; Path=/; ${isProd ? "Secure" : ""}`,
+          `refreshTokenNew=; Path=/; SameSite=${
+            isProd ? "none" : "lax"
+          }; Domain=${isProd ? ".sprekar.com" : "localhost"}; ${
+            isProd ? "Secure" : ""
+          }`,
         ].join(", "),
       },
     }
   );
+
   return response;
 }
