@@ -20,6 +20,22 @@
   overflow-y: auto;
 }
 
+.rhap_volume-controls,
+.rhap_additional-controls {
+  display: none !important;
+}
+.rhap_controls-section {
+  flex: 0 1 auto !important;
+}
+
+.rhap_progress-indicator {
+  background-color: #0255da !important;
+}
+
+.rhap_main-controls-button {
+  color: #0255da !important;
+}
+
 .swiper,
 .swiper-wrapper {
   max-height: 769px !important;

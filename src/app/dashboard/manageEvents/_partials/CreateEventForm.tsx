@@ -213,7 +213,7 @@ export default function CreateEventForm() {
             <Toggle name="isQRCodeEnabled" />
           </div>
           <div className="flex gap-2 text-[14px] ">
-            <strong>Is Reoccuring? </strong>
+            <strong>Is Recurring? </strong>
             <ToggleRecurring name="isReoccuring" />
           </div>
         </div>

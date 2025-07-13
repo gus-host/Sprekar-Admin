@@ -5,6 +5,8 @@ import dayjs from "dayjs";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ActionMeta, SingleValue } from "react-select";
+import AudioPlayer from "react-h5-audio-player";
+import "react-h5-audio-player/lib/styles.css";
 import { truncateText } from "@/utils/helper/general/truncateText";
 import {
   FullScreen,
@@ -18,13 +20,17 @@ import RejoinEventModal from "@/app/dashboard/liveTranslation/_partials/RejoinEv
 import ButtonBlue from "@/app/dashboard/_partials/ButtonBlue";
 import ModalMUI from "@/components/ModalMUI";
 import useResponsiveSizes from "@/utils/helper/general/useResponsiveSizes";
-import useWebsocketTranslation from "@/lib/websocket/useWebsocketTranslation";
-import { Skeleton } from "@mui/material";
+import useWebsocketTranslation, {
+  AudioUrls,
+  ChatMessage,
+} from "@/lib/websocket/useWebsocketTranslation";
+import { LinearProgress, Skeleton } from "@mui/material";
 import { Event } from "@/app/dashboard/liveTranslation/[eventId]/EventGetter";
 import {
   languageMap,
   LanguageOption,
 } from "@/app/dashboard/manageEvents/_partials/SupportedLanguagesSelect";
+import { cn } from "@/lib/utils";
 const SupportedLangaugesTranslation = dynamic(
   () =>
     import(
@@ -54,6 +60,12 @@ export default function EventTranslation({
     chatMessages,
     participantCount,
     joinEvent,
+    loadingMore,
+    genIsLoading,
+    audioUrls,
+    isAudioMessage,
+    setAudioMessage,
+    setTextMessage,
   } = useWebsocketTranslation(
     null,
     event?.createdBy || "",
@@ -114,27 +126,6 @@ export default function EventTranslation({
     }
   }, [event?.name, event?.eventIsOngoing, event?.status]);
 
-  // useEffect(
-  //   function () {
-  //     if (!event?.eventIsOngoing || event?.status === "ended") return;
-  //     function defaultLangSetter() {
-  //       if (
-  //         hasRunDefaultTransLangRef.current === false &&
-  //         message === "Event has started"
-  //       ) {
-  //         const defaultCode = event?.supportedLanguages?.at(0);
-  //         handleTranslationLanguageChange({
-  //           value: defaultCode || "AR",
-  //           label: languageMap[defaultCode || "AR"] || defaultCode || "AR", // Fallback to code if label isn't found
-  //         });
-  //         hasRunDefaultTransLangRef.current = true;
-  //       }
-  //     }
-  //     defaultLangSetter();
-  //   },
-  //   [message]
-  // );
-
   useEffect(
     function () {
       if (!event?.eventIsOngoing || event?.status === "ended") return;
@@ -192,7 +183,32 @@ export default function EventTranslation({
     );
 
   return (
-    <div className="text-[#323232]">
+    <div className="text-[#323232] relative">
+      <ul className="absolute -top-8 right-0 text-[12px] rounded-xl overflow-hidden flex items-center bg-white">
+        <li
+          onClick={setTextMessage}
+          className={cn(
+            "px-2 py-1 flex cursor-pointer",
+            !isAudioMessage ? "bg-[#0255DA] text-white" : ""
+          )}
+        >
+          Text
+        </li>
+        <li
+          onClick={setAudioMessage}
+          className={cn(
+            "px-2 py-1 flex cursor-pointer",
+            isAudioMessage ? "bg-[#0255DA] text-white" : ""
+          )}
+        >
+          Audio
+        </li>
+      </ul>
+      {loadingMore || genIsLoading ? (
+        <LinearProgress />
+      ) : (
+        <div className="h-[4px]"></div>
+      )}
       <FullScreen handle={handleFullScreen} onChange={handleChangeFullScreen}>
         <div
           style={{
@@ -252,48 +268,70 @@ export default function EventTranslation({
               onScroll={handleScroll}
             >
               <div>
-                {chatMessages.length === 0 ? (
+                {(isAudioMessage ? audioUrls : chatMessages).length === 0 ? (
                   <p className="text-center mt-8 text-[#676767]">
                     No translations yet.
                   </p>
                 ) : (
                   <ul className="flex flex-col gap-1 w-[95%]">
-                    {chatMessages?.map((msg, index) => (
-                      <div key={index} className="w-[100%]">
-                        <div
-                          style={{
-                            background: "#fff",
-                            padding: "0.5rem 1rem",
-                            borderRadius: "10px",
-                            margin: "0.5rem 0",
-                            boxShadow: " 0px 7px 20.8px 0px #0000000D",
-                          }}
-                        >
+                    {(isAudioMessage ? audioUrls : chatMessages)?.map(
+                      (msg, index) => (
+                        <div key={index} className="w-[100%]">
                           <div
                             style={{
-                              fontSize: "16px",
-                              color: "#5E5D5D",
+                              background: "#fff",
+                              padding: "0.5rem 1rem",
+                              borderRadius: "10px",
+                              margin: "0.5rem 0",
+                              boxShadow: " 0px 7px 20.8px 0px #0000000D",
                             }}
                           >
-                            {(msg?.translation as { text?: string }).text
-                              ? (msg?.translation as { text?: string }).text
-                              : msg?.translation}
-                          </div>
-                          <div
-                            style={{
-                              fontSize: "0.75rem",
-                              color: "#999",
-                              textAlign: "right",
-                            }}
-                          >
-                            {new Date(msg.timestamp).toLocaleTimeString() ===
-                            "Invalid Date"
-                              ? ""
-                              : new Date(msg.timestamp).toLocaleTimeString()}
+                            {isAudioMessage ? (
+                              <AudioPlayer
+                                layout="horizontal-reverse"
+                                src={(msg as AudioUrls).url}
+                                onPlay={(e) => console.log("onPlay")}
+                                showJumpControls={false}
+                                showDownloadProgress={false}
+                                showFilledVolume={false}
+                                // other props here
+                              />
+                            ) : (
+                              <div
+                                style={{
+                                  fontSize: "16px",
+                                  color: "#5E5D5D",
+                                }}
+                              >
+                                {(
+                                  (msg as ChatMessage)?.translation as {
+                                    text?: string;
+                                  }
+                                ).text
+                                  ? (
+                                      (msg as ChatMessage)?.translation as {
+                                        text?: string;
+                                      }
+                                    ).text
+                                  : (msg as ChatMessage)?.translation}
+                              </div>
+                            )}
+                            <div
+                              style={{
+                                fontSize: "0.75rem",
+                                color: "#999",
+                                textAlign: "right",
+                              }}
+                            >
+                              {new Date(msg.timestamp).toLocaleTimeString() ===
+                              "Invalid Date"
+                                ? ""
+                                : new Date(msg.timestamp).toLocaleTimeString()}
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    ))}
+                      )
+                    )}
                     <div ref={chatEndRef} />
                   </ul>
                 )}

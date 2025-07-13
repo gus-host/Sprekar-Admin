@@ -1,6 +1,8 @@
 "use client";
 
 import { User } from "@/app/dashboard/_partials/ProfileImgGetter";
+import { synthesizeSequentially } from "@/services/tts/synthesizeSequentially";
+import synthesizeText from "@/services/tts/synthesizeText";
 import {
   getSavedParticipantId,
   saveJoinRecord,
@@ -15,7 +17,7 @@ interface MediaRecorderState {
   processor: ScriptProcessorNode;
 }
 
-interface ChatMessage {
+export interface ChatMessage {
   text: string;
   translation: string;
   timestamp: Date;
@@ -25,6 +27,11 @@ interface ChatMessageOptimized {
   translation: string | { text: string };
   createdAt?: string;
   timestamp?: string;
+}
+
+export interface AudioUrls {
+  timestamp: Date;
+  url: string;
 }
 
 export type OptionType = {
@@ -73,6 +80,8 @@ export default function useWebsocketTranslation(
     null
   );
   const [ws, setWs] = useState<WebSocket | null>(null);
+  const [isAudioMessage, setIsAudioMessage] = useState(false);
+  const [audioUrls, setAudioUrls] = useState<AudioUrls[]>([]);
 
   // State for conversation history pagination
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
@@ -126,7 +135,16 @@ export default function useWebsocketTranslation(
       if (olderConversations.length < 10) {
         setHasMore(false);
       }
+      const texts = olderConversations.map(
+        (c: { translation: string }) => `${c.translation}`
+      );
+      const urls = await synthesizeSequentially(texts, "alloy");
+      const olderAudioUrls = urls.map((url, i) => ({
+        url,
+        timestamp: olderConversations[i].timestamp as Date,
+      }));
       setCurrentPage((prev) => prev + 1);
+      setAudioUrls((prev) => [...olderAudioUrls, ...prev]);
       setChatMessages((prev) => [...olderConversations, ...prev]);
     } catch (error) {
       console.error("Error loading older messages", error);
@@ -166,6 +184,15 @@ export default function useWebsocketTranslation(
             : c.translation?.text || "",
         timestamp: c.createdAt || new Date().toISOString(),
       }));
+      const texts = data.data.conversations.map(
+        (c: { translation: string }) => `${c.translation}`
+      );
+      const urls = await synthesizeSequentially(texts, "alloy");
+      const audioUrls = urls.map((url, i) => ({
+        url,
+        timestamp: mapped[i].timestamp as Date,
+      }));
+      setAudioUrls(audioUrls);
       setChatMessages(mapped);
       setCurrentPage(1);
       setHasMore(mapped.length === 10);
@@ -175,6 +202,23 @@ export default function useWebsocketTranslation(
       setGenIsLoading(false);
     }
   }, [eventCode, restApi]);
+
+  async function fetchSynthesizedText(text: string) {
+    try {
+      const url = synthesizeText(text);
+      return url;
+    } catch (err) {
+      console.error("Failed to get audio", err);
+    }
+  }
+  async function fetchSynthesizedSequentially(texts: string[]) {
+    try {
+      const urls = synthesizeSequentially(texts, "alloy");
+      return urls;
+    } catch (err) {
+      console.error("Failed to get audio", err);
+    }
+  }
 
   useEffect(() => {
     if (hasJoinedEvent && eventCode) {
@@ -273,7 +317,7 @@ export default function useWebsocketTranslation(
   // Handle incoming messages
   useEffect(() => {
     if (!ws) return;
-    ws.onmessage = (event: MessageEvent) => {
+    ws.onmessage = async (event: MessageEvent) => {
       const data = JSON.parse(event.data);
       console.log("Received from server:", data);
       setIsLoading(false);
@@ -304,6 +348,7 @@ export default function useWebsocketTranslation(
         setTranslation(
           data.translation.text ? data.translation.text : data.translation
         );
+        // const url = synthes
         setChatMessages((prev) => [
           ...prev,
           {
@@ -311,6 +356,18 @@ export default function useWebsocketTranslation(
             translation: data.translation.text
               ? data.translation.text
               : data.translation,
+            timestamp: new Date(),
+          },
+        ]);
+
+        const url = await fetchSynthesizedText(
+          data.translation.text || data.translation
+        );
+        if (typeof url !== "string") return;
+        setAudioUrls((prev) => [
+          ...prev,
+          {
+            url: url || "",
             timestamp: new Date(),
           },
         ]);
@@ -331,6 +388,14 @@ export default function useWebsocketTranslation(
             timestamp: c.timestamp || new Date().toISOString(),
           }));
           setChatMessages(mapped);
+          const texts = mapped.map((c: ChatMessageOptimized) => c.translation);
+          const urls = await fetchSynthesizedSequentially(texts);
+
+          const audioUrls = urls?.map((url, i) => ({
+            url,
+            timestamp: mapped[i]?.timestamp as Date,
+          }));
+          setAudioUrls(audioUrls || []);
         }
 
         // joined event
@@ -349,6 +414,14 @@ export default function useWebsocketTranslation(
             timestamp: c.timestamp || new Date().toISOString(),
           }));
           setChatMessages(mapped);
+          const texts = mapped.map((c: ChatMessageOptimized) => c.translation);
+          const urls = await fetchSynthesizedSequentially(texts);
+
+          const audioUrls = urls?.map((url, i) => ({
+            url,
+            timestamp: mapped[i].timestamp as Date,
+          }));
+          setAudioUrls(audioUrls || []);
         }
         if (user?._id) return;
         setParticipantId(data.participantId as string);
@@ -528,6 +601,13 @@ export default function useWebsocketTranslation(
     }
   };
 
+  function setAudioMessage() {
+    setIsAudioMessage(true);
+  }
+  function setTextMessage() {
+    setIsAudioMessage(false);
+  }
+
   return {
     transcription,
     translation,
@@ -559,5 +639,9 @@ export default function useWebsocketTranslation(
     setStreamingLanguage,
     genIsLoading,
     loadingMore,
+    audioUrls,
+    isAudioMessage,
+    setAudioMessage,
+    setTextMessage,
   };
 }

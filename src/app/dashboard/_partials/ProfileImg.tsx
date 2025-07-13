@@ -20,7 +20,6 @@ const svg = `
 export const encodedSvg = encodeURIComponent(svg);
 
 export default function ProfileImg({ user }: { user: User }) {
-  console.log(user?.profilePicture);
   return (
     <Suspense fallback={<Skeleton variant="circular" width={28} height={28} />}>
       <>
