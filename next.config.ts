@@ -13,6 +13,7 @@ const nextConfig: NextConfig = {
     NEXT_PUBLIC_API_BASE_URL: process.env.NEXT_PUBLIC_API_BASE_URL,
     NEXT_APP_ENV: process.env.NEXT_APP_ENV,
     PRICEID: process.env.PRICEID,
+    OPENAI_API_KEY: process.env.OPENAI_API_KEY,
   },
   images: {
     remotePatterns: [
