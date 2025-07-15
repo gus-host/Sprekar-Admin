@@ -108,8 +108,6 @@ export default function useWebsocketTranslation(
     wsRef.current = ws;
   }, [ws]);
 
-  console.log(chatMessages);
-
   // Load older messages (reverse infinite scroll)
   const loadOlderMessages = async () => {
     if (!eventCode) return;
@@ -163,10 +161,12 @@ export default function useWebsocketTranslation(
   };
 
   // Initial load of conversation history
-  const fetchInitialConversations = useCallback(async () => {
+  const fetchInitialConversations = async () => {
     if (!eventCode) return;
     setGenIsLoading(true);
     try {
+      console.log(eventCode, user?._id);
+
       const response = await fetch(
         `${restApi}/conversations/${eventCode}?page=1&limit=10`
       );
@@ -178,6 +178,7 @@ export default function useWebsocketTranslation(
         return;
       }
       const data = await response.json();
+
       const mapped = data.data.conversations.map((c: ChatMessageOptimized) => ({
         text: c.text || "",
         translation:
@@ -203,7 +204,7 @@ export default function useWebsocketTranslation(
     } finally {
       setGenIsLoading(false);
     }
-  }, [eventCode, restApi]);
+  };
 
   async function fetchSynthesizedText(text: string) {
     try {
@@ -226,7 +227,7 @@ export default function useWebsocketTranslation(
     if (hasJoinedEvent && eventCode) {
       fetchInitialConversations();
     }
-  }, [hasJoinedEvent, eventCode, fetchInitialConversations]);
+  }, [hasJoinedEvent, eventCode]);
 
   // Connect to WebSocket
   const connectWebSocket = useCallback((): Promise<WebSocket> => {
@@ -390,6 +391,7 @@ export default function useWebsocketTranslation(
             timestamp: c.timestamp || new Date().toISOString(),
           }));
           setChatMessages(mapped);
+          console.log(mapped);
           const texts = mapped.map((c: ChatMessageOptimized) => c.translation);
           const urls = await fetchSynthesizedSequentially(texts);
 
@@ -415,6 +417,7 @@ export default function useWebsocketTranslation(
                 : c.translation?.text || "",
             timestamp: c.timestamp || new Date().toISOString(),
           }));
+          console.log(mapped);
           setChatMessages(mapped);
           const texts = mapped.map((c: ChatMessageOptimized) => c.translation);
           const urls = await fetchSynthesizedSequentially(texts);

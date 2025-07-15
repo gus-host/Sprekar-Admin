@@ -233,7 +233,6 @@ export default function EventTranslation({
     state: boolean
     // handle: FullScreenHandle
   ) {
-    console.log(state, isShowFullScreen);
     setIsShowFullScreen(state);
   }
   if (error) return ErrorSetter({ error });
