@@ -85,6 +85,7 @@ export default function Login() {
         const refreshToken = response?.data?.data?.tokens?.refresh;
 
         if (accessToken) {
+          console.log(accessToken, refreshToken);
           setUserTokenCookie(accessToken);
           setRefreshTokenCookie(refreshToken);
         }

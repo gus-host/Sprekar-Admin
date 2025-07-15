@@ -1,6 +1,6 @@
 // File: /app/api/logout/route.ts
 import { NextResponse } from "next/server";
-const isProd = process.env.NODE_ENV === "production";
+const isProd = process.env.NEXT_APP_ENV === "production";
 
 export async function GET() {
   // We’ll clear both cookies by setting them with Max-Age=0

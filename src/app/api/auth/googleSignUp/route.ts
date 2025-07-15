@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import axios from "axios";
-import api from "@/utils/axios/api";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -8,7 +7,7 @@ export async function POST(req: Request) {
   try {
     const { token, role } = await req.json();
 
-    const response = await api.post(`${BASE_URL}/auth/google/create-user`, {
+    const response = await axios.post(`${BASE_URL}/auth/google/create-user`, {
       token,
       role,
     });

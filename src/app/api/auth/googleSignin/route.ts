@@ -1,19 +1,18 @@
 import { NextResponse } from "next/server";
 import axios from "axios";
-import api from "@/utils/axios/api";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
+console.log(BASE_URL);
 
 export async function POST(req: Request) {
   try {
     const { token } = await req.json();
 
-    const response = await api.post(`${BASE_URL}/auth/google/login`, {
+    const response = await axios.post(`${BASE_URL}/auth/google/login`, {
       token,
     });
-
     const res = NextResponse.json(response.data, { status: 200 });
-
     return res;
   } catch (error: unknown) {
     let errorMessage = "Error occurred";
@@ -23,6 +22,7 @@ export async function POST(req: Request) {
       errorMessage = error.response?.data?.message || "Axios request failed";
       statusCode = error.response?.status || 500;
     } else if (error instanceof Error) {
+      console.log(error);
       errorMessage = error.message;
     }
 
