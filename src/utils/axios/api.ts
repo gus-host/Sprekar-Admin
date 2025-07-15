@@ -31,18 +31,32 @@ const addRefreshSubscriber = (callback: (token: string) => void) => {
 };
 
 // Request Interceptor
-api.interceptors.request.use(
-  (config) => {
-    const token = getUserTokenCookie();
-    if (token) {
-      config.headers["Authorization"] = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
+// api.interceptors.request.use(
+//   (config) => {
+//     const token = getUserTokenCookie();
+//     if (token) {
+//       config.headers["Authorization"] = `Bearer ${token}`;
+//     }
+//     return config;
+//   },
+//   (error) => {
+//     return Promise.reject(error);
+//   }
+// );
+// Quick fix call get user token cookie in client side
+// Request Interceptor
+if (typeof window !== "undefined") {
+  api.interceptors.request.use(
+    (config) => {
+      const token = getUserTokenCookie();
+      if (token) {
+        config.headers["Authorization"] = `Bearer ${token}`;
+      }
+      return config;
+    },
+    (error) => Promise.reject(error)
+  );
+}
 
 // Add a list of endpoints that should not trigger a refresh token
 const noRefreshEndpoints = [
@@ -58,12 +72,16 @@ const noRefreshEndpoints = [
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
-    const originalRequest = error.config;
+    if (!error?.config) {
+      return Promise.reject(error);
+    }
+
+    const originalRequest = error?.config;
 
     // Check if the endpoint is in the noRefreshEndpoints list
     if (
       noRefreshEndpoints.some((endpoint) =>
-        originalRequest.url?.includes(endpoint)
+        originalRequest?.url?.includes(endpoint)
       )
     ) {
       return Promise.reject(error); // Skip refresh token logic
