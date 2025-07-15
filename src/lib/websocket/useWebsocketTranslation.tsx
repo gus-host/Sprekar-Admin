@@ -90,9 +90,9 @@ export default function useWebsocketTranslation(
   const [audioDevices, setAudioDevices] = useState<MediaDeviceInfo[]>([]);
   const [selectedDeviceId, setSelectedDeviceId] = useState("");
   const [loadingMore, setLoadingMore] = useState<boolean>(false);
-  const [streamingLanguage, setStreamingLanguage] = useState<"EN_GB" | "NL">(
-    "EN_GB"
-  );
+  const [streamingLanguage, setStreamingLanguage] = useState<
+    "EN_GB" | "NL" | "ES" | "EN_US" | "FR" | "ZH_HANS"
+  >("NL");
   const [isLoading, setIsLoading] = useState(false);
 
   const websocketUrl = process.env.NEXT_PUBLIC_WEBSOCKET_BASE_URL;
@@ -107,6 +107,8 @@ export default function useWebsocketTranslation(
   useEffect(() => {
     wsRef.current = ws;
   }, [ws]);
+
+  console.log(chatMessages);
 
   // Load older messages (reverse infinite scroll)
   const loadOlderMessages = async () => {
@@ -600,7 +602,27 @@ export default function useWebsocketTranslation(
       sendWsMessage(JSON.stringify(msg));
     }
   };
-
+  // NEW: handler for streaming language change
+  const handleStreamingLanguageChange = (
+    e: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    const newLang = e.target.value;
+    setStreamingLanguage(
+      newLang as "EN_GB" | "NL" | "ES" | "EN_US" | "FR" | "ZH_HANS"
+    );
+    if (
+      (isEventStarted || hasJoinedEvent) &&
+      wsRef.current?.readyState === WebSocket.OPEN
+    ) {
+      wsRef.current.send(
+        JSON.stringify({
+          type: "change-streaming-language",
+          streamingLanguage: newLang,
+          userId: adminUserId,
+        })
+      );
+    }
+  };
   function setAudioMessage() {
     setIsAudioMessage(true);
   }
@@ -636,7 +658,7 @@ export default function useWebsocketTranslation(
     selectedDeviceId,
     setSelectedDeviceId,
     streamingLanguage,
-    setStreamingLanguage,
+    handleStreamingLanguageChange,
     genIsLoading,
     loadingMore,
     audioUrls,

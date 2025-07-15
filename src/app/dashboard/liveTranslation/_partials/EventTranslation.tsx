@@ -79,7 +79,7 @@ export default function EventTranslation({
     selectedDeviceId,
     setSelectedDeviceId,
     streamingLanguage,
-    setStreamingLanguage,
+    handleStreamingLanguageChange,
     genIsLoading,
     loadingMore,
     audioUrls,
@@ -311,7 +311,7 @@ export default function EventTranslation({
               <div className="flex gap-3 items-center ">
                 <StreamingLanguageSelector
                   language={streamingLanguage}
-                  setLanguage={setStreamingLanguage}
+                  setLanguage={handleStreamingLanguageChange}
                 />
                 <QrCodeIcon
                   className="cursor-pointer"
@@ -651,19 +651,23 @@ function StreamingLanguageSelector({
   language,
   setLanguage,
 }: {
-  language: "EN_GB" | "NL";
-  setLanguage: React.Dispatch<React.SetStateAction<"EN_GB" | "NL">>;
+  language: "EN_GB" | "NL" | "ES" | "EN_US" | "FR" | "ZH_HANS";
+  setLanguage: (e: React.ChangeEvent<HTMLSelectElement>) => void;
 }) {
   return (
     <div>
       <select
         id="language-select"
         value={language}
-        onChange={(e) => setLanguage(e.target.value as "EN_GB" | "NL")}
+        onChange={setLanguage}
         className="text-[12px] border border-gray-300 rounded p-0.5"
       >
-        <option value="EN_GB">English</option>
         <option value="NL">Dutch</option>
+        <option value="ES">Spanish</option>
+        <option value="EN_US">English (US)</option>
+        <option value="EN_GB">English (GB)</option>
+        <option value="FR">French</option>
+        <option value="ZH_HANS">Chinese (Simplified)</option>
       </select>
     </div>
   );
