@@ -141,7 +141,7 @@ export const subscriptionPlans: SubscriptionPlans[] = [
   {
     plan: "Free",
     desc: "Perfect for casual use & trave",
-    price: "$0",
+    price: "€0",
     period: "/ month",
     features: [
       "1-on-1 voice translation",
@@ -153,7 +153,7 @@ export const subscriptionPlans: SubscriptionPlans[] = [
   {
     plan: "Pro Plan",
     desc: "Great for everyday conversations",
-    price: "$9.99",
+    price: "€9.99",
     period: "/ month",
     features: [
       "Unlimited personal & group chats",
@@ -165,7 +165,7 @@ export const subscriptionPlans: SubscriptionPlans[] = [
   {
     plan: "Event Host Plan",
     desc: "Ideal for churches, conferences & classes",
-    price: "$49.00",
+    price: "€49.00",
     period: "/ month",
     features: [
       "Host live translated events",

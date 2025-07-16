@@ -137,7 +137,10 @@ export default function EventTranslation({
     if (event.status === "ended") return;
 
     if (event.status === "live") {
-      joinEvent();
+      async function eventJoiner() {
+        await joinEvent();
+      }
+      eventJoiner()
       handleTranslationLanguageChange({
         value: "EN_GB",
         label: languageMap["EN_GB"] || "EN_GB",
@@ -161,6 +164,7 @@ export default function EventTranslation({
     function () {
       if (!event?.eventIsOngoing || event?.status === "ended") return;
       function defaultLangSetter() {
+        console.log(hasRunDefaultTransLangRef.current);
         if (
           hasRunDefaultTransLangRef.current === false &&
           message === "Event has started"

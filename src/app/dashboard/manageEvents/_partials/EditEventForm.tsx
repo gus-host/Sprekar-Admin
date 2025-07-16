@@ -25,6 +25,7 @@ import Spinner from "@/components/ui/Spinner";
 import SuccessIcon from "@/app/_svgs/SuccessIcon";
 import FailedIcon from "@/app/_svgs/FailedIcon";
 import ToggleRecurring from "./ToggleRecurring";
+import toast from "react-hot-toast";
 
 interface Event {
   status: string;
@@ -125,6 +126,9 @@ export default function EditEventForm({
         }
       } catch (error) {
         console.log(error);
+        if (axios.isAxiosError(error)) {
+          toast.error(error?.response?.data?.message || "An error occured.");
+        }
         setIsFailedModalOpen((open) => !open);
       } finally {
         setIsCreatingEvent(false);

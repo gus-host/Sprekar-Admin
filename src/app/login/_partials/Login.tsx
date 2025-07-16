@@ -35,27 +35,15 @@ export default function Login() {
     onSubmit: async (values) => {
       try {
         setIsSubmitting(true);
-        const response = await axios.post(
+        await axios.post(
           "/api/auth/login",
           {
             ...values,
           },
           { withCredentials: true }
         );
-        if (response.status === 201 || response.status === 200) {
-          const accessToken = response?.data?.data?.tokens?.access?.token || "";
-          const refreshToken = response?.data?.data?.tokens?.refresh;
-
-          if (accessToken) {
-            setUserTokenCookie(accessToken);
-            setRefreshTokenCookie(refreshToken);
-          }
-          toast.success(response.data.message || "Login Successful");
-          router.push(`/dashboard`);
-        } else {
-          toast.error(response.data.message || "An error occured");
-          removeUserTokenCookie();
-        }
+        toast.success("Log in successful");
+        router.push("/dashboard");
       } catch (error) {
         removeUserTokenCookie();
         if (axios.isAxiosError(error))
@@ -72,32 +60,17 @@ export default function Login() {
       setLoading(true);
       const payload = { token: token };
 
-      const response = await axios.post(
+      await axios.post(
         "/api/auth/googleSignin",
         {
           ...payload,
         },
         { withCredentials: true }
       );
-
-      if (response.status === 201 || response.status === 200) {
-        const accessToken = response?.data?.data?.tokens?.access?.token || "";
-        const refreshToken = response?.data?.data?.tokens?.refresh;
-
-        if (accessToken) {
-          console.log(accessToken, refreshToken);
-          setUserTokenCookie(accessToken);
-          setRefreshTokenCookie(refreshToken);
-        }
-        toast.success(response.data.message || "Login Successful");
-        router.push(`/dashboard`);
-      } else {
-        toast.error(
-          response.data.data.message || "Something went wrong! Try again"
-        );
-        removeUserTokenCookie();
-      }
+      toast.success("Log in successful");
+      router.push("/dashboard");
     } catch (error) {
+      removeUserTokenCookie();
       console.error("Error:", error);
       // handleAxiosError(error);
       if (error instanceof AxiosError) {
