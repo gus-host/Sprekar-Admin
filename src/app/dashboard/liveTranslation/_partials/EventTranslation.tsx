@@ -140,7 +140,7 @@ export default function EventTranslation({
       async function eventJoiner() {
         await joinEvent();
       }
-      eventJoiner()
+      eventJoiner();
       handleTranslationLanguageChange({
         value: "EN_GB",
         label: languageMap["EN_GB"] || "EN_GB",
@@ -366,6 +366,11 @@ export default function EventTranslation({
               ref={chatContainerRef}
               onScroll={handleScroll}
             >
+              {loadingMore && (
+                <div style={{ textAlign: "center", marginBottom: "0.5rem" }}>
+                  Loading...
+                </div>
+              )}
               <div>
                 {(isAudioMessage ? audioUrls : chatMessages).length === 0 ? (
                   <p className="text-center mt-8 text-[#676767]">

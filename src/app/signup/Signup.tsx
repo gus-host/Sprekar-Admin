@@ -60,7 +60,7 @@ export default function Signup() {
       setLoading(true);
       const payload = { token: token, role: "ADMIN" };
 
-      await axios.post(
+      const response = await axios.post(
         "/api/auth/googleSignUp",
         {
           ...payload,
@@ -68,8 +68,14 @@ export default function Signup() {
         { withCredentials: true }
       );
 
-      toast.success("Log in successful");
-      router.push("/dashboard");
+      if (response.status === 201 || response.status === 200) {
+        toast.success(response.data.message || "Login Successful");
+        router.push(`/dashboard`);
+      } else {
+        toast.error(
+          response.data.data.message || "Something went wrong! Try again"
+        );
+      }
     } catch (error) {
       console.error("Error:", error);
       handleAxiosError(error);

@@ -12,7 +12,13 @@ export async function POST(req: Request) {
       password,
     });
 
-    const res = NextResponse.redirect(new URL("/dashboard", req.url));
+    const res = NextResponse.json(
+      {
+        data: response.data.data, // your tokens, user info, etc.
+        message: response.data.message, // any message you want
+      },
+      { status: 200 }
+    );
 
     // const res = NextResponse.json(response.data, { status: 200 });
 

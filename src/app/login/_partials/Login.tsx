@@ -35,15 +35,22 @@ export default function Login() {
     onSubmit: async (values) => {
       try {
         setIsSubmitting(true);
-        await axios.post(
+        const response = await axios.post(
           "/api/auth/login",
           {
             ...values,
           },
           { withCredentials: true }
         );
-        toast.success("Log in successful");
-        router.push("/dashboard");
+
+        if (response.status === 201 || response.status === 200) {
+          toast.success(response.data.message || "Login Successful");
+          router.push(`/dashboard`);
+        } else {
+          toast.error(
+            response.data.data.message || "Something went wrong! Try again"
+          );
+        }
       } catch (error) {
         removeUserTokenCookie();
         if (axios.isAxiosError(error))
@@ -60,15 +67,22 @@ export default function Login() {
       setLoading(true);
       const payload = { token: token };
 
-      await axios.post(
+      const response = await axios.post(
         "/api/auth/googleSignin",
         {
           ...payload,
         },
         { withCredentials: true }
       );
-      toast.success("Log in successful");
-      router.push("/dashboard");
+
+      if (response.status === 201 || response.status === 200) {
+        toast.success(response.data.message || "Login Successful");
+        router.push(`/dashboard`);
+      } else {
+        toast.error(
+          response.data.data.message || "Something went wrong! Try again"
+        );
+      }
     } catch (error) {
       removeUserTokenCookie();
       console.error("Error:", error);
