@@ -11,15 +11,9 @@ export async function GET() {
       headers: {
         "Set-Cookie": [
           // Clear defaultToken (js-cookie default path=/, no sameSite override)
-          `defaultToken=; Path=/; SameSite=${isProd ? "none" : "lax"}; Domain=${
-            isProd ? ".sprekar.com" : "localhost"
-          }; ${isProd ? "Secure" : ""}`,
+          `defaultToken=; Path=/`,
           // Clear refreshToken (js-cookie used sameSite=None; path=/)
-          `refreshTokenNew=; Path=/; SameSite=${
-            isProd ? "none" : "lax"
-          }; Domain=${isProd ? ".sprekar.com" : "localhost"}; ${
-            isProd ? "Secure" : ""
-          }`,
+          `refreshTokenNew=; Path=/`,
         ].join(", "),
       },
     }

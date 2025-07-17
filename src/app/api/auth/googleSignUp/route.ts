@@ -23,25 +23,13 @@ export async function POST(req: Request) {
     res.cookies.set({
       name: "defaultToken",
       value: response.data.data.tokens.access.token,
-      secure: process.env.NEXT_APP_ENV === "production",
-      sameSite: process.env.NEXT_APP_ENV === "production" ? "none" : "lax",
       path: "/",
-      domain:
-        process.env.NEXT_APP_ENV === "production"
-          ? ".sprekar.com"
-          : "localhost",
     });
 
     res.cookies.set({
       name: "refreshTokenNew",
       value: response.data.data.tokens.refresh,
-      secure: process.env.NEXT_APP_ENV === "production",
-      sameSite: process.env.NEXT_APP_ENV === "production" ? "none" : "lax",
       path: "/",
-      domain:
-        process.env.NEXT_APP_ENV === "production"
-          ? ".sprekar.com"
-          : "localhost",
     });
 
     return res;
