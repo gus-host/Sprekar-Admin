@@ -44,8 +44,11 @@ export default function Login() {
         );
 
         if (response.status === 201 || response.status === 200) {
+          const refreshToken = getRefreshTokenCookie();
+          if (refreshToken) {
+            router.push(`/dashboard?isAuth=${true}`);
+          } else router.push(`/dashboard`);
           toast.success(response.data.message || "Login Successful");
-          router.push(`/dashboard`);
         } else {
           toast.error(
             response.data.data.message || "Something went wrong! Try again"
@@ -76,8 +79,11 @@ export default function Login() {
       );
 
       if (response.status === 201 || response.status === 200) {
+        const refreshToken = getRefreshTokenCookie();
+        if (refreshToken) {
+          router.push(`/dashboard?isAuth=${true}`);
+        } else router.push(`/dashboard`);
         toast.success(response.data.message || "Login Successful");
-        router.push(`/dashboard`);
       } else {
         toast.error(
           response.data.data.message || "Something went wrong! Try again"

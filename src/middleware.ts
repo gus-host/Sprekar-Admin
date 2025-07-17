@@ -14,9 +14,14 @@ export function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
+  if (pathname === "/dashboard" && searchParams.has("isAuth")) {
+    return NextResponse.next();
+  }
+
   // 2️⃣ Everything else under /dashboard → always enforce
   if (pathname.startsWith("/dashboard")) {
     const token = req.cookies.get("refreshTokenNew")?.value;
+
     if (!token) {
       return NextResponse.redirect(new URL("/login", req.url));
     }

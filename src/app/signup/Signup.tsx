@@ -13,10 +13,7 @@ import Button from "@/components/Button";
 import AuthButton from "../_partials/AuthButton";
 import { signupValidationSchema } from "./signupValidationSchema";
 
-import {
-  setRefreshTokenCookie,
-  setUserTokenCookie,
-} from "@/utils/helper/auth/cookieUtility";
+import { getRefreshTokenCookie } from "@/utils/helper/auth/cookieUtility";
 import { handleAxiosError } from "@/utils/helper/general/errorHandler";
 
 export default function Signup() {
@@ -69,8 +66,11 @@ export default function Signup() {
       );
 
       if (response.status === 201 || response.status === 200) {
+        const refreshToken = getRefreshTokenCookie();
+        if (refreshToken) {
+          router.push(`/dashboard?isAuth=${true}`);
+        } else router.push(`/dashboard`);
         toast.success(response.data.message || "Login Successful");
-        router.push(`/dashboard`);
       } else {
         toast.error(
           response.data.data.message || "Something went wrong! Try again"
