@@ -73,7 +73,7 @@ export default function Signup() {
         setUserTokenCookie(access);
         setRefreshTokenCookie(refresh);
         toast.success(response.data.message || "Login Successful");
-        router.push("/dashboard");
+        window.location.href = "/dashboard";
       } else {
         toast.error(
           response.data.data.message || "Something went wrong! Try again"
