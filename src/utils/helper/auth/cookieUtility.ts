@@ -3,9 +3,6 @@ import Cookies from "js-cookie";
 export const USER_TOKEN_KEY = "defaultToken";
 export const REFRESH_TOKEN_KEY = "refreshTokenNew";
 
-const isProd =
-  (process.env.NEXT_APP_ENV || process.env.NODE_ENV) === "production";
-
 /**
  * Set the userToken cookie.
  *
@@ -15,8 +12,7 @@ const isProd =
 export const setUserTokenCookie = (token: string) => {
   Cookies.set(USER_TOKEN_KEY, token, {
     path: "/",
-    secure: isProd,
-    sameSite: isProd ? "None" : "Lax",
+    sameSite: "Lax",
   });
 };
 
@@ -47,8 +43,7 @@ export const getUserTokenCookie = (): string | undefined => {
 export const setRefreshTokenCookie = (token: string) => {
   Cookies.set(REFRESH_TOKEN_KEY, token, {
     path: "/",
-    secure: isProd,
-    sameSite: isProd ? "None" : "Lax",
+    sameSite: "Lax",
   });
 };
 
