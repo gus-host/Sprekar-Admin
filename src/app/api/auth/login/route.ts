@@ -20,20 +20,6 @@ export async function POST(req: Request) {
       { status: 200 }
     );
 
-    // const res = NextResponse.json(response.data, { status: 200 });
-
-    res.cookies.set({
-      name: "defaultToken",
-      value: response.data.data.tokens.access.token,
-      path: "/",
-    });
-
-    res.cookies.set({
-      name: "refreshTokenNew",
-      value: response.data.data.tokens.refresh,
-      path: "/",
-    });
-
     return res;
   } catch (error: unknown) {
     let errorMessage = "Error occurred";

@@ -12,16 +12,11 @@ const isProd =
  * @param value - The cookie's value.
  * @param options - Optional settings for the cookie.
  */
-export const setUserTokenCookie = (
-  value: string,
-  options?: Cookies.CookieAttributes
-): void => {
-  Cookies.set(USER_TOKEN_KEY, value, {
-    ...options,
-    secure: isProd, // Ensure secure transmission in production
-    sameSite: isProd ? "none" : "lax",
-    domain: isProd ? ".sprekar.com" : "localhost",
+export const setUserTokenCookie = (token: string) => {
+  Cookies.set(USER_TOKEN_KEY, token, {
     path: "/",
+    secure: isProd,
+    sameSite: isProd ? "None" : "Lax",
   });
 };
 
@@ -49,12 +44,11 @@ export const getUserTokenCookie = (): string | undefined => {
 /**
  * Set the refresh token cookie.
  */
-export const setRefreshTokenCookie = (refreshToken: string): void => {
-  Cookies.set(REFRESH_TOKEN_KEY, refreshToken, {
-    secure: isProd,
-    sameSite: isProd ? "none" : "lax",
-    domain: isProd ? ".sprekar.com" : "localhost",
+export const setRefreshTokenCookie = (token: string) => {
+  Cookies.set(REFRESH_TOKEN_KEY, token, {
     path: "/",
+    secure: isProd,
+    sameSite: isProd ? "None" : "Lax",
   });
 };
 
