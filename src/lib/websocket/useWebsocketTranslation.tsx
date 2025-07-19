@@ -80,8 +80,6 @@ export default function useWebsocketTranslation(
     null
   );
   const [ws, setWs] = useState<WebSocket | null>(null);
-  const [isAudioMessage, setIsAudioMessage] = useState(false);
-  const [audioUrls, setAudioUrls] = useState<AudioUrls[]>([]);
 
   // State for conversation history pagination
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
@@ -117,7 +115,7 @@ export default function useWebsocketTranslation(
         `${restApi}/conversations/${eventCode}?page=${currentPage + 1}&limit=10`
       );
       if (!response.ok) {
-        console.error("Error loading older messages", response.statusText);
+        // console.error("Error loading older messages", response.statusText);
         setLoadingMore(false);
         return;
       }
@@ -144,7 +142,6 @@ export default function useWebsocketTranslation(
         timestamp: olderConversations[i].timestamp as Date,
       }));
       setCurrentPage((prev) => prev + 1);
-      setAudioUrls((prev) => [...olderAudioUrls, ...prev]);
       setChatMessages((prev) => [...olderConversations, ...prev]);
     } catch (error) {
       console.error("Error loading older messages", error);
@@ -195,7 +192,6 @@ export default function useWebsocketTranslation(
         url,
         timestamp: mapped[i].timestamp as Date,
       }));
-      setAudioUrls(audioUrls);
       setChatMessages(mapped);
       setCurrentPage(1);
       setHasMore(mapped.length === 10);
@@ -367,13 +363,6 @@ export default function useWebsocketTranslation(
           data.translation.text || data.translation
         );
         if (typeof url !== "string") return;
-        setAudioUrls((prev) => [
-          ...prev,
-          {
-            url: url || "",
-            timestamp: new Date(),
-          },
-        ]);
 
         // event started
       } else if (
@@ -399,7 +388,6 @@ export default function useWebsocketTranslation(
             url,
             timestamp: mapped[i]?.timestamp as Date,
           }));
-          setAudioUrls(audioUrls || []);
         }
 
         // joined event
@@ -426,7 +414,6 @@ export default function useWebsocketTranslation(
             url,
             timestamp: mapped[i].timestamp as Date,
           }));
-          setAudioUrls(audioUrls || []);
         }
         if (user?._id) return;
         setParticipantId(data.participantId as string);
@@ -512,6 +499,7 @@ export default function useWebsocketTranslation(
         type: "event-start",
         eventCode,
         userId: user?._id,
+        // language: "En_Bf",
         conversationPage: 1,
         conversationLimit: 10,
       })
@@ -529,7 +517,7 @@ export default function useWebsocketTranslation(
     // 1) Fire off your audio‐start
     const sock = wsRef.current!;
     if (sock.readyState === WebSocket.OPEN) {
-      console.log(streamingLanguage);
+      // console.log(streamingLanguage);
       sock.send(
         JSON.stringify({ type: "audio-start", eventCode, streamingLanguage })
       );
@@ -626,12 +614,6 @@ export default function useWebsocketTranslation(
       );
     }
   };
-  function setAudioMessage() {
-    setIsAudioMessage(true);
-  }
-  function setTextMessage() {
-    setIsAudioMessage(false);
-  }
 
   return {
     transcription,
@@ -664,9 +646,5 @@ export default function useWebsocketTranslation(
     handleStreamingLanguageChange,
     genIsLoading,
     loadingMore,
-    audioUrls,
-    isAudioMessage,
-    setAudioMessage,
-    setTextMessage,
   };
 }

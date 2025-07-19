@@ -82,10 +82,10 @@ export default function EventTranslation({
     handleStreamingLanguageChange,
     genIsLoading,
     loadingMore,
-    audioUrls,
-    isAudioMessage,
-    setAudioMessage,
-    setTextMessage,
+    // audioUrls,
+    // isAudioMessage,
+    // setAudioMessage,
+    // setTextMessage,
   } = useWebsocketTranslation(
     user,
     event?.createdBy || "",
@@ -111,6 +111,7 @@ export default function EventTranslation({
   // Refs for the chat container and end-of-chat marker
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const chatEndRef = useRef<HTMLDivElement>(null);
+  const targetContRef = useRef<HTMLUListElement>(null);
   const route = useRouter();
   const handleFullScreen = useFullScreenHandle();
   const [isShowFullScreen, setIsShowFullScreen] = useState(false);
@@ -186,10 +187,6 @@ export default function EventTranslation({
     function () {
       if (!event?.eventIsOngoing || event?.status === "ended") return;
       function messageSetter() {
-        // if (message === "websocket-closed" ) {
-        //   stopRecording();
-        //   setSpeakerIcon("play");
-        // }
         if (
           message === "Event has ended" ||
           message === "Event ended. Translations stopped."
@@ -239,6 +236,29 @@ export default function EventTranslation({
   ) {
     setIsShowFullScreen(state);
   }
+
+  useEffect(() => {
+    const container = chatContainerRef.current;
+    const target = targetContRef.current;
+    if (!container || !target) return;
+
+    let observer;
+    function handleIntersect(entries: unknown, observer: unknown) {
+      console.log(entries);
+    }
+    let options = {
+      root: container,
+      threshold: 0.05,
+    };
+
+    observer = new IntersectionObserver(handleIntersect, options);
+    observer.observe(target);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
   if (error) return ErrorSetter({ error });
 
   if (!event?.eventIsOngoing || event?.status === "ended")
@@ -257,26 +277,6 @@ export default function EventTranslation({
 
   return (
     <div className="text-[#323232] relative">
-      <ul className="absolute -top-8 right-0 text-[12px] rounded-xl overflow-hidden flex items-center bg-white">
-        <li
-          onClick={setTextMessage}
-          className={cn(
-            "px-2 py-1 flex cursor-pointer",
-            !isAudioMessage ? "bg-[#0255DA] text-white" : ""
-          )}
-        >
-          Text
-        </li>
-        <li
-          onClick={setAudioMessage}
-          className={cn(
-            "px-2 py-1 flex cursor-pointer",
-            isAudioMessage ? "bg-[#0255DA] text-white" : ""
-          )}
-        >
-          Audio
-        </li>
-      </ul>
       {loadingMore || genIsLoading ? (
         <LinearProgress />
       ) : (
@@ -372,70 +372,60 @@ export default function EventTranslation({
                 </div>
               )}
               <div>
-                {(isAudioMessage ? audioUrls : chatMessages).length === 0 ? (
+                {chatMessages.length === 0 ? (
                   <p className="text-center mt-8 text-[#676767]">
                     No translations yet.
                   </p>
                 ) : (
-                  <ul className="flex flex-col gap-1 w-[95%]">
-                    {(isAudioMessage ? audioUrls : chatMessages)?.map(
-                      (msg, index) => (
-                        <div key={index} className="w-[100%]">
+                  <ul
+                    className="flex flex-col gap-1 w-[95%]"
+                    ref={targetContRef}
+                  >
+                    {chatMessages?.map((msg, index) => (
+                      <div key={index} className="w-[100%]">
+                        <div
+                          style={{
+                            background: "#fff",
+                            padding: "0.5rem 1rem",
+                            borderRadius: "10px",
+                            margin: "0.5rem 0",
+                            boxShadow: " 0px 7px 20.8px 0px #0000000D",
+                          }}
+                        >
                           <div
                             style={{
-                              background: "#fff",
-                              padding: "0.5rem 1rem",
-                              borderRadius: "10px",
-                              margin: "0.5rem 0",
-                              boxShadow: " 0px 7px 20.8px 0px #0000000D",
+                              fontSize: "16px",
+                              color: "#5E5D5D",
                             }}
                           >
-                            {isAudioMessage ? (
-                              <AudioPlayer
-                                layout="horizontal-reverse"
-                                src={(msg as AudioUrls).url}
-                                onPlay={(e) => console.log("onPlay")}
-                                showJumpControls={false}
-                                showDownloadProgress={false}
-                                showFilledVolume={false}
-                                // other props here
-                              />
-                            ) : (
-                              <div
-                                style={{
-                                  fontSize: "16px",
-                                  color: "#5E5D5D",
-                                }}
-                              >
-                                {(
+                            {(
+                              (msg as ChatMessage)?.translation as {
+                                text?: string;
+                              }
+                            ).text
+                              ? (
                                   (msg as ChatMessage)?.translation as {
                                     text?: string;
                                   }
                                 ).text
-                                  ? (
-                                      (msg as ChatMessage)?.translation as {
-                                        text?: string;
-                                      }
-                                    ).text
-                                  : (msg as ChatMessage)?.translation}
-                              </div>
-                            )}
-                            <div
-                              style={{
-                                fontSize: "0.75rem",
-                                color: "#999",
-                                textAlign: "right",
-                              }}
-                            >
-                              {new Date(msg.timestamp).toLocaleTimeString() ===
-                              "Invalid Date"
-                                ? ""
-                                : new Date(msg.timestamp).toLocaleTimeString()}
-                            </div>
+                              : (msg as ChatMessage)?.translation}
+                          </div>
+
+                          <div
+                            style={{
+                              fontSize: "0.75rem",
+                              color: "#999",
+                              textAlign: "right",
+                            }}
+                          >
+                            {new Date(msg.timestamp).toLocaleTimeString() ===
+                            "Invalid Date"
+                              ? ""
+                              : new Date(msg.timestamp).toLocaleTimeString()}
                           </div>
                         </div>
-                      )
-                    )}
+                      </div>
+                    ))}
                     <div ref={chatEndRef} />
                   </ul>
                 )}
