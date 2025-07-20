@@ -1,8 +1,7 @@
 "use client";
 
 import { User } from "@/app/dashboard/_partials/ProfileImgGetter";
-import { synthesizeSequentially } from "@/services/tts/synthesizeSequentially";
-import synthesizeText from "@/services/tts/synthesizeText";
+
 import {
   getSavedParticipantId,
   saveJoinRecord,
@@ -133,14 +132,7 @@ export default function useWebsocketTranslation(
       if (olderConversations.length < 10) {
         setHasMore(false);
       }
-      const texts = olderConversations.map(
-        (c: { translation: string }) => `${c.translation}`
-      );
-      const urls = await synthesizeSequentially(texts, "alloy");
-      const olderAudioUrls = urls.map((url, i) => ({
-        url,
-        timestamp: olderConversations[i].timestamp as Date,
-      }));
+
       setCurrentPage((prev) => prev + 1);
       setChatMessages((prev) => [...olderConversations, ...prev]);
     } catch (error) {
@@ -162,7 +154,7 @@ export default function useWebsocketTranslation(
     if (!eventCode) return;
     setGenIsLoading(true);
     try {
-      console.log(eventCode, user?._id);
+      // console.log(eventCode, user?._id);
 
       const response = await fetch(
         `${restApi}/conversations/${eventCode}?page=1&limit=10`
@@ -184,14 +176,7 @@ export default function useWebsocketTranslation(
             : c.translation?.text || "",
         timestamp: c.createdAt || new Date().toISOString(),
       }));
-      const texts = data.data.conversations.map(
-        (c: { translation: string }) => `${c.translation}`
-      );
-      const urls = await synthesizeSequentially(texts, "alloy");
-      const audioUrls = urls.map((url, i) => ({
-        url,
-        timestamp: mapped[i].timestamp as Date,
-      }));
+
       setChatMessages(mapped);
       setCurrentPage(1);
       setHasMore(mapped.length === 10);
@@ -201,23 +186,6 @@ export default function useWebsocketTranslation(
       setGenIsLoading(false);
     }
   };
-
-  async function fetchSynthesizedText(text: string) {
-    try {
-      const url = synthesizeText(text);
-      return url;
-    } catch (err) {
-      console.error("Failed to get audio", err);
-    }
-  }
-  async function fetchSynthesizedSequentially(texts: string[]) {
-    try {
-      const urls = synthesizeSequentially(texts, "alloy");
-      return urls;
-    } catch (err) {
-      console.error("Failed to get audio", err);
-    }
-  }
 
   useEffect(() => {
     if (hasJoinedEvent && eventCode) {
@@ -318,7 +286,7 @@ export default function useWebsocketTranslation(
     if (!ws) return;
     ws.onmessage = async (event: MessageEvent) => {
       const data = JSON.parse(event.data);
-      console.log("Received from server:", data);
+      // console.log("Received from server:", data);
       setIsLoading(false);
       setMessage(data.message);
       setError("");
@@ -359,11 +327,6 @@ export default function useWebsocketTranslation(
           },
         ]);
 
-        const url = await fetchSynthesizedText(
-          data.translation.text || data.translation
-        );
-        if (typeof url !== "string") return;
-
         // event started
       } else if (
         (data.type === "info" && data.message === "The event has started") ||
@@ -380,14 +343,7 @@ export default function useWebsocketTranslation(
             timestamp: c.timestamp || new Date().toISOString(),
           }));
           setChatMessages(mapped);
-          console.log(mapped);
-          const texts = mapped.map((c: ChatMessageOptimized) => c.translation);
-          const urls = await fetchSynthesizedSequentially(texts);
-
-          const audioUrls = urls?.map((url, i) => ({
-            url,
-            timestamp: mapped[i]?.timestamp as Date,
-          }));
+          // console.log(mapped);
         }
 
         // joined event
@@ -405,15 +361,8 @@ export default function useWebsocketTranslation(
                 : c.translation?.text || "",
             timestamp: c.timestamp || new Date().toISOString(),
           }));
-          console.log(mapped);
+          // console.log(mapped);
           setChatMessages(mapped);
-          const texts = mapped.map((c: ChatMessageOptimized) => c.translation);
-          const urls = await fetchSynthesizedSequentially(texts);
-
-          const audioUrls = urls?.map((url, i) => ({
-            url,
-            timestamp: mapped[i].timestamp as Date,
-          }));
         }
         if (user?._id) return;
         setParticipantId(data.participantId as string);
