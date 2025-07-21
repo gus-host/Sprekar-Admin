@@ -311,7 +311,7 @@ export default function useWebsocketTranslation(
 
       // participantId: prefer stored value
 
-      console.log("Message from server: ", data);
+      // console.log("Message from server: ", data);
 
       // Error handling
       if (
