@@ -9,8 +9,6 @@ import dynamic from "next/dynamic";
 import { Fullscreen, Minimize2, QrCodeIcon } from "lucide-react";
 import toast from "react-hot-toast";
 import dayjs from "dayjs";
-import AudioPlayer from "react-h5-audio-player";
-import "react-h5-audio-player/lib/styles.css";
 
 import { Event } from "../[eventId]/EventGetter";
 import SpeakerIcon from "@/app/_svgs/SpeakerIcon";
@@ -47,6 +45,7 @@ import SpeakerIconPlay from "@/app/_svgs/SpeakerIconPlay";
 import { useUser } from "@/app/context/UserContext";
 import LinearProgress from "@mui/material/LinearProgress";
 import { cn } from "@/lib/utils";
+import TranscriptionsPortal from "@/components/TranscriptionsPortal";
 
 // prettier-ignore
 const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -60,6 +59,7 @@ export default function EventTranslation({
 }) {
   const user = useUser();
   const {
+    transcription,
     translationLanguage,
     setTranslationLanguage,
     rejoinEvent,
@@ -82,10 +82,7 @@ export default function EventTranslation({
     handleStreamingLanguageChange,
     genIsLoading,
     loadingMore,
-    // audioUrls,
-    // isAudioMessage,
-    // setAudioMessage,
-    // setTextMessage,
+    isScrollToBottom,
   } = useWebsocketTranslation(
     user,
     event?.createdBy || "",
@@ -111,16 +108,17 @@ export default function EventTranslation({
   // Refs for the chat container and end-of-chat marker
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const chatEndRef = useRef<HTMLDivElement>(null);
-  const targetContRef = useRef<HTMLUListElement>(null);
   const route = useRouter();
   const handleFullScreen = useFullScreenHandle();
   const [isShowFullScreen, setIsShowFullScreen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
+  // console.log("event code and userId", event?.eventCode, event?.createdBy);
+
   // Auto-scroll to bottom when new messages arrive.
   useEffect(() => {
     if (!event?.eventIsOngoing || event?.status === "ended") return;
-    if (chatEndRef.current) {
+    if (chatEndRef.current && isScrollToBottom) {
       chatEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [chatMessages, event?.eventIsOngoing, event?.status]);
@@ -165,7 +163,6 @@ export default function EventTranslation({
     function () {
       if (!event?.eventIsOngoing || event?.status === "ended") return;
       function defaultLangSetter() {
-        console.log(hasRunDefaultTransLangRef.current);
         if (
           hasRunDefaultTransLangRef.current === false &&
           message === "Event has started"
@@ -236,28 +233,6 @@ export default function EventTranslation({
   ) {
     setIsShowFullScreen(state);
   }
-
-  useEffect(() => {
-    const container = chatContainerRef.current;
-    const target = targetContRef.current;
-    if (!container || !target) return;
-
-    let observer;
-    function handleIntersect(entries: unknown, observer: unknown) {
-      console.log(entries);
-    }
-    let options = {
-      root: container,
-      threshold: 0.05,
-    };
-
-    observer = new IntersectionObserver(handleIntersect, options);
-    observer.observe(target);
-
-    return () => {
-      observer.disconnect();
-    };
-  }, []);
 
   if (error) return ErrorSetter({ error });
 
@@ -371,16 +346,13 @@ export default function EventTranslation({
                   Loading...
                 </div>
               )}
-              <div>
+              <div className="target-el">
                 {chatMessages.length === 0 ? (
                   <p className="text-center mt-8 text-[#676767]">
                     No translations yet.
                   </p>
                 ) : (
-                  <ul
-                    className="flex flex-col gap-1 w-[95%]"
-                    ref={targetContRef}
-                  >
+                  <ul className="flex flex-col gap-1 w-[95%]">
                     {chatMessages?.map((msg, index) => (
                       <div key={index} className="w-[100%]">
                         <div
@@ -432,6 +404,7 @@ export default function EventTranslation({
               </div>
             </div>
           </div>
+
           {isOpenRejoinModal && (
             <RejoinEventModal
               isOpen={isOpenRejoinModal}
@@ -441,6 +414,13 @@ export default function EventTranslation({
           )}
         </div>
       </FullScreen>
+      <TranscriptionsPortal isShowTranscriptions={true}>
+        {transcription ? (
+          <p className="text-[14px]">{transcription}</p>
+        ) : (
+          <p className="text-[14px] text-center"> No Transcriptions</p>
+        )}
+      </TranscriptionsPortal>
       {isModalOpen && (
         <ModalMUI isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen}>
           <div className="flex flex-col items-center gap-6">

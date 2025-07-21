@@ -71,6 +71,7 @@ export default function useWebsocketTranslation(
   const [isEventStarted, setIsEventStarted] = useState<boolean>(false);
   const [isEventStopped, setIsEventStopped] = useState<boolean>(false);
   const [isRecording, setIsRecording] = useState<boolean>(false);
+  const [isScrollToBottom, setIsScrollToBottom] = useState<boolean>(true);
   const [hasJoinedEvent, setHasJoinedEvent] = useState<boolean>(false);
   const [message, setMessage] = useState("");
   const [genIsLoading, setGenIsLoading] = useState(false);
@@ -144,9 +145,26 @@ export default function useWebsocketTranslation(
   // Scroll handler
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const container = e.currentTarget;
+    const target = container.querySelector(".target-el");
+
     if (container.scrollTop < 10 && hasMore && !loadingMore) {
       loadOlderMessages();
     }
+
+    if (!target) return;
+
+    // distance from top of container to top of target
+    const offsetTop = (target as HTMLDivElement).offsetTop;
+    const targetBottom = offsetTop + (target as HTMLDivElement).offsetHeight;
+
+    // how far the container has scrolled + its visible height
+    const visibleBottom = container.scrollTop + container.clientHeight;
+    container;
+
+    const hiddenBelow = Math.max(0, targetBottom - visibleBottom);
+    if (hiddenBelow >= 155.3333282470703 + 200) {
+      setIsScrollToBottom(false);
+    } else setIsScrollToBottom(true);
   };
 
   // Initial load of conversation history
@@ -292,6 +310,8 @@ export default function useWebsocketTranslation(
       setError("");
 
       // participantId: prefer stored value
+
+      console.log("Message from server: ", data);
 
       // Error handling
       if (
@@ -595,5 +615,6 @@ export default function useWebsocketTranslation(
     handleStreamingLanguageChange,
     genIsLoading,
     loadingMore,
+    isScrollToBottom,
   };
 }
