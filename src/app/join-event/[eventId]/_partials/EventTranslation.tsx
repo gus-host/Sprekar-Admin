@@ -21,7 +21,7 @@ import ButtonBlue from "@/app/dashboard/_partials/ButtonBlue";
 import ModalMUI from "@/components/ModalMUI";
 import useResponsiveSizes from "@/utils/helper/general/useResponsiveSizes";
 import useWebsocketTranslation, {
-  AudioUrls,
+
   ChatMessage,
 } from "@/lib/websocket/useWebsocketTranslation";
 import { LinearProgress, Skeleton } from "@mui/material";
@@ -31,6 +31,8 @@ import {
   LanguageOption,
 } from "@/app/dashboard/manageEvents/_partials/SupportedLanguagesSelect";
 import { cn } from "@/lib/utils";
+import TranscriptionsPortal from "@/components/TranscriptionsPortal";
+import MobileTranscriptionPortal from "@/components/MobileTranscriptionPortal";
 const SupportedLangaugesTranslation = dynamic(
   () =>
     import(
@@ -50,6 +52,7 @@ export default function EventTranslation({
   error?: string;
 }) {
   const {
+    transcription,
     translationLanguage,
     setTranslationLanguage,
     rejoinEvent,
@@ -62,6 +65,7 @@ export default function EventTranslation({
     joinEvent,
     loadingMore,
     genIsLoading,
+    isScrollToBottom,
   } = useWebsocketTranslation(
     null,
     event?.createdBy || "",
@@ -95,14 +99,7 @@ export default function EventTranslation({
   useEffect(() => {
     if (event?.eventIsOngoing && !hasTriedJoinRef.current) {
       joinEvent();
-      function defaultLangSetter() {
-        const defaultCode = event?.supportedLanguages?.at(0);
-        handleTranslationLanguageChange({
-          value: defaultCode || "AR",
-          label: languageMap[defaultCode || "AR"] || defaultCode || "AR", // Fallback to code if label isn't found
-        });
-      }
-      defaultLangSetter();
+
       hasTriedJoinRef.current = true;
     }
   }, [event?.eventIsOngoing, joinEvent]);
@@ -110,7 +107,7 @@ export default function EventTranslation({
   // Auto-scroll to bottom when new messages arrive.
   useEffect(() => {
     if (!event?.eventIsOngoing || event?.status === "ended") return;
-    if (chatEndRef.current) {
+    if (chatEndRef.current && isScrollToBottom) {
       chatEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [chatMessages]);
@@ -311,6 +308,20 @@ export default function EventTranslation({
           )}
         </div>
       </FullScreen>
+      {(clientWidth as number) > 915 ? (
+        <TranscriptionsPortal
+          isShowTranscriptions={true}
+          transcriptions={transcription}
+        >
+          {transcription ? (
+            <p className="text-[12px]">{transcription}</p>
+          ) : (
+            <p className="text-[12px] text-center"> No Transcriptions</p>
+          )}
+        </TranscriptionsPortal>
+      ) : (
+        <MobileTranscriptionPortal transcriptions={transcription} />
+      )}
     </div>
   );
 }

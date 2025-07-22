@@ -108,7 +108,6 @@ export default function EventsTable({ events, error }: EventsTableProps) {
 
   const [selectedRow, setSelectedRow] = useState<EventData | null>(null);
   const router = useRouter();
-  console.log(selectedRowsId);
 
   const actionIcons = [
     {

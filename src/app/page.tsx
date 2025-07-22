@@ -182,7 +182,7 @@ export default function Home() {
                 <div className="flex gap-[14px] items-center mt-[40px]">
                   {/* Apple and Google */}
                   <Link
-                    href="#"
+                    href="https://apps.apple.com/us/app/sprekar/id6744068807"
                     className={
                       "px-[10px] py-[3px] inline-block rounded cursor-pointer"
                     }
@@ -194,7 +194,7 @@ export default function Home() {
                     <AppleHome />
                   </Link>
                   <Link
-                    href="#"
+                    href="https://play.google.com/store/apps/details?id=com.azucapital&hl=en"
                     className={
                       "px-[10px] py-[3px] inline-block rounded cursor-pointer"
                     }

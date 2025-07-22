@@ -281,7 +281,7 @@ export default function CreateEventForm() {
                   // setIsModalOpen(false);
                 }}
               >
-                {event.qrCode ? "Cancel" : "Back to events"}
+                {"Back to events"}
               </button>
               {event.qrCode && (
                 <button

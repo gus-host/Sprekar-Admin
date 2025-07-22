@@ -39,23 +39,37 @@ export default function QrCode({
         style={{ minHeight: "35px", minWidth: "45px" }} // Maintain aspect ratio
       />
       <div className="flex min-h-5 max-w-[250px] mb-2">
-        <Image
-          src={"/google-badge.png"}
-          width={94}
-          height={10}
-          style={{ minHeight: "10px", minWidth: "94px" }} // Maintain aspect ratio
-          alt="Get on google"
-          quality={100}
-        />
+        <a
+          href="https://play.google.com/store/apps/details?id=com.azucapital&hl=en"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <Image
+            src={"/google-badge.png"}
+            className="cursor-pointer"
+            width={94}
+            height={10}
+            style={{ minHeight: "10px", minWidth: "94px" }} // Maintain aspect ratio
+            alt="Get on google"
+            quality={100}
+          />
+        </a>
 
-        <Image
-          src={"/apple-badge.png"}
-          alt="Get on apple"
-          width={94}
-          height={10}
-          quality={100}
-          style={{ minHeight: "10px", minWidth: "94px" }} // Maintain aspect ratio
-        />
+        <a
+          href={"https://apps.apple.com/us/app/sprekar/id6744068807"}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <Image
+            src={"/apple-badge.png"}
+            alt="Get on apple"
+            className="cursor-pointer"
+            width={94}
+            height={10}
+            quality={100}
+            style={{ minHeight: "10px", minWidth: "94px" }} // Maintain aspect ratio
+          />
+        </a>
       </div>
       <p className="text-[12px] text-[#939292] font-medium mb-2">
         Get sprekar on your phone

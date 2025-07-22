@@ -30,7 +30,6 @@ import ModalMUI from "@/components/ModalMUI";
 import Spinner from "@/components/ui/Spinner";
 import useResponsiveSizes from "@/utils/helper/general/useResponsiveSizes";
 import useWebsocketTranslation, {
-  AudioUrls,
   ChatMessage,
 } from "@/lib/websocket/useWebsocketTranslation";
 import RejoinEventModal from "./RejoinEventModal";
@@ -44,8 +43,8 @@ import SpeakerIconPause from "@/app/_svgs/SpeakerIconPause";
 import SpeakerIconPlay from "@/app/_svgs/SpeakerIconPlay";
 import { useUser } from "@/app/context/UserContext";
 import LinearProgress from "@mui/material/LinearProgress";
-import { cn } from "@/lib/utils";
 import TranscriptionsPortal from "@/components/TranscriptionsPortal";
+import MobileTranscriptionPortal from "@/components/MobileTranscriptionPortal";
 
 // prettier-ignore
 const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -83,6 +82,7 @@ export default function EventTranslation({
     genIsLoading,
     loadingMore,
     isScrollToBottom,
+    fetchingInitConv,
   } = useWebsocketTranslation(
     user,
     event?.createdBy || "",
@@ -139,8 +139,9 @@ export default function EventTranslation({
       async function eventJoiner() {
         await joinEvent();
       }
+      handleClickSpeakerPause();
       eventJoiner();
-      handleTranslationLanguageChange({
+      setTranslationLanguage({
         value: "EN_GB",
         label: languageMap["EN_GB"] || "EN_GB",
       });
@@ -148,37 +149,17 @@ export default function EventTranslation({
       user._id === event?.createdBy &&
       message !== "Event has started"
     ) {
+      handleClickSpeakerPause();
       async function eventStarter() {
         await startEvent();
       }
       eventStarter();
-      handleTranslationLanguageChange({
+      setTranslationLanguage({
         value: "EN_GB",
         label: languageMap["EN_GB"] || "EN_GB",
       });
     }
   }, []);
-
-  useEffect(
-    function () {
-      if (!event?.eventIsOngoing || event?.status === "ended") return;
-      function defaultLangSetter() {
-        if (
-          hasRunDefaultTransLangRef.current === false &&
-          message === "Event has started"
-        ) {
-          // const defaultCode = event?.supportedLanguages?.at(0);
-          handleTranslationLanguageChange({
-            value: "EN_GB",
-            label: languageMap["EN_GB"] || "EN_GB", // Fallback to code if label isn't found
-          });
-          hasRunDefaultTransLangRef.current = true;
-        }
-      }
-      defaultLangSetter();
-    },
-    [message]
-  );
 
   useEffect(
     function () {
@@ -193,6 +174,13 @@ export default function EventTranslation({
           route.replace(`/dashboard/manageEvents`);
           setIsDeleteModalOpen(false);
         }
+        // if (message === "Needs-to-pause-and-play") {
+        //   handleClickSpeakerPause();
+        //   async function speakerPlay() {
+        //     await handleClickSpeaker();
+        //   }
+        //   speakerPlay();
+        // }
         if (message === "needs-to-rejoin" && rejoinAttemptRef.current > 0)
           setIsOpenRejoinModal(true);
         rejoinAttemptRef.current += 1;
@@ -251,7 +239,7 @@ export default function EventTranslation({
     );
 
   return (
-    <div className="text-[#323232] relative">
+    <div className="text-[#323232] relative mobile-portal-container">
       {loadingMore || genIsLoading ? (
         <LinearProgress />
       ) : (
@@ -346,8 +334,16 @@ export default function EventTranslation({
                   Loading...
                 </div>
               )}
+              {fetchingInitConv && (
+                <div className="h-full w-full flex items-center justify-center">
+                  <div className="flex items-center justify-between gap-3">
+                    <Spinner size={25} color="#024dc4" strokeWidth={2.5} />
+                    <p>Fetching translations...</p>
+                  </div>
+                </div>
+              )}
               <div className="target-el">
-                {chatMessages.length === 0 ? (
+                {chatMessages.length === 0 && !fetchingInitConv ? (
                   <p className="text-center mt-8 text-[#676767]">
                     No translations yet.
                   </p>
@@ -414,13 +410,20 @@ export default function EventTranslation({
           )}
         </div>
       </FullScreen>
-      <TranscriptionsPortal isShowTranscriptions={true}>
-        {transcription ? (
-          <p className="text-[14px]">{transcription}</p>
-        ) : (
-          <p className="text-[14px] text-center"> No Transcriptions</p>
-        )}
-      </TranscriptionsPortal>
+      {(clientWidth as number) > 915 ? (
+        <TranscriptionsPortal
+          isShowTranscriptions={true}
+          transcriptions={transcription}
+        >
+          {transcription ? (
+            <p className="text-[12px]">{transcription}</p>
+          ) : (
+            <p className="text-[12px] text-center"> No Transcriptions</p>
+          )}
+        </TranscriptionsPortal>
+      ) : (
+        <MobileTranscriptionPortal transcriptions={transcription} />
+      )}
       {isModalOpen && (
         <ModalMUI isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen}>
           <div className="flex flex-col items-center gap-6">

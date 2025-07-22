@@ -75,6 +75,7 @@ export default function useWebsocketTranslation(
   const [hasJoinedEvent, setHasJoinedEvent] = useState<boolean>(false);
   const [message, setMessage] = useState("");
   const [genIsLoading, setGenIsLoading] = useState(false);
+  const [fetchingInitConv, setFetchingIntConv] = useState(false);
   const [error, setError] = useState("");
   const [mediaRecorder, setMediaRecorder] = useState<MediaRecorderState | null>(
     null
@@ -112,7 +113,9 @@ export default function useWebsocketTranslation(
     setLoadingMore(true);
     try {
       const response = await fetch(
-        `${restApi}/conversations/${eventCode}?page=${currentPage + 1}&limit=10`
+        `${restApi}/conversations/${eventCode}?page=${
+          currentPage + 1
+        }&limit=10&userId=${user?._id ? user?._id : ""}`
       );
       if (!response.ok) {
         // console.error("Error loading older messages", response.statusText);
@@ -170,12 +173,14 @@ export default function useWebsocketTranslation(
   // Initial load of conversation history
   const fetchInitialConversations = async () => {
     if (!eventCode) return;
-    setGenIsLoading(true);
+    setFetchingIntConv(true);
     try {
       // console.log(eventCode, user?._id);
 
       const response = await fetch(
-        `${restApi}/conversations/${eventCode}?page=1&limit=10`
+        `${restApi}/conversations/${eventCode}?page=1&limit=10&userId=${
+          user?._id ? user?._id : ""
+        }`
       );
       if (!response.ok) {
         console.error(
@@ -201,7 +206,7 @@ export default function useWebsocketTranslation(
     } catch (error) {
       console.error("Error fetching conversation history:", error);
     } finally {
-      setGenIsLoading(false);
+      setFetchingIntConv(false);
     }
   };
 
@@ -317,18 +322,13 @@ export default function useWebsocketTranslation(
       if (
         data.type === "error" &&
         (data.message === "You must join an event first" ||
-          data.message === "Event is not live; audio will not be processed")
+          data.message === "Event is not live; audio will not be processed" ||
+          data.message === "Join event first")
       ) {
         setMessage("needs-to-rejoin");
-      }
-
-      // participant count update
-      if (data.type === "participant-count") {
+      } else if (data.type === "participant-count") {
         setParticipantCount(data.count);
-      }
-
-      // transcription & translation
-      if (data.type === "transcription") {
+      } else if (data.type === "transcription") {
         setTranscription(data.text);
       } else if (data.type === "translation") {
         setTranscription(data.text);
@@ -386,40 +386,16 @@ export default function useWebsocketTranslation(
         }
         if (user?._id) return;
         setParticipantId(data.participantId as string);
-      }
-
-      // reconnection logic for speech errors...
-      if (
+      } else if (
         data.type === "error" &&
-        (data.message === "Speech recognition error" ||
+        (data.message ===
+          "Recognition stream is not available, please restart audio recognition" ||
           data.message === "You must start audio recognition first")
       ) {
-        // reconnection logic for speech errors...
-        console.warn(
-          "Speech recognition error or start-first. Reconnecting..."
-        );
-        if (ws) ws.close();
-        connectWebSocket().then((newSocket) => {
-          if (eventCode) {
-            setGenIsLoading(true);
-            newSocket.send(
-              JSON.stringify({
-                type: "join",
-                eventCode,
-                language: translationLanguage?.value || "EN_GB",
-                userId: user?._id,
-                participantId: user?._id ? null : participantId,
-                conversationPage: 1,
-                conversationLimit: 10,
-              })
-            );
-            setGenIsLoading(false);
-            console.log("Rejoined after speech error.");
-          }
-        });
+        setMessage("Needs-to-pause-and-play");
       }
     };
-  }, [ws, participantId, eventCode, translationLanguage, connectWebSocket]);
+  }, [ws]);
 
   // Message senders
   const joinEvent = async () => {
@@ -468,7 +444,7 @@ export default function useWebsocketTranslation(
         type: "event-start",
         eventCode,
         userId: user?._id,
-        // language: "En_Bf",
+        language: "EN_GB",
         conversationPage: 1,
         conversationLimit: 10,
       })
@@ -483,23 +459,9 @@ export default function useWebsocketTranslation(
   };
 
   const startRecording = async () => {
-    // 1) Fire off your audio‐start
-    const sock = wsRef.current!;
-    if (sock.readyState === WebSocket.OPEN) {
-      // console.log(streamingLanguage);
-      sock.send(
-        JSON.stringify({ type: "audio-start", eventCode, streamingLanguage })
-      );
-    } else {
-      await sendWsMessage(
-        JSON.stringify({
-          type: "audio-start",
-          eventCode,
-          streamingLanguage,
-        })
-      );
+    if (!hasJoinedEvent || wsRef.current?.readyState !== WebSocket.OPEN) {
+      await joinEvent();
     }
-
     // 2) Immediately ask for the mic and hook up onaudioprocess
     const stream = await navigator.mediaDevices.getUserMedia({
       audio: {
@@ -516,7 +478,22 @@ export default function useWebsocketTranslation(
 
     source.connect(processor);
     processor.connect(audioContext.destination);
-
+    // 1) Fire off your audio‐start
+    const sock = wsRef.current!;
+    if (sock.readyState === WebSocket.OPEN) {
+      // console.log(streamingLanguage);
+      sock.send(
+        JSON.stringify({ type: "audio-start", eventCode, streamingLanguage })
+      );
+    } else {
+      await sendWsMessage(
+        JSON.stringify({
+          type: "audio-start",
+          eventCode,
+          streamingLanguage,
+        })
+      );
+    }
     processor.onaudioprocess = (e) => {
       const s = wsRef.current;
       if (s?.readyState === WebSocket.OPEN) {
@@ -533,7 +510,7 @@ export default function useWebsocketTranslation(
     setIsRecording(true);
   };
 
-  const stopRecording = () => {
+  function stopRecording() {
     if (mediaRecorder) {
       mediaRecorder.processor.disconnect();
       mediaRecorder.audioContext.close();
@@ -544,7 +521,7 @@ export default function useWebsocketTranslation(
     }
     setIsRecording(false);
     setMediaRecorder(null);
-  };
+  }
 
   const handleTranslationLanguageChange = (
     option: SingleValue<OptionType>,
@@ -616,5 +593,6 @@ export default function useWebsocketTranslation(
     genIsLoading,
     loadingMore,
     isScrollToBottom,
+    fetchingInitConv,
   };
 }
