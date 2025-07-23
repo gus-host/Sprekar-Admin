@@ -16,7 +16,10 @@ export default function TranscriptionsPortal({
   isShowTranscriptions = true,
   transcriptions,
 }: PortalProps) {
-  const portalRoot = document.querySelector(".fullscreen");
+  const portalRoot =
+    typeof document !== "undefined"
+      ? document.querySelector(".fullscreen")
+      : null;
   const elRef = useRef<HTMLDivElement | null>(null);
   const transcriptionEndRef = useRef<HTMLDivElement | null>(null);
   const [isShow, setIsShow] = useState<boolean>(isShowTranscriptions);

@@ -20,9 +20,14 @@ export default function MobileTranscriptionPortal({
 }: {
   transcriptions: string;
 }) {
+  const [isShowPopOver, setIsShowPopOver] = React.useState(true);
   const [state, setState] = React.useState({
     right: false,
   });
+  const fullscreenEl =
+    typeof document !== "undefined"
+      ? document.querySelector<HTMLElement>(".fullscreen")
+      : null;
   const { clientWidth } = useResponsiveSizes();
   const toggleDrawer =
     (anchor: Anchor, open: boolean) =>
@@ -72,8 +77,10 @@ export default function MobileTranscriptionPortal({
               </span>
             </Button>
             <DropdownMenu.Root
-              open={true}
-              onOpenChange={() => {}}
+              open={isShowPopOver}
+              onOpenChange={() => {
+                setIsShowPopOver((show) => !show);
+              }}
               modal={false}
             >
               <DropdownMenu.Trigger asChild>
@@ -86,6 +93,12 @@ export default function MobileTranscriptionPortal({
                 className="live-tip-content"
               >
                 View live transcriptions while you wait for translations.
+                <span
+                  className="bg-transparent text-white text-[14px] absolute top-0 right-2 cursor-pointer"
+                  onClick={() => setIsShowPopOver((show) => !show)}
+                >
+                  x
+                </span>
                 <DropdownMenu.Arrow className="live-tip-arrow" />
               </DropdownMenu.Content>
             </DropdownMenu.Root>
@@ -93,8 +106,11 @@ export default function MobileTranscriptionPortal({
               anchor={anchor}
               open={state[anchor]}
               onClose={toggleDrawer(anchor, false)}
+              ModalProps={{
+                container: fullscreenEl, // ← render the drawer *inside* .fullscreen
+              }}
               sx={{
-                zIndex: "1000",
+                zIndex: "1000000",
               }}
             >
               {list(anchor)}

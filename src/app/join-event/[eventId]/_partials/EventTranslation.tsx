@@ -21,7 +21,6 @@ import ButtonBlue from "@/app/dashboard/_partials/ButtonBlue";
 import ModalMUI from "@/components/ModalMUI";
 import useResponsiveSizes from "@/utils/helper/general/useResponsiveSizes";
 import useWebsocketTranslation, {
-
   ChatMessage,
 } from "@/lib/websocket/useWebsocketTranslation";
 import { LinearProgress, Skeleton } from "@mui/material";
@@ -33,6 +32,7 @@ import {
 import { cn } from "@/lib/utils";
 import TranscriptionsPortal from "@/components/TranscriptionsPortal";
 import MobileTranscriptionPortal from "@/components/MobileTranscriptionPortal";
+import Spinner from "@/components/ui/Spinner";
 const SupportedLangaugesTranslation = dynamic(
   () =>
     import(
@@ -66,6 +66,7 @@ export default function EventTranslation({
     loadingMore,
     genIsLoading,
     isScrollToBottom,
+    fetchingInitConv,
   } = useWebsocketTranslation(
     null,
     event?.createdBy || "",
@@ -240,7 +241,20 @@ export default function EventTranslation({
               ref={chatContainerRef}
               onScroll={handleScroll}
             >
-              <div>
+              {loadingMore && (
+                <div style={{ textAlign: "center", marginBottom: "0.5rem" }}>
+                  Loading...
+                </div>
+              )}
+              {fetchingInitConv && (
+                <div className="h-full w-full flex items-center justify-center">
+                  <div className="flex items-center justify-between gap-3">
+                    <Spinner size={25} color="#024dc4" strokeWidth={2.5} />
+                    <p>Fetching translations...</p>
+                  </div>
+                </div>
+              )}
+              <div className="target-el">
                 {chatMessages.length === 0 ? (
                   <p className="text-center mt-8 text-[#676767]">
                     No translations yet.
