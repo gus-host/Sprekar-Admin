@@ -101,6 +101,7 @@ export default function useWebsocketTranslation(
 
   // at the top of your hook, before any functions:
   const wsRef = useRef<WebSocket | null>(null);
+  const rejoinAfterWsClosesRef = useRef(false);
 
   // keep it in sync whenever `ws` changes:
   useEffect(() => {
@@ -115,7 +116,9 @@ export default function useWebsocketTranslation(
       const response = await fetch(
         `${restApi}/conversations/${eventCode}?page=${
           currentPage + 1
-        }&limit=10&userId=${user?._id ? user?._id : ""}`
+        }&limit=10&userId=${user?._id ? user?._id : ""}&language=${
+          translationLanguage?.value || "EN_GB"
+        }`
       );
       if (!response.ok) {
         // console.error("Error loading older messages", response.statusText);
@@ -138,7 +141,7 @@ export default function useWebsocketTranslation(
       }
 
       setCurrentPage((prev) => prev + 1);
-      setChatMessages((prev) => [...olderConversations, ...prev]);
+      setChatMessages((prev) => [...olderConversations.reverse(), ...prev]);
     } catch (error) {
       console.error("Error loading older messages", error);
     }
@@ -180,7 +183,7 @@ export default function useWebsocketTranslation(
       const response = await fetch(
         `${restApi}/conversations/${eventCode}?page=1&limit=10&userId=${
           user?._id ? user?._id : ""
-        }`
+        }&language=${translationLanguage?.value || "EN_GB"}`
       );
       if (!response.ok) {
         console.error(
@@ -200,7 +203,7 @@ export default function useWebsocketTranslation(
         timestamp: c.createdAt || new Date().toISOString(),
       }));
 
-      setChatMessages(mapped);
+      setChatMessages(mapped.reverse());
       setCurrentPage(1);
       setHasMore(mapped.length === 10);
     } catch (error) {
@@ -214,26 +217,34 @@ export default function useWebsocketTranslation(
     if (hasJoinedEvent && eventCode) {
       fetchInitialConversations();
     }
-  }, [hasJoinedEvent, eventCode]);
+  }, [hasJoinedEvent, eventCode, translationLanguage?.value]);
 
   // Connect to WebSocket
   const connectWebSocket = useCallback((): Promise<WebSocket> => {
+    console.log(participantId && rejoinAfterWsClosesRef.current);
     return new Promise((resolve, reject) => {
       const socket = new WebSocket(websocketUrl || "");
       socket.onopen = () => {
         console.log("Connected to server");
         setGenIsLoading(false);
+        async function eventJoiner() {
+          await joinEvent();
+        }
+        if (participantId && rejoinAfterWsClosesRef.current) eventJoiner();
+        rejoinAfterWsClosesRef.current = false;
         setWs(socket);
         resolve(socket);
       };
       socket.onerror = (err) => {
         console.error("WebSocket connection error:", err);
         setGenIsLoading(true);
+        rejoinAfterWsClosesRef.current = true;
         reject(err);
       };
       socket.onclose = () => {
         console.warn("WebSocket closed.");
         setGenIsLoading(true);
+        rejoinAfterWsClosesRef.current = true;
         setMessage("websocket-closed");
         setWs(null);
       };
@@ -316,7 +327,7 @@ export default function useWebsocketTranslation(
 
       // participantId: prefer stored value
 
-      // console.log("Message from server: ", data);
+      console.log("Message from server: ", data);
 
       // Error handling
       if (
@@ -353,18 +364,6 @@ export default function useWebsocketTranslation(
         (data.type === "success" && data.message === "Event has started")
       ) {
         setIsEventStarted(true);
-        if (Array.isArray(data.conversations)) {
-          const mapped = data.conversations.map((c: ChatMessageOptimized) => ({
-            text: c.text || "",
-            translation:
-              typeof c.translation === "string"
-                ? c.translation
-                : c.translation?.text || "",
-            timestamp: c.timestamp || new Date().toISOString(),
-          }));
-          setChatMessages(mapped);
-          // console.log(mapped);
-        }
 
         // joined event
       } else if (
@@ -372,18 +371,7 @@ export default function useWebsocketTranslation(
         data.message === "Successfully joined event"
       ) {
         setHasJoinedEvent(true);
-        if (Array.isArray(data.conversations)) {
-          const mapped = data.conversations.map((c: ChatMessageOptimized) => ({
-            text: c.text || "",
-            translation:
-              typeof c.translation === "string"
-                ? c.translation
-                : c.translation?.text || "",
-            timestamp: c.timestamp || new Date().toISOString(),
-          }));
-          // console.log(mapped);
-          setChatMessages(mapped);
-        }
+
         if (user?._id) return;
         setParticipantId(data.participantId as string);
       } else if (
@@ -444,7 +432,7 @@ export default function useWebsocketTranslation(
         type: "event-start",
         eventCode,
         userId: user?._id,
-        language: "EN_GB",
+        language: translationLanguage?.value || "EN_GB",
         conversationPage: 1,
         conversationLimit: 10,
       })

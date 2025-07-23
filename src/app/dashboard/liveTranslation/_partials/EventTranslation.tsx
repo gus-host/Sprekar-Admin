@@ -140,24 +140,24 @@ export default function EventTranslation({
         await joinEvent();
       }
       handleClickSpeakerPause();
-      eventJoiner();
       setTranslationLanguage({
         value: "EN_GB",
         label: languageMap["EN_GB"] || "EN_GB",
       });
+      eventJoiner();
     } else if (
       user._id === event?.createdBy &&
       message !== "Event has started"
     ) {
       handleClickSpeakerPause();
-      async function eventStarter() {
-        await startEvent();
-      }
-      eventStarter();
       setTranslationLanguage({
         value: "EN_GB",
         label: languageMap["EN_GB"] || "EN_GB",
       });
+      async function eventStarter() {
+        await startEvent();
+      }
+      eventStarter();
     }
   }, []);
 
@@ -197,20 +197,20 @@ export default function EventTranslation({
 
   async function handleRejoin() {
     stopRecording();
-    setTranslationLanguage((lang) => lang);
+    // setTranslationLanguage((lang) => lang);
     await rejoinEvent();
     setSpeakerIcon("play");
     setIsOpenRejoinModal(false);
   }
   async function handleClickSpeaker() {
     await startRecording();
-    setTranslationLanguage((lang) => lang);
+    // setTranslationLanguage((lang) => lang);
     if (errorTranslation) return toast.error(errorTranslation);
     return setSpeakerIcon("pause");
   }
   function handleClickSpeakerPause() {
     stopRecording();
-    setTranslationLanguage((lang) => lang);
+    // setTranslationLanguage((lang) => lang);
     if (errorTranslation) return toast.error(errorTranslation);
     return setSpeakerIcon("play");
   }

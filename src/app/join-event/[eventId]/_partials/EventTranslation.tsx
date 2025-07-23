@@ -99,14 +99,15 @@ export default function EventTranslation({
 
   useEffect(() => {
     if (event?.eventIsOngoing && !hasTriedJoinRef.current) {
-      async function eventJoiner() {
-        await joinEvent();
-      }
-      eventJoiner();
       setTranslationLanguage({
         value: "EN_GB",
         label: languageMap["EN_GB"] || "EN_GB",
       });
+      async function eventJoiner() {
+        await joinEvent();
+      }
+      eventJoiner();
+
       hasTriedJoinRef.current = true;
     }
   }, [event?.eventIsOngoing, joinEvent]);
