@@ -70,6 +70,7 @@ export const tourStepsVisitors: Step[] = [
     content:
       "Click here to select the language you want translations to come in.",
     placement: "auto",
+    disableBeacon: true,
   },
 
   {
