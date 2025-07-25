@@ -1,7 +1,6 @@
 "use client";
 
 import { User } from "@/app/dashboard/_partials/ProfileImgGetter";
-
 import {
   getSavedParticipantId,
   saveJoinRecord,
@@ -44,8 +43,7 @@ export type OptionType = {
 export default function useWebsocketTranslation(
   user: User | null,
   adminId: string,
-  eventCodeServer: string,
-  hasCompletedTour: string | null
+  eventCodeServer: string
 ) {
   const [participantId, setParticipantId] = useState<string>(() => {
     if (typeof window === "undefined" || user?._id) return "";
@@ -270,8 +268,6 @@ export default function useWebsocketTranslation(
   };
 
   useEffect(() => {
-    if (!hasCompletedTour && user?._id) return;
-
     // Attempt a reconnect every minute if socket is not open
     const interval = setInterval(() => {
       const socket = wsRef.current;
@@ -291,7 +287,7 @@ export default function useWebsocketTranslation(
     }, 5000); // 30 seconds
 
     return () => clearInterval(interval);
-  }, [connectWebSocket, hasCompletedTour]);
+  }, [connectWebSocket]);
 
   // Load audio devices
   useEffect(() => {
@@ -314,11 +310,10 @@ export default function useWebsocketTranslation(
 
   // Open WebSocket on mount
   useEffect(() => {
-    if (!hasCompletedTour && user?._id) return;
     connectWebSocket().catch((err) => {
       console.error("Initial WebSocket connection failed:", err);
     });
-  }, [connectWebSocket, hasCompletedTour]);
+  }, [connectWebSocket]);
 
   // Handle incoming messages
   useEffect(() => {
@@ -486,19 +481,15 @@ export default function useWebsocketTranslation(
         })
       );
     }
-    processor.onaudioprocess = async (e) => {
+    processor.onaudioprocess = (e) => {
       const s = wsRef.current;
-      const inData = e.inputBuffer.getChannelData(0);
-      const out16 = new Int16Array(inData.length);
-      for (let i = 0; i < inData.length; i++) {
-        out16[i] = Math.max(-32768, Math.min(32767, inData[i] * 32768));
-      }
       if (s?.readyState === WebSocket.OPEN) {
+        const inData = e.inputBuffer.getChannelData(0);
+        const out16 = new Int16Array(inData.length);
+        for (let i = 0; i < inData.length; i++) {
+          out16[i] = Math.max(-32768, Math.min(32767, inData[i] * 32768));
+        }
         s.send(JSON.stringify({ type: "audio", audio: Array.from(out16) }));
-      } else {
-        await sendWsMessage(
-          JSON.stringify({ type: "audio", audio: Array.from(out16) })
-        );
       }
     };
 
@@ -506,7 +497,7 @@ export default function useWebsocketTranslation(
     setIsRecording(true);
   };
 
-  async function stopRecording() {
+  function stopRecording() {
     if (mediaRecorder) {
       mediaRecorder.processor.disconnect();
       mediaRecorder.audioContext.close();
@@ -514,8 +505,6 @@ export default function useWebsocketTranslation(
     }
     if (ws && ws.readyState === WebSocket.OPEN) {
       ws.send(JSON.stringify({ type: "audio-stop", eventCode }));
-    } else {
-      await sendWsMessage(JSON.stringify({ type: "audio-stop", eventCode }));
     }
     setIsRecording(false);
     setMediaRecorder(null);
@@ -526,7 +515,6 @@ export default function useWebsocketTranslation(
     actionMeta?: ActionMeta<OptionType>
   ) => {
     setTranslationLanguage(option);
-    if (!hasCompletedTour) return;
     if (isEventStarted || hasJoinedEvent) {
       const msg: any = {
         type: "change-language",
@@ -546,25 +534,17 @@ export default function useWebsocketTranslation(
     setStreamingLanguage(
       newLang as "EN_GB" | "NL" | "ES" | "EN_US" | "FR" | "ZH_HANS"
     );
-    if (!hasCompletedTour) return;
-    if (isEventStarted || hasJoinedEvent) {
-      if (wsRef.current?.readyState === WebSocket.OPEN) {
-        wsRef.current.send(
-          JSON.stringify({
-            type: "change-streaming-language",
-            streamingLanguage: newLang,
-            userId: adminUserId,
-          })
-        );
-      } else {
-        sendWsMessage(
-          JSON.stringify({
-            type: "change-streaming-language",
-            streamingLanguage: newLang,
-            userId: adminUserId,
-          })
-        );
-      }
+    if (
+      (isEventStarted || hasJoinedEvent) &&
+      wsRef.current?.readyState === WebSocket.OPEN
+    ) {
+      wsRef.current.send(
+        JSON.stringify({
+          type: "change-streaming-language",
+          streamingLanguage: newLang,
+          userId: adminUserId,
+        })
+      );
     }
   };
 
@@ -601,6 +581,5 @@ export default function useWebsocketTranslation(
     loadingMore,
     isScrollToBottom,
     fetchingInitConv,
-    hasCompletedTour,
   };
 }

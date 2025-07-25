@@ -1,6 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import useResponsiveSizes from "@/utils/helper/general/useResponsiveSizes";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { ReactNode, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
@@ -23,6 +24,7 @@ export default function TranscriptionsPortal({
   const elRef = useRef<HTMLDivElement | null>(null);
   const transcriptionEndRef = useRef<HTMLDivElement | null>(null);
   const [isShow, setIsShow] = useState<boolean>(isShowTranscriptions);
+  const { clientWidth } = useResponsiveSizes();
 
   if (!elRef.current) {
     // Create a div for this Portal instance
@@ -53,7 +55,8 @@ export default function TranscriptionsPortal({
     <div
       className={cn(
         "w-[300px] bg-white rounded-t-lg fixed bottom-0 right-6 border-gray-50 shadow-sm transition-all z-1000",
-        isShow && "pb-3"
+        isShow && "pb-3",
+        (clientWidth as number) > 915 ? "view-transcriptions" : ""
       )}
     >
       <div className="border-b border-b-gray-100 flex items-center justify-between px-2 py-1.5">

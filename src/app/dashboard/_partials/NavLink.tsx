@@ -17,6 +17,7 @@ export default function NavLink({
   href,
   children,
   className = "",
+  onClick,
   activeClassName = "opacity-100",
 }: NavLinkProps) {
   const pathname = usePathname();
@@ -65,6 +66,7 @@ export default function NavLink({
     <Link
       href={href}
       className={cn(className, isActive ? activeClassName : "opacity-50")}
+      onClick={onClick}
     >
       {children}
     </Link>

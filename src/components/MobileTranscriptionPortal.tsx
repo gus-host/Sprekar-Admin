@@ -12,6 +12,7 @@ import { SpeakerIcon } from "lucide-react"; // swap in your own icon
 import "./LiveTip.css"; // (see CSS below)
 
 import useResponsiveSizes from "@/utils/helper/general/useResponsiveSizes";
+import { cn } from "@/lib/utils";
 
 type Anchor = "right";
 
@@ -69,7 +70,12 @@ export default function MobileTranscriptionPortal({
         {(["right"] as const).map((anchor) => (
           <React.Fragment key={anchor}>
             <Button onClick={toggleDrawer(anchor, true)}>
-              <span className="relative">
+              <span
+                className={cn(
+                  "relative",
+                  (clientWidth as number) > 915 ? "" : "view-transcriptions"
+                )}
+              >
                 {transcriptions && (
                   <div className="absolute -right-1 -top-1 w-[15px] h-[15px] bg-[#0255DA] rounded-full"></div>
                 )}
