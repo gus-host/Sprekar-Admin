@@ -45,7 +45,7 @@ export default function useWebsocketTranslation(
   user: User | null,
   adminId: string,
   eventCodeServer: string,
-  hasCompletedTour: string | null
+  hasCompletedTour: string | boolean | null
 ) {
   const [participantId, setParticipantId] = useState<string>(() => {
     if (typeof window === "undefined" || user?._id) return "";

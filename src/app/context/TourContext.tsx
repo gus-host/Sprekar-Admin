@@ -6,7 +6,7 @@ import Joyride, { CallBackProps } from "react-joyride";
 import { tourSteps } from "../dashboard/_partials/tourSteps";
 
 interface TourContextValue {
-  hasCompletedTour: string | null;
+  hasCompletedTour: string | boolean | null;
   completeTour: () => void;
   // restartTour: () => void;
 }
@@ -14,12 +14,16 @@ interface TourContextValue {
 const TourContext = createContext<TourContextValue | undefined>(undefined);
 
 export function TourProvider({ children }: { children: React.ReactNode }) {
-  const [runTour, setRunTour] = useState(
-    () => !localStorage.getItem("hasSeenTour")
-  );
-  const [hasCompletedTour, setHasCompletedTour] = useState(() =>
-    localStorage.getItem("hasSeenTour")
-  );
+  const [runTour, setRunTour] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return !localStorage.getItem("hasSeenTour");
+  });
+  const [hasCompletedTour, setHasCompletedTour] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return localStorage.getItem("hasSeenTour");
+  });
+
+  // const skipBtnForFirstTooltip = typeof document !== "undefined" ? document.q
 
   const completeTour = useCallback(() => {
     setHasCompletedTour("true");
@@ -34,7 +38,9 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
 
   const handleJoyrideCallback = useCallback(
     (data: CallBackProps) => {
+      console.log(data);
       const { status } = data;
+      console.log(status);
       if (status === "finished" || status === "skipped") {
         completeTour();
       }
@@ -60,6 +66,7 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
             overlayColor: "rgba(0, 0, 0, 0.712)",
           },
         }}
+        scrollDuration={1000}
         callback={handleJoyrideCallback}
       />
       {children}

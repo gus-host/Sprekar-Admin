@@ -391,7 +391,7 @@ function EventControllerForVistors({
         <p className="text-[#676767] text-[12px] mb-1">
           Supported Languages ({event?.supportedLanguages?.length})
         </p>
-        <div className="max-w-[300px]">
+        <div className="max-w-[300px] translation-lang-select min-h-[37px]">
           <SupportedLangaugesTranslation
             options={formattedLanguages}
             translationLanguage={translationLanguage as LanguageOption}

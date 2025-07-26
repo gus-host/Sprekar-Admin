@@ -7,6 +7,9 @@ export const tourSteps: Step[] = [
     content: "Click here to start or pause the live audio stream.",
     placement: "auto",
     disableBeacon: true,
+    styles: {
+      buttonSkip: { display: "none" },
+    },
   },
   {
     target: ".translation-lang-select",
@@ -71,6 +74,9 @@ export const tourStepsVisitors: Step[] = [
       "Click here to select the language you want translations to come in.",
     placement: "auto",
     disableBeacon: true,
+    styles: {
+      buttonSkip: { display: "none" },
+    },
   },
 
   {

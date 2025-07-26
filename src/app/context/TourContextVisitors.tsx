@@ -6,7 +6,7 @@ import Joyride, { CallBackProps } from "react-joyride";
 import { tourStepsVisitors } from "../dashboard/_partials/tourSteps";
 
 interface TourContextValue {
-  hasCompletedTourVisitor: string | null;
+  hasCompletedTourVisitor: string | boolean | null;
   completeTour: () => void;
   // restartTour: () => void;
 }
@@ -14,12 +14,14 @@ interface TourContextValue {
 const TourContext = createContext<TourContextValue | undefined>(undefined);
 
 export function TourProvider({ children }: { children: React.ReactNode }) {
-  const [runTour, setRunTour] = useState(
-    () => !localStorage.getItem("hasSeenTour")
-  );
-  const [hasCompletedTourVisitor, setHasCompletedTourVisitor] = useState(() =>
-    localStorage.getItem("hasSeenTour")
-  );
+  const [runTour, setRunTour] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return !localStorage.getItem("hasSeenTour");
+  });
+  const [hasCompletedTourVisitor, setHasCompletedTourVisitor] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return localStorage.getItem("hasSeenTour");
+  });
 
   const completeTour = useCallback(() => {
     setHasCompletedTourVisitor("true");
@@ -61,6 +63,7 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
           },
         }}
         callback={handleJoyrideCallback}
+        disableScrolling={true}
       />
       {children}
     </TourContext.Provider>

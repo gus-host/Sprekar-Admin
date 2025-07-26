@@ -203,7 +203,7 @@ export function SupportedLangaugesTranslation({
       value={translationLanguage}
       onChange={handleTranslationLanguageChange}
       placeholder="Select languages..."
-      className="supportedLanguages text-[12px] translation-lang-select"
+      className="supportedLanguages text-[12px]"
       styles={customStylesTranslation}
       instanceId="my-react-select"
       closeMenuOnSelect={true}
