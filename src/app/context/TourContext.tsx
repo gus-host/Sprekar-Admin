@@ -38,9 +38,7 @@ export function TourProvider({ children }: { children: React.ReactNode }) {
 
   const handleJoyrideCallback = useCallback(
     (data: CallBackProps) => {
-      console.log(data);
       const { status } = data;
-      console.log(status);
       if (status === "finished" || status === "skipped") {
         completeTour();
       }
