@@ -1,6 +1,6 @@
 "use client";
 
-import { User } from "@/app/dashboard/_partials/ProfileImgGetter";
+import { User } from "@/app/[lng]/dashboard/_partials/ProfileImgGetter";
 import {
   getSavedParticipantId,
   saveJoinRecord,

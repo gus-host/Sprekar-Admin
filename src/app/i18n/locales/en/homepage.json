@@ -1,0 +1,154 @@
+{
+  "hero": {
+    "title": "Speak. Understand. Connect.",
+    "subtitle": "Instantly translate speech, live events, and conversations in real-time with AI-powered accuracy",
+    "appleLinkAlt": "Download on the App Store",
+    "googleLinkAlt": "Get it on Google Play"
+  },
+  "join": {
+    "headingSmall": "Break Language Barriers Instantly",
+    "headingLarge": "Understand the world in real time—seamlessly and effortlessly.",
+    "tabs": {
+      "join": "Join an event / conversation",
+      "host": "Host an event"
+    },
+    "joinEventSteps": [
+      {
+        "title": "Scan or Enter an Event Code",
+        "desc": "Join live events instantly by scanning a QR code or entering an event code. No hassle, no delays.",
+        "alt": "Scanner image"
+      },
+      {
+        "title": "Select Your Language",
+        "desc": "Pick the language you want translations in—our AI ensures smooth and accurate communication.",
+        "alt": "Image showing different languages"
+      },
+      {
+        "title": "Experience Live Translations",
+        "desc": "See real-time subtitles as people speak, or listen to translated speech with our voice-to-voice feature.",
+        "alt": "Image showing live translation"
+      },
+      {
+        "title": "Save & Summarize",
+        "desc": "Need to revisit important discussions? Save translations or generate AI-powered summaries for later.",
+        "alt": "Image showing live translation summary"
+      },
+      {
+        "title": "Speak Freely, Anytime",
+        "desc": "Use one-on-one conversation mode to communicate effortlessly with anyone, anywhere.",
+        "alt": "Image showing conversation chat room"
+      }
+    ],
+    "hostEventSteps": [
+      {
+        "title": "Create Your Event",
+        "desc": "Log in as an Organization Admin, enter your event details, then generate a unique QR Code and Event Code for easy access.",
+        "alt": "Image showing event creation form"
+      },
+      {
+        "title": "Invite Participants",
+        "desc": "Share the QR Code or Event Code with attendees so they can join instantly and experience real-time translations.",
+        "alt": "Image showing event QR code"
+      },
+      {
+        "title": "Start Live Translation",
+        "desc": "Begin speaking naturally while our AI-powered system translates instantly. Attendees will see subtitles or hear translations in their chosen language.",
+        "alt": "Image showing live translation room"
+      }
+    ]
+  },
+  "features": {
+    "headings": {
+      "main": "Features",
+      "sec": "Your Language. Your World. No Barriers."
+    },
+    "list": [
+      {
+        "id": "feat-1",
+        "title": "Real-Time Translations",
+        "desc": "Instant Speech-to-Speech & Speech-to-Text – Talk freely, and let Sprekar translate on the fly.",
+        "btn": "Join a conversation",
+        "alt": "Phones showing chat room and conversation"
+      },
+      {
+        "id": "feat-2",
+        "title": "Event Translations",
+        "desc": "QR Code Event Access – Scan & join live multilingual conversations in seconds.",
+        "btn": "Join an event",
+        "alt": "Phones showing join event screen and live translations"
+      },
+      {
+        "id": "feat-3",
+        "title": "AI-Powered Summaries",
+        "desc": "Missed a Meeting? No Problem. AI generates key takeaways & action points from conversations.",
+        "btn": null,
+        "alt": "Phones showing summary of translations"
+      }
+    ]
+  },
+  "pricing": {
+    "headingSmall": "Pricing Plans",
+    "headingLarge": "Choose the plan that best fits your needs",
+    "recommendedBadge": "Recommended",
+    "plans": [
+      {
+        "plan": "Free",
+        "desc": "Perfect for casual use & travel",
+        "price": "€0",
+        "period": "/ month",
+        "features": [
+          "1-on-1 voice translation",
+          "Join events as a guest",
+          "Limited daily usage",
+          "Text translation only"
+        ]
+      },
+      {
+        "plan": "Pro Plan",
+        "desc": "Great for everyday conversations",
+        "price": "€9.99",
+        "period": "/ month",
+        "features": [
+          "Unlimited personal & group chats",
+          "Voice-to-voice translations",
+          "Save summaries & conversations",
+          "Join any event"
+        ]
+      },
+      {
+        "plan": "Event Host Plan",
+        "desc": "Ideal for churches, conferences & classes",
+        "price": "€49.00",
+        "period": "/ month",
+        "features": [
+          "Host live translated events",
+          "Dashboard for managing translations",
+          "QR & event code access",
+          "300 attendees per event"
+        ]
+      }
+    ]
+  },
+  "cta": {
+    "title": "Start Translating Today!",
+    "body": "Get real-time translations, AI-powered summaries, and seamless communication at live events or one-on-one conversations. Try Sprekar today!",
+    "appleLinkAlt": "Download on the App Store",
+    "googleLinkAlt": "Get it on Google Play"
+  },
+  "navlinks": {
+    "features": "Features",
+    "joinEvent": "Join event",
+    "hostEvent": "Host an event",
+    "aboutUs": "About Us",
+    "faqs": "FAQs",
+    "contact": "Contact"
+  },
+  "footer": {
+    "links": {
+      "pricing": "Pricing",
+      "terms": "Terms and conditions",
+      "privacy": "Privacy policy"
+    },
+    "copyright": "© {{year}} Sprekar. All Rights Reserved."
+  }
+}

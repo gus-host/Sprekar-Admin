@@ -1,0 +1,66 @@
+{
+  "policy": {
+    "pageTitle": "Privacybeleid",
+    "intro": "Sprekar (‘wij’, ‘ons’ of ‘onze’) zet zich in voor de bescherming van uw privacy. Dit Privacybeleid legt uit hoe we uw gegevens verzamelen, gebruiken en beveiligen wanneer u onze mobiele app en webservices gebruikt.",
+    "sections": [
+      {
+        "id": 1,
+        "title": "Informatie die we verzamelen",
+        "items": [
+          "Persoonlijke gegevens: naam, e-mail, taalvoorkeuren en optioneel een profielfoto.",
+          "Audiogegevens: realtime spraakinput voor transcriptie en vertaling (niet permanent opgeslagen).",
+          "Gebruikgegevens: apparaatinformatie, app-gebruiksstatistieken, crashlogs en interactiegeschiedenis."
+        ]
+      },
+      {
+        "id": 2,
+        "title": "Hoe we uw gegevens gebruiken",
+        "items": [
+          "Om realtime vertaling en transcriptiediensten te bieden.",
+          "Om de gebruikerservaring en taalinstellingen te personaliseren.",
+          "Om onze app-functionaliteit te verbeteren en problemen op te lossen.",
+          "Om geaggregeerde analyses uit te voeren voor prestatiemonitoring."
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Delen van gegevens & Derden",
+        "items": [
+          "We gebruiken vertrouwde derden zoals Google Speech-to-Text en DeepL voor vertaling en spraakverwerking.",
+          "We verkopen uw persoonlijke gegevens niet."
+        ]
+      },
+      {
+        "id": 4,
+        "title": "Bewaring van gegevens",
+        "items": [
+          "Transcripties en vertalingen worden realtime verwerkt en verwijderd tenzij door de gebruiker opgeslagen.",
+          "Gebruikersaccountgegevens worden bewaard zolang het account actief is."
+        ]
+      },
+      {
+        "id": 5,
+        "title": "Beveiliging",
+        "text": "We gebruiken industriestandaardversleuteling en veilige cloudinfrastructuur om uw gegevens te beschermen."
+      },
+      {
+        "id": 6,
+        "title": "Uw rechten",
+        "items": [
+          "U kunt toegang, correctie of verwijdering van uw gegevens aanvragen.",
+          "U kunt uw account op elk moment deactiveren."
+        ]
+      },
+      {
+        "id": 7,
+        "title": "Wijzigingen in dit beleid",
+        "text": "We kunnen dit Privacybeleid bijwerken en zullen gebruikers informeren over belangrijke wijzigingen via de app of e-mail."
+      },
+      {
+        "id": 8,
+        "title": "Contact",
+        "text": "Voor vragen over dit beleid kunt u mailen naar <strong>hello@sprekar.com</strong>."
+      }
+    ]
+  }
+}

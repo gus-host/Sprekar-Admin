@@ -1,6 +1,6 @@
 "use client";
 
-import { User } from "@/app/dashboard/_partials/ProfileImgGetter";
+import { User } from "@/app/[lng]/dashboard/_partials/ProfileImgGetter";
 
 import {
   getSavedParticipantId,
@@ -332,7 +332,7 @@ export default function useWebsocketTranslation(
 
       // participantId: prefer stored value
 
-      // console.log("Message from server: ", data);
+      console.log("Message from server: ", data);
 
       // Error handling
       if (

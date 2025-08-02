@@ -1,19 +1,29 @@
 // app/components/ScrollamaFeatureShowcase.tsx
 "use client";
 
-import { robotoSerif } from "@/app/_partials/fontFamilies";
-import { features } from "@/app/_partials/homePageData";
+import { robotoSerif } from "@/app/[lng]/_partials/fontFamilies";
+import { features as featuresStatic } from "@/app/[lng]/_partials/homePageData";
+import { useTranslation } from "@/app/i18n/client";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { Scrollama, Step } from "react-scrollama";
 
-export default function FeatureScroll() {
+export default function FeatureScroll({ lng }: { lng: string }) {
   const [activeId, setActiveId] = useState<string | null>(null);
-  const [phoneImg, setPhoneImg] = useState(features[0].img);
+  const [phoneImg, setPhoneImg] = useState(featuresStatic[0].img);
   const [isImageFixed, setIsImageFixed] = useState(false);
   const [keepBottom, setKeepBottom] = useState(false);
+  const { t } = useTranslation(lng);
+
+  const features = t("features.list", { returnObjects: true }) as Array<{
+    id: string;
+    title: string;
+    desc: string;
+    btn: string | null;
+    alt: string;
+  }>;
 
   const handleStepEnter = ({
     data,
@@ -41,7 +51,7 @@ export default function FeatureScroll() {
       setIsImageFixed(false);
     }
     setTimeout(() => {
-      const matched = features.find((f) => f.id === data);
+      const matched = featuresStatic.find((f) => f.id === data);
 
       if (matched) {
         setPhoneImg(matched.img);
@@ -82,7 +92,7 @@ export default function FeatureScroll() {
           onStepExit={handleStepExit}
           debug={false}
         >
-          {features.map((feature) => (
+          {features.map((feature, i) => (
             <Step key={feature.id} data={feature.id}>
               <div
                 id={feature.id}
@@ -91,15 +101,15 @@ export default function FeatureScroll() {
                 {/* …feature content… */}
                 <div>
                   <h3 className="text-[16px] font-medium text-[#01388F] mb-2 max-[744px]:mt-6">
-                    Features
+                    {t("features.headings.main")}
                   </h3>
                   <h2
                     className={`${robotoSerif.className} text-[30px] max-[744px]:text-[20px] font-black max-w-[400px] leading-[1.3] mb-[20px]`}
                   >
-                    Your Language. Your World. No Barriers.
+                    {t("features.headings.sec")}
                   </h2>
                   <div className="flex gap-[20px] items-center">
-                    {feature.ident}
+                    {featuresStatic[i].ident}
                     <div>
                       <h4 className="text-[#323232] text-[16px] font-medium mb-1">
                         {feature.title}
@@ -110,7 +120,7 @@ export default function FeatureScroll() {
                       {feature.btn && (
                         <Link
                           href={
-                            feature.btn === "Join an event"
+                            feature.btn === `${t(`${features[1].btn}`)}`
                               ? "/join-event"
                               : "#"
                           }
@@ -123,7 +133,7 @@ export default function FeatureScroll() {
                   </div>
                 </div>
                 <Image
-                  src={feature.img}
+                  src={featuresStatic[i].img}
                   alt={feature.alt}
                   quality={100}
                   className="min-[744px]:hidden"
@@ -145,8 +155,9 @@ export default function FeatureScroll() {
         <Image
           src={phoneImg}
           alt={
-            features[features.findIndex((feature) => feature.img === phoneImg)]
-              .alt
+            featuresStatic[
+              featuresStatic.findIndex((feature) => feature.img === phoneImg)
+            ].alt
           }
           quality={100}
           className="max-[744px]:hidden w-[70%]"

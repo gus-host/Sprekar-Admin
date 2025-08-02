@@ -1,0 +1,59 @@
+{
+  "termsOfService": {
+    "pageTitle": "Gebruiksvoorwaarden",
+    "intro": "Welkom bij Sprekar. Door onze mobiele app en website te openen of te gebruiken, gaat u akkoord met de volgende voorwaarden:",
+    "sections": [
+      {
+        "id": 1,
+        "title": "Akkoord met Voorwaarden",
+        "text": "Door Sprekar te gebruiken, stemt u ermee in gebonden te zijn aan deze Gebruiksvoorwaarden."
+      },
+      {
+        "id": 2,
+        "title": "Gebruikersgedrag",
+        "items": [
+          "U stemt ermee in de app alleen voor wettige doeleinden te gebruiken.",
+          "U zult zich niet voordoen als anderen of zich schuldig maken aan misbruik."
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Accountbeheer",
+        "items": [
+          "U bent verantwoordelijk voor het vertrouwelijk houden van uw accountgegevens.",
+          "Sprekar kan elk account dat de voorwaarden overtreedt opschorten of beëindigen."
+        ]
+      },
+      {
+        "id": 4,
+        "title": "Beschikbaarheid van de Dienst",
+        "text": "Sprekar wordt geleverd “as-is” en “as-available”. Wij garanderen geen beschikbaarheid of nauwkeurigheid."
+      },
+      {
+        "id": 5,
+        "title": "Intellectueel Eigendom",
+        "text": "Alle inhoud en technologie in Sprekar zijn eigendom van ons of onze licentiegevers. U mag deze niet reverse-engineeren of kopiëren."
+      },
+      {
+        "id": 6,
+        "title": "Beperking van Aansprakelijkheid",
+        "text": "Sprekar is niet aansprakelijk voor indirecte of gevolgschade voortvloeiend uit het gebruik van de app."
+      },
+      {
+        "id": 7,
+        "title": "Toepasselijk Recht",
+        "text": "Op deze voorwaarden is het recht van Nederland van toepassing."
+      },
+      {
+        "id": 8,
+        "title": "Wijzigingen",
+        "text": "Wij behouden ons het recht voor om deze voorwaarden te wijzigen. Door de app te blijven gebruiken, accepteert u de bijgewerkte voorwaarden."
+      },
+      {
+        "id": 9,
+        "title": "Contact",
+        "text": "Voor vragen over deze voorwaarden kunt u mailen naar <strong>hello@sprekar.com</strong>."
+      }
+    ]
+  }
+}

@@ -1,0 +1,154 @@
+{
+  "hero": {
+    "title": "Spreek. Begrijp. Verbind.",
+    "subtitle": "Vertaal onmiddellijk spraak, live-evenementen en gesprekken in realtime met AI-ondersteunde nauwkeurigheid",
+    "appleLinkAlt": "Download in de App Store",
+    "googleLinkAlt": "Download op Google Play"
+  },
+  "join": {
+    "headingSmall": "Doorbreek taalbarrières direct",
+    "headingLarge": "Begrijp de wereld in realtime—naadloos en moeiteloos.",
+    "tabs": {
+      "join": "Deelname aan evenement / gesprek",
+      "host": "Host een evenement"
+    },
+    "joinEventSteps": [
+      {
+        "title": "Scannen of voer een evenementcode in",
+        "desc": "Doe direct mee aan live-evenementen door een QR-code te scannen of een evenementcode in te voeren. Geen gedoe, geen vertraging.",
+        "alt": "Scanner afbeelding"
+      },
+      {
+        "title": "Selecteer uw taal",
+        "desc": "Kies de taal waarin u vertalingen wilt ontvangen—onze AI zorgt voor vloeiende en nauwkeurige communicatie.",
+        "alt": "Afbeelding met verschillende talen"
+      },
+      {
+        "title": "Ervaar live vertalingen",
+        "desc": "Bekijk realtime ondertitels terwijl er wordt gesproken, of luister naar vertaalde spraak met onze stem-naar-stemfunctie.",
+        "alt": "Afbeelding met live vertaling"
+      },
+      {
+        "title": "Opslaan & Samenvatten",
+        "desc": "Wilt u belangrijke gesprekken later nog eens teruglezen? Sla vertalingen op of genereer AI-gegenereerde samenvattingen.",
+        "alt": "Afbeelding met live vertalingssamenvatting"
+      },
+      {
+        "title": "Spreek vrijuit, altijd",
+        "desc": "Gebruik de één-op-één gespreksmodus om moeiteloos met iedereen te communiceren, waar u ook bent.",
+        "alt": "Afbeelding van een gesprekssamenkomst"
+      }
+    ],
+    "hostEventSteps": [
+      {
+        "title": "Creëer uw evenement",
+        "desc": "Log in als organisatiebeheerder, voer uw evenementgegevens in en genereer een unieke QR-code en evenementcode voor eenvoudige toegang.",
+        "alt": "Afbeelding van evenement aanmaken formulier"
+      },
+      {
+        "title": "Nodig deelnemers uit",
+        "desc": "Deel de QR-code of evenementcode met deelnemers zodat zij direct kunnen deelnemen en realtime vertalingen ervaren.",
+        "alt": "Afbeelding van evenement QR-code"
+      },
+      {
+        "title": "Start live vertaling",
+        "desc": "Begin natuurlijk te spreken terwijl ons AI-systeem direct vertaalt. Deelnemers zien ondertitels of horen vertalingen in hun gekozen taal.",
+        "alt": "Afbeelding van live vertaalruimte"
+      }
+    ]
+  },
+  "features": {
+    "headings": {
+      "main": "Kenmerken",
+      "sec": "Jouw taal. Jouw wereld. Geen barrières."
+    },
+    "list": [
+      {
+        "id": "feat-1",
+        "title": "Realtime vertalingen",
+        "desc": "Directe spraak-naar-spraak & spraak-naar-tekst – Spreek vrijuit, en laat Sprekar meteen vertalen.",
+        "btn": "Doe mee aan een gesprek",
+        "alt": "Telefoons die chatruimte en gesprek weergeven"
+      },
+      {
+        "id": "feat-2",
+        "title": "Evenementvertalingen",
+        "desc": "QR-code voor evenementtoegang – Scan en doe in seconden mee aan live meertalige gesprekken.",
+        "btn": "Doe mee aan een evenement",
+        "alt": "Telefoons die het scherm voor evenementdeelnemen en live vertalingen tonen"
+      },
+      {
+        "id": "feat-3",
+        "title": "AI-gegenereerde samenvattingen",
+        "desc": "Een vergadering gemist? Geen probleem. AI genereert belangrijke punten en actiepunten uit gesprekken.",
+        "btn": null,
+        "alt": "Telefoons met samenvatting van vertalingen"
+      }
+    ]
+  },
+  "pricing": {
+    "headingSmall": "Prijspakketten",
+    "headingLarge": "Kies het abonnement dat het beste bij je past",
+    "recommendedBadge": "Aanbevolen",
+    "plans": [
+      {
+        "plan": "Gratis",
+        "desc": "Perfect voor casual gebruik & reizen",
+        "price": "€0",
+        "period": "/ maand",
+        "features": [
+          "1-op-1 spraakvertaling",
+          "Doe mee aan evenementen als gast",
+          "Beperkt dagelijks gebruik",
+          "Alleen tekstvertaling"
+        ]
+      },
+      {
+        "plan": "Pro-abonnement",
+        "desc": "Geweldig voor dagelijkse gesprekken",
+        "price": "€9,99",
+        "period": "/ maand",
+        "features": [
+          "Onbeperkte persoonlijke & groepschats",
+          "Spraak-naar-spraak vertalingen",
+          "Samenvattingen & gesprekken opslaan",
+          "Doe mee aan elk evenement"
+        ]
+      },
+      {
+        "plan": "Evenement Host Abonnement",
+        "desc": "Ideaal voor kerken, conferenties & opleidingen",
+        "price": "€49,00",
+        "period": "/ maand",
+        "features": [
+          "Host live vertaalde evenementen",
+          "Dashboard voor het beheren van vertalingen",
+          "QR- & evenementcode toegang",
+          "300 deelnemers per evenement"
+        ]
+      }
+    ]
+  },
+  "cta": {
+    "title": "Begin Vandaag met Vertalen!",
+    "body": "Ontvang realtime vertalingen, AI-gegenereerde samenvattingen en naadloze communicatie tijdens live-evenementen of één-op-één gesprekken. Probeer Sprekar vandaag nog!",
+    "appleLinkAlt": "Download in de App Store",
+    "googleLinkAlt": "Download op Google Play"
+  },
+  "navlinks": {
+    "features": "Kenmerken",
+    "joinEvent": "Doe mee aan evenement",
+    "hostEvent": "Host een evenement",
+    "aboutUs": "Over ons",
+    "faqs": "Veelgestelde vragen",
+    "contact": "Contact"
+  },
+  "footer": {
+    "links": {
+      "pricing": "Prijzen",
+      "terms": "Algemene voorwaarden",
+      "privacy": "Privacybeleid"
+    },
+    "copyright": "© {{year}} Sprekar. Alle rechten voorbehouden."
+  }
+}

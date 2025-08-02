@@ -1,0 +1,24 @@
+{
+  "scanner": {
+    "title": "Word direct lid van een live-evenement!",
+    "subtitle": "Geen registratie nodig. Scan gewoon de QR-code of voer de evenementcode in om deel te nemen.",
+    "qrButton": "Deelnemen met QR-code",
+    "scanInstruction": "Plaats de QR-code correct in het vlak en het scannen start automatisch",
+    "joiningEvent": "Bezig met deelnemen aan evenement..."
+  },
+  "joinEventForm": {
+    "placeholder": "Voer de evenementcode in om deel te nemen",
+    "button": {
+      "default": "Deelnemen",
+      "loading": "Bezig met deelnemen..."
+    },
+    "validation": {
+      "required": "Evenementcode is verplicht!"
+    },
+    "toast": {
+      "success": "Succesvol deelgenomen aan het evenement!",
+      "failure": "Kon niet deelnemen aan evenement. Probeer het opnieuw",
+      "error": "Er is een fout opgetreden!"
+    }
+  }
+}

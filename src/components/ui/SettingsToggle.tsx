@@ -1,8 +1,8 @@
 "use client";
 
 import React from "react";
-import ToggleActive from "@/app/_svgs/ToggleActive";
-import ToggleInactive from "@/app/_svgs/ToggleInactive";
+import ToggleActive from "@/app/[lng]/_svgs/ToggleActive";
+import ToggleInactive from "@/app/[lng]/_svgs/ToggleInactive";
 
 export default function SettingsToggle({
   isActive = false,

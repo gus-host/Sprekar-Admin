@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import Fade from "@mui/material/Fade";
 import { Dispatch, ReactNode, SetStateAction } from "react";
-import ModalCancel from "@/app/_svgs/ModalCancel";
+import ModalCancel from "@/app/[lng]/_svgs/ModalCancel";
 import useResponsiveSizes from "@/utils/helper/general/useResponsiveSizes";
 
 interface ModalMUIProps {

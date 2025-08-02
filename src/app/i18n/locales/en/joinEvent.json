@@ -1,0 +1,24 @@
+{
+  "scanner": {
+    "title": "Join a Live Event Instantly!",
+    "subtitle": "No signup needed. Just scan the QR code or enter the event code to join.",
+    "qrButton": "Join with QR code",
+    "scanInstruction": "Place the QR code properly inside the area and scanning will start automatically",
+    "joiningEvent": "Joining event ..."
+  },
+  "joinEventForm": {
+    "placeholder": "Enter event code to join an event",
+    "button": {
+      "default": "Join now",
+      "loading": "Joining..."
+    },
+    "validation": {
+      "required": "Event code is required!"
+    },
+    "toast": {
+      "success": "Successfully joined the event!",
+      "failure": "Could not join event. Please try again",
+      "error": "An error occurred!"
+    }
+  }
+}
