@@ -1,0 +1,49 @@
+{
+  "contact": {
+    "title": "We helpen je graag",
+    "subtitle": "Stuur ons een bericht en we nemen binnen 24 uur contact op!",
+    "form": {
+      "fields": {
+        "firstName": {
+          "label": "Voornaam",
+          "placeholder": "Voer uw naam in"
+        },
+        "lastName": {
+          "label": "Achternaam",
+          "placeholder": "Voer uw naam in"
+        },
+        "email": {
+          "label": "E-mailadres",
+          "placeholder": "Voer uw e-mailadres in"
+        },
+        "message": {
+          "label": "Bericht",
+          "placeholder": "Voer uw bericht in"
+        }
+      },
+      "button": {
+        "default": "Verstuur bericht",
+        "loading": "Bericht verzenden..."
+      },
+      "validation": {
+        "firstName": {
+          "required": "Voornaam is verplicht"
+        },
+        "lastName": {
+          "required": "Achternaam is verplicht"
+        },
+        "email": {
+          "invalid": "Ongeldig e-mailadres",
+          "required": "E-mail is verplicht"
+        },
+        "message": {
+          "required": "Bericht is verplicht"
+        }
+      }
+    },
+    "toast": {
+      "success": "Bericht succesvol verzonden!",
+      "error": "Er is een fout opgetreden. Probeer het opnieuw."
+    }
+  }
+}

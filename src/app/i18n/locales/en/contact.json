@@ -1,0 +1,49 @@
+{
+  "contact": {
+    "title": "We’d love to help",
+    "subtitle": "Reach out and we’ll get back to you within 24 hours!",
+    "form": {
+      "fields": {
+        "firstName": {
+          "label": "First name",
+          "placeholder": "Enter your name"
+        },
+        "lastName": {
+          "label": "Last name",
+          "placeholder": "Enter your name"
+        },
+        "email": {
+          "label": "Email Address",
+          "placeholder": "Enter your email address"
+        },
+        "message": {
+          "label": "Message",
+          "placeholder": "Enter your message"
+        }
+      },
+      "button": {
+        "default": "Send message",
+        "loading": "Sending message..."
+      },
+      "validation": {
+        "firstName": {
+          "required": "First name is required"
+        },
+        "lastName": {
+          "required": "Last name is required"
+        },
+        "email": {
+          "invalid": "Invalid email",
+          "required": "Email is required"
+        },
+        "message": {
+          "required": "Message is required"
+        }
+      }
+    },
+    "toast": {
+      "success": "Message successfully sent!",
+      "error": "An error occurred. Please try again."
+    }
+  }
+}
