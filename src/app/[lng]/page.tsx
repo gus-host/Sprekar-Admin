@@ -9,17 +9,28 @@ import GooglePlayHome from "@/app/[lng]/_svgs/GooglePlayHome";
 import Link from "next/link";
 import HeroVideo from "@/app/[lng]/_partials/HeroVideo";
 import JoinOrHostEventSteps from "@/app/[lng]/_partials/JoinOrHostEventSteps";
-import Swiper from "@/app/[lng]/_partials/Swiper";
 import { cn } from "@/lib/utils";
 import H1 from "@/app/[lng]/_partials/H1";
 import FeatureScroll from "@/components/FeatureScroll";
 import { useTranslation } from "../i18n";
 import { fallbackLng, languages } from "../i18n/settings";
+import { notFound } from "next/navigation";
 
-export type I8nParams = Promise<{ lng: string }>;
+export async function generateStaticParams() {
+  return [languages.map((lng) => ({ lng }))];
+}
 
-export default async function Home({ params }: { params: I8nParams }) {
-  let { lng } = await params;
+export interface I8nParams {
+  lng: string;
+}
+
+export default async function Home({ params }: { params: Promise<I8nParams> }) {
+  const paramTest = await params;
+  let lng = paramTest?.lng;
+
+  if (!lng) {
+    notFound();
+  }
   if (languages.indexOf(lng) < 0) lng = fallbackLng;
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const { t } = await useTranslation(lng);

@@ -8,7 +8,7 @@ import { fallbackLng, languages } from "../i18n/settings";
 import { useTranslation } from "../i18n";
 
 export async function generateStaticParams() {
-  return languages.map((lng) => ({ lng }));
+  return [languages.map((lng) => ({ lng: lng }))];
 }
 
 const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
@@ -17,6 +17,8 @@ const openSans = Open_Sans({
   subsets: ["latin"],
   display: "swap",
 });
+
+// export const dynamicParams = false;
 
 export async function generateMetadata({
   params,

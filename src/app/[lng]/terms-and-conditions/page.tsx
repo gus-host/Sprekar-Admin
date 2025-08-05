@@ -6,14 +6,28 @@ import {
 } from "@/app/[lng]/_partials/fontFamilies";
 import Header from "@/app/[lng]/_partials/Header";
 import { useTranslation } from "@/app/i18n";
-import { I8nParams } from "../page";
+import { notFound } from "next/navigation";
+
+interface I18nParams {
+  lng: string;
+}
 
 export const metadata = {
   title: "Terms Of Service",
 };
 
-export default async function page({ params }: { params: I8nParams }) {
-  const { lng } = await params;
+export default async function page({
+  params,
+}: {
+  params: Promise<I18nParams>;
+}) {
+  const paramsTest = await params;
+
+  const lng = paramsTest?.lng;
+
+  if (!lng) {
+    notFound();
+  }
   const { t } = await useTranslation(lng, "terms");
   const terms = t("termsOfService", { returnObjects: true }) as {
     pageTitle: string;

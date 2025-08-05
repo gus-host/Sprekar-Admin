@@ -7,13 +7,19 @@ import {
 import Header from "@/app/[lng]/_partials/Header";
 import { I8nParams } from "../page";
 import { useTranslation } from "@/app/i18n";
+import { notFound } from "next/navigation";
 
 export const metadata = {
   title: "Privacy Policy",
 };
 
-export default async function page({ params }: { params: I8nParams }) {
-  const { lng } = await params;
+export default async function page({ params }: { params: Promise<I8nParams> }) {
+  const paramsTest = await params;
+  const lng = paramsTest?.lng;
+
+  if (!lng) {
+    notFound();
+  }
   const { t } = await useTranslation(lng, "policy");
   const policy = t("policy", { returnObjects: true }) as {
     pageTitle: string;

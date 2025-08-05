@@ -9,6 +9,8 @@ import { unstable_noStore as noStore } from "next/cache";
 import { cookies } from "next/headers";
 import axios from "axios";
 import DashboardError from "./_partials/DashboardError";
+import { I8nParams } from "../page";
+import { notFound } from "next/navigation";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 export const revalidate = 0;
@@ -25,7 +27,13 @@ type DashboardData = {
   languagePercentages?: object;
 };
 
-export default async function Page() {
+export default async function Page({ params }: { params: Promise<I8nParams> }) {
+  const paramsTest = await params;
+  const lng = paramsTest?.lng;
+
+  if (!lng) {
+    notFound(); // This will render your not-found.tsx page
+  }
   noStore();
   const cookieStore = cookies();
   const token = (await cookieStore).get("refreshTokenNew")?.value;

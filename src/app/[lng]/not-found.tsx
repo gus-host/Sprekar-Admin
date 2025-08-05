@@ -1,15 +1,17 @@
 import Link from "next/link";
 import HomePageLayout from "@/app/[lng]/_partials/_layout/HomePageLayout";
 import { Construction } from "lucide-react";
+import { I8nParams } from "./page";
 export const metadata = {
   title: "Page Not Found",
   description:
     "The page you're looking for doesn't exist or is under construction.",
 };
 
-export default function NotFound() {
+export default async function NotFound({ params }: { params: I8nParams }) {
+  const { lng } = await params;
   return (
-    <HomePageLayout showedHeroBg={false}>
+    <HomePageLayout showedHeroBg={false} lng={lng}>
       <div className="min-h-[80vh] relative max-[750px]:pt-[80px] pb-[100px] flex">
         <div className="relative z-10 grow-1">
           <main className="flex items-center justify-center px-4 h-full">

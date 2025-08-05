@@ -1,9 +1,11 @@
 import HomePageLayout from "@/app/[lng]/_partials/_layout/HomePageLayout";
 import Link from "next/link";
+import { I8nParams } from "../../page";
 
-export default function NotFound() {
+export default async function NotFound({ params }: { params: I8nParams }) {
+  const { lng } = params;
   return (
-    <HomePageLayout showedHeroBg={false}>
+    <HomePageLayout showedHeroBg={false} lng={lng}>
       <div className="min-h-[60dvh] flex flex-col justify-center items-center text-center">
         <h2 className="font-bold text-[20px]">Not Found</h2>
         <p>This event was not found</p>
