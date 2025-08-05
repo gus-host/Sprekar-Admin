@@ -10,6 +10,7 @@ import { useTranslation } from "../i18n";
 export async function generateStaticParams() {
   return [languages.map((lng) => ({ lng: lng }))];
 }
+// export const dynamicParams = false;
 
 const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
 

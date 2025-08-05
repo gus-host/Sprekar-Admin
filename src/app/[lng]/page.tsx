@@ -16,9 +16,9 @@ import { useTranslation } from "../i18n";
 import { fallbackLng, languages } from "../i18n/settings";
 import { notFound } from "next/navigation";
 
-export async function generateStaticParams() {
-  return [languages.map((lng) => ({ lng }))];
-}
+// export async function generateStaticParams() {
+//   return [languages.map((lng) => ({ lng }))];
+// }
 
 export interface I8nParams {
   lng: string;

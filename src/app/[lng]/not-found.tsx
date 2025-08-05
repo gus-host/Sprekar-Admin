@@ -8,8 +8,14 @@ export const metadata = {
     "The page you're looking for doesn't exist or is under construction.",
 };
 
-export default async function NotFound({ params }: { params: I8nParams }) {
-  const { lng } = await params;
+export default async function NotFound({
+  params,
+}: {
+  params: Promise<I8nParams>;
+}) {
+  const paramsTest = await params;
+  const lng = paramsTest?.lng;
+
   return (
     <HomePageLayout showedHeroBg={false} lng={lng}>
       <div className="min-h-[80vh] relative max-[750px]:pt-[80px] pb-[100px] flex">
