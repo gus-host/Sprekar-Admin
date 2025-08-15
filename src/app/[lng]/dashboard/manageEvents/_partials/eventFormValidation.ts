@@ -10,8 +10,11 @@ export const eventFormValidation = Yup.object().shape({
     .min(2, "Please select at least two languages")
     .required("Required"),
   timezone: Yup.object({
-    value: Yup.string()
-    .required("A timezone value is required"),
+    value: Yup.string().required("A timezone value is required"),
     label: Yup.string().required("A timezone label is required"),
   }).required("A timezone is required"),
+  eventType: Yup.object({
+    value: Yup.string().required("A event type value is required"),
+    label: Yup.string().required("A event type label is required"),
+  }).required("An event type is required"),
 });

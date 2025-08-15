@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities; */
 @import "tailwindcss";
+@plugin 'tailwind-scrollbar';
 
 @layer utilities {
   .width-4 {

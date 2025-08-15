@@ -42,6 +42,12 @@
   height: auto !important;
 }
 
+.css-b62m3t-container,
+.css-1tjhhv6-control,
+.css-isjpp1-control {
+  min-height: 44px !important;
+}
+
 @media (max-width: 957px) {
   .swiper,
   .swiper-wrapper {

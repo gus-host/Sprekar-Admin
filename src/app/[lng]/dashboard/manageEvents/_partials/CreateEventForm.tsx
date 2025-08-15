@@ -25,6 +25,7 @@ import QrCode from "./QrCode";
 
 import CalenderBlue from "@/app/[lng]/_svgs/CalenderBlue";
 import ToggleRecurring from "./ToggleRecurring";
+import EventTypeSelect, { EventType } from "./EventTypeSelect";
 
 export const downloadQrcodeImage = (base64QRCode?: string) => {
   // Create a temporary link element
@@ -60,6 +61,7 @@ export default function CreateEventForm() {
       description: "",
       isQRCodeEnabled: true,
       isReoccuring: true,
+      eventType: { value: "FAITH_RELIGION", label: "Faith & Religion" },
     },
     onSubmit: async (values) => {
       const name = values.name;
@@ -84,6 +86,7 @@ export default function CreateEventForm() {
         (lang) => (lang as { value: string }).value
       );
       const timezone = values.timezone.value;
+      const eventType = values.eventType.value;
       const isQRCodeEnabled = values.isQRCodeEnabled;
       const isReoccuring = values.isReoccuring;
 
@@ -102,6 +105,7 @@ export default function CreateEventForm() {
             timezone,
             isQRCodeEnabled,
             isReoccuring,
+            eventType,
           },
           { withCredentials: true }
         );
@@ -218,12 +222,13 @@ export default function CreateEventForm() {
           </div>
         </div>
 
-        <div className="flex gap-3 items-start max-w-[800px] mb-[50px] max-[760px]:flex-wrap">
+        <div className="flex gap-3 items-start w-full mb-[50px] max-[930px]:flex-wrap">
           <SupportedLanguagesSelect
             name="supportedLanguages"
             label={`Supported Languages (${eventFormIk.values.supportedLanguages.length})`}
           />
           <TimeZoneSelect fieldName="timezone" />
+          <EventTypeSelect fieldName="eventType" />
           <EventDescriptionInput
             value={eventFormIk.values.description}
             onChange={eventFormIk.handleChange}

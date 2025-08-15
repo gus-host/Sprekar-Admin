@@ -17,6 +17,7 @@ export async function POST(req: Request) {
       timezone,
       isQRCodeEnabled,
       isReoccuring,
+      eventType,
     } = await req.json();
 
     const cookieStore = cookies();
@@ -34,6 +35,7 @@ export async function POST(req: Request) {
         timezone,
         isQRCodeEnabled,
         isRecurring: isReoccuring,
+        eventType,
       },
       {
         headers: {

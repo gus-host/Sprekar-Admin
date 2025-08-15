@@ -14,6 +14,7 @@ import ProfileImg from "./_partials/ProfileImg";
 import { redirect } from "next/navigation";
 import toast from "react-hot-toast";
 import { UserProvider } from "@/app/[lng]/context/UserContext";
+import Image from "next/image";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 export const revalidate = 0;
@@ -97,9 +98,14 @@ export default async function layout({ children }: { children: ReactNode }) {
           <div className="flex justify-between items-center px-[30px] py-[15px] border-b-[#A6A6A654] border-solid border-b-[1px] max-[1200px]:pl-[50px] z-[997]">
             <Link
               href={"/dashboard"}
-              className="font-bold text-[20px] text-[#000000]"
+              // className="font-bold text-[20px] text-[#000000]"
             >
-              SPREKAR
+              <Image
+                alt="Sprekar logo"
+                src={"/SprekarLogo.png"}
+                width={144}
+                height={20}
+              />
             </Link>
             <div className="flex items-center gap-[38px]">
               <NotificationIcon />
@@ -112,11 +118,7 @@ export default async function layout({ children }: { children: ReactNode }) {
           <DashboardMain plan={plan} error={error as string}>
             {error ? <ReloadComp /> : children}
           </DashboardMain>
-          {/* {error ? (
-        <div className="fixed bg-[#1E1E1E] left-[15px] top-[80.67px] px-[15px] pt-[30px] pb-[50px] text-[#fff] text-[16px] flex flex-col">
-         
-        </div>
-      ) : ( */}
+
           <Sidebar plan={plan} error={error as string} />
           {/* )} */}
         </div>

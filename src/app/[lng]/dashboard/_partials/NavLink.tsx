@@ -19,7 +19,7 @@ export default function NavLink({
   children,
   className = "",
   onClick,
-  activeClassName = "opacity-100",
+  activeClassName = "bg-[#0143aa]",
   lng = "en",
 }: NavLinkProps) {
   const pathname = usePathname();
@@ -49,16 +49,12 @@ export default function NavLink({
       <button
         onClick={handleLogout}
         className={cn(
+          isActive
+            ? activeClassName
+            : "opacity-[100] hover:bg-[#4d4d4d] active:bg-[#0143aa] px-2 py-1 rounded-sm",
           className,
-          "opacity-100", // always fully opaque for login/logout
-          activeClassName // in case you want to style it when active
+          "cursor-pointer" // always fully opaque for login/logout
         )}
-        style={{
-          background: "none",
-          border: "none",
-          padding: 0,
-          cursor: "pointer",
-        }}
       >
         {children}
       </button>
@@ -69,7 +65,13 @@ export default function NavLink({
   return (
     <Link
       href={href}
-      className={cn(className, isActive ? activeClassName : "opacity-50")}
+      className={cn(
+        "rounded-sm py-1 px-2",
+        className,
+        isActive
+          ? activeClassName
+          : "opacity-100 hover:bg-[#4d4d4d] active:bg-[#0143aa]"
+      )}
       onClick={onClick}
     >
       {children}

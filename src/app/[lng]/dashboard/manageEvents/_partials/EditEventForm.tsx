@@ -26,6 +26,7 @@ import SuccessIcon from "@/app/[lng]/_svgs/SuccessIcon";
 import FailedIcon from "@/app/[lng]/_svgs/FailedIcon";
 import ToggleRecurring from "./ToggleRecurring";
 import toast from "react-hot-toast";
+import EventTypeSelect, { EVENT_TYPE_OPTIONS } from "./EventTypeSelect";
 
 interface Event {
   status: string;
@@ -42,6 +43,7 @@ interface Event {
   eventCode: string;
   isQRCodeEnabled: boolean;
   isRecurring?: boolean;
+  eventType: string;
 }
 
 export default function EditEventForm({
@@ -70,6 +72,7 @@ export default function EditEventForm({
       description: "",
       isQRCodeEnabled: true,
       isReoccuring: true,
+      eventType: { value: "", label: "" },
     },
     onSubmit: async (values) => {
       const name = values.name;
@@ -96,6 +99,7 @@ export default function EditEventForm({
       const timezone = values.timezone.value;
       const isQRCodeEnabled = values.isQRCodeEnabled;
       const isReoccuring = values.isReoccuring;
+      const eventType = values.eventType.value;
       const id = eventData.id;
 
       try {
@@ -113,6 +117,7 @@ export default function EditEventForm({
             timezone,
             isQRCodeEnabled,
             isReoccuring,
+            eventType,
             id,
           },
           { withCredentials: true }
@@ -148,6 +153,12 @@ export default function EditEventForm({
     eventFormIk.setFieldValue("description", eventData.description);
     eventFormIk.setFieldValue("isQRCodeEnabled", eventData.isQRCodeEnabled);
     eventFormIk.setFieldValue("isReoccuring", eventData.isRecurring);
+    eventFormIk.setFieldValue(
+      "eventType",
+      EVENT_TYPE_OPTIONS.filter(
+        (option) => option.value === eventData.eventType
+      )[0]
+    );
 
     // Set other fields
     eventFormIk.setFieldValue("startDate", dayjs(eventData.startDate));
@@ -262,12 +273,13 @@ export default function EditEventForm({
             <ToggleRecurring name="isReoccuring" />
           </div>
         </div>
-        <div className="flex gap-3 items-start max-w-[800px] mb-[50px] flex-wrap">
+        <div className="flex gap-3 items-start w-full mb-[50px] flex-wrap">
           <SupportedLanguagesSelect
             name="supportedLanguages"
             label={`Supported Languages (${eventFormIk.values.supportedLanguages.length})`}
           />
           <TimeZoneSelect fieldName="timezone" />
+          <EventTypeSelect fieldName="eventType" />
           <EventDescriptionInput
             value={eventFormIk.values.description}
             onChange={eventFormIk.handleChange}

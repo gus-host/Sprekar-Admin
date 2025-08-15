@@ -28,7 +28,7 @@ export default function Sidebar({
   return (
     <div
       className={cn(
-        `fixed bg-[#1E1E1E] left-[15px] top-[80.67px] px-[15px] pt-[30px] pb-[50px] text-[#fff] text-[16px] max-[1200px]:top-0 max-[1200px]:left-0 max-[1200px]:collapse max-[1200px]:rounded-[0px] rounded-[10px] h-[85dvh] flex flex-col truncate`,
+        `fixed bg-[#1E1E1E] left-[15px] top-[80.67px] px-[15px] pt-[30px] pb-[50px] text-[#fff] text-[16px] max-[1200px]:top-0 max-[1200px]:left-0 max-[1200px]:collapse max-[1200px]:rounded-[0px] rounded-[10px] h-[85dvh] flex flex-col truncate w-[256px]`,
         error ? "min-w-[233px]" : ""
       )}
     >
@@ -57,8 +57,8 @@ export default function Sidebar({
             </div>
           )}
 
-          <div className="flex flex-col justify-between gap-[35px] relative flex-1 overflow-y-auto scrollbar scrollbar-thin scrollbar-thumb-white scrollbar-track-transparent">
-            <div className=" h-[288px]">
+          <div className="flex flex-col justify-between gap-[35px] relative flex-1 hover:overflow-y-auto scrollbar-thin scrollbar-thumb-white scrollbar-track-transparent">
+            <div className="">
               <div className="flex flex-col gap-[20px] h-full">
                 <NavLink
                   href={"/dashboard"}
@@ -110,7 +110,7 @@ export default function Sidebar({
               <span className="opacity-[100]">
                 <ExitIcon />{" "}
               </span>
-              <span className="opacity-50 hover:opacity-[100]">Log out</span>
+              <span>Log out</span>
             </NavLink>
           </div>
         </>

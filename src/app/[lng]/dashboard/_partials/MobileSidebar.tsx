@@ -84,7 +84,7 @@ export default function MobileSidebar({
             </div>
           )}
           <div className="flex flex-col justify-between gap-[35px] h-full relative">
-            <div className="flex flex-col gap-[20px] overflow-y-auto h-[288px] scrollbar-thin scrollbar-thumb-white scrollbar-track-[transparent]">
+            <div className="flex flex-col gap-[20px] overflow-y-auto scrollbar-thin scrollbar-thumb-white scrollbar-track-[transparent]">
               <NavLink
                 href={"/dashboard"}
                 className="flex items-center gap-[10px] hover:opacity-[100]"
@@ -140,7 +140,9 @@ export default function MobileSidebar({
               <span className="opacity-[100]">
                 <ExitIcon />{" "}
               </span>
-              <span className="opacity-50 hover:opacity-[100]">Log out</span>
+              <span className="">
+                Log out
+              </span>
             </NavLink>
           </div>
         </>
