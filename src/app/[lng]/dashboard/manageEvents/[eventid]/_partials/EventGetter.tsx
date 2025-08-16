@@ -89,7 +89,7 @@ export default async function EventGetter({ id }: { id: string }) {
     >
       <div className="grid grid-cols-6 gap-x-8">
         <div className={"col-span-4 max-[800px]:col-span-6"}>
-          <EditEventForm eventData={event} error={error} />
+          <EditEventForm eventData={event as any} error={error} />
         </div>
         <div className="col-span-2 max-[800px]:col-span-6 max-[800px]:row-start-1 max-[800px]:row-end-2">
           <QrCode
