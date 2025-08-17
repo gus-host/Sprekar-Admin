@@ -24,6 +24,7 @@ interface Event {
   qrCode: string;
   eventCode: string;
   isQRCodeEnabled: boolean;
+  eventType: string;
 }
 
 export default async function EventGetter({ id }: { id: string }) {
@@ -45,6 +46,7 @@ export default async function EventGetter({ id }: { id: string }) {
     qrCode: "",
     eventCode: "",
     isQRCodeEnabled: true,
+    eventType: "",
   };
   let error: string | undefined;
 

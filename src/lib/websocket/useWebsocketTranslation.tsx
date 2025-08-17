@@ -357,8 +357,10 @@ export default function useWebsocketTranslation(
           {
             text: data.text,
             translation: data.translation.text
-              ? data.translation.text
-              : data.translation,
+              ? prev[prev.length - 1].translation !== data.translation.text &&
+                data.translation.text
+              : prev[prev.length - 1].translation !== data.translation &&
+                data.translation,
             timestamp: new Date(),
           },
         ]);
