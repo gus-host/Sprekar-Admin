@@ -57,7 +57,7 @@ export default function Sidebar({
             </div>
           )}
 
-          <div className="flex flex-col justify-between gap-[35px] relative flex-1 hover:overflow-y-auto scrollbar-thin scrollbar-thumb-white scrollbar-track-transparent">
+          <div className="flex flex-col justify-between gap-[35px] relative flex-1 hover:overflow-y-auto scrollbar-thin scrollbar-thumb-white scrollbar-track-transparent min-h-[344px] transition-all">
             <div className="">
               <div className="flex flex-col gap-[20px] h-full">
                 <NavLink
