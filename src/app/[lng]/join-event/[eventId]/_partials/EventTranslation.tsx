@@ -294,17 +294,7 @@ export default function EventTranslation({
                                 color: "#5E5D5D",
                               }}
                             >
-                              {(
-                                (msg as ChatMessage)?.translation as {
-                                  text?: string;
-                                }
-                              ).text
-                                ? (
-                                    (msg as ChatMessage)?.translation as {
-                                      text?: string;
-                                    }
-                                  ).text
-                                : (msg as ChatMessage)?.translation}
+                              {(msg as ChatMessage)?.translation}
                             </div>
                           }
                           <div

@@ -1,6 +1,7 @@
 "use client";
 
 import { User } from "@/app/[lng]/dashboard/_partials/ProfileImgGetter";
+
 import {
   getSavedParticipantId,
   saveJoinRecord,
@@ -43,7 +44,8 @@ export type OptionType = {
 export default function useWebsocketTranslation(
   user: User | null,
   adminId: string,
-  eventCodeServer: string
+  eventCodeServer: string,
+  hasCompletedTour: string | boolean | null
 ) {
   const [participantId, setParticipantId] = useState<string>(() => {
     if (typeof window === "undefined" || user?._id) return "";
@@ -89,7 +91,7 @@ export default function useWebsocketTranslation(
   const [selectedDeviceId, setSelectedDeviceId] = useState("");
   const [loadingMore, setLoadingMore] = useState<boolean>(false);
   const [streamingLanguage, setStreamingLanguage] = useState<
-    "EN_GB" | "NL" | "ES" | "EN_US" | "FR" | "ZH_HANS"
+    "EN_GB" | "NL" | "ES" | "EN_US" | "FR" | "ZH_HANS" | "sv-SE" | "de-DE"
   >("EN_GB");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -101,11 +103,24 @@ export default function useWebsocketTranslation(
   // at the top of your hook, before any functions:
   const wsRef = useRef<WebSocket | null>(null);
   const rejoinAfterWsClosesRef = useRef(false);
+  // inside hook, with other refs
+  const startRecordingRef = useRef<null | (() => Promise<void>)>(null);
+  const stopRecordingRef = useRef<null | (() => Promise<void>)>(null);
+  const restartingRef = useRef(false);
 
   // keep it in sync whenever `ws` changes:
   useEffect(() => {
     wsRef.current = ws;
   }, [ws]);
+
+  useEffect(() => {
+    startRecordingRef.current = startRecording;
+    stopRecordingRef.current = stopRecording;
+    return () => {
+      startRecordingRef.current = null;
+      stopRecordingRef.current = null;
+    };
+  }, [startRecording, stopRecording]);
 
   // Load older messages (reverse infinite scroll)
   const loadOlderMessages = async () => {
@@ -250,6 +265,64 @@ export default function useWebsocketTranslation(
     });
   }, [websocketUrl]);
 
+  const restartAudioRecognition = useCallback(
+    async (maxAttempts = 6) => {
+      if (restartingRef.current) return false;
+      restartingRef.current = true;
+
+      let attempt = 0;
+
+      const tryOnce = async (): Promise<boolean> => {
+        try {
+          // 1) stop current recording (best effort)
+          try {
+            if (stopRecordingRef.current) await stopRecordingRef.current();
+          } catch (e) {
+            console.warn("stopRecording during restart failed:", e);
+          }
+
+          // 2) ensure websocket is open (reconnect if required)
+          if (!wsRef.current || wsRef.current.readyState !== WebSocket.OPEN) {
+            try {
+              await connectWebSocket(); // reconnects and sets wsRef
+            } catch (err) {
+              throw new Error("ws-reconnect-failed");
+            }
+          }
+
+          // 2.5) ensure audio context is resumed if necessary
+          // (startRecording will create a new AudioContext; if you keep single instance, resume it here)
+
+          // 3) start recording again
+          if (!startRecordingRef.current)
+            throw new Error("startRecording-not-available");
+          await startRecordingRef.current();
+
+          restartingRef.current = false;
+          return true;
+        } catch (err) {
+          attempt++;
+          if (attempt >= maxAttempts) {
+            restartingRef.current = false;
+            console.error("restartAudioRecognition: max attempts reached", err);
+            setMessage("could-not-restart-audio");
+            return false;
+          }
+          const delay = Math.min(30000, 500 * 2 ** (attempt - 1)); // exponential backoff
+          console.warn(
+            `restartAudioRecognition: attempt ${attempt} failed, retry in ${delay}ms`,
+            err
+          );
+          await new Promise((r) => setTimeout(r, delay));
+          return tryOnce();
+        }
+      };
+
+      return tryOnce();
+    },
+    [connectWebSocket]
+  );
+
   // Send message helper with reconnect
   const sendWsMessage = async (message: string) => {
     if (ws && ws.readyState === WebSocket.OPEN) {
@@ -268,6 +341,8 @@ export default function useWebsocketTranslation(
   };
 
   useEffect(() => {
+    if (!hasCompletedTour && user?._id) return;
+
     // Attempt a reconnect every minute if socket is not open
     const interval = setInterval(() => {
       const socket = wsRef.current;
@@ -287,7 +362,7 @@ export default function useWebsocketTranslation(
     }, 5000); // 30 seconds
 
     return () => clearInterval(interval);
-  }, [connectWebSocket]);
+  }, [connectWebSocket, hasCompletedTour]);
 
   // Load audio devices
   useEffect(() => {
@@ -310,24 +385,25 @@ export default function useWebsocketTranslation(
 
   // Open WebSocket on mount
   useEffect(() => {
+    if (!hasCompletedTour && user?._id) return;
     connectWebSocket().catch((err) => {
       console.error("Initial WebSocket connection failed:", err);
     });
-  }, [connectWebSocket]);
+  }, [connectWebSocket, hasCompletedTour]);
 
   // Handle incoming messages
   useEffect(() => {
     if (!ws) return;
     ws.onmessage = async (event: MessageEvent) => {
       const data = JSON.parse(event.data);
-      // console.log("Received from server:", data);
+      console.log("Received from server:", data);
       setIsLoading(false);
       setMessage(data.message);
       setError("");
 
       // participantId: prefer stored value
 
-      console.log("Message from server: ", data);
+      // console.log("Message from server: ", data);
 
       // Error handling
       if (
@@ -351,9 +427,11 @@ export default function useWebsocketTranslation(
           ...prev,
           {
             text: data.text,
-            translation: data.translation.text
-              ? data.translation.text
-              : data.translation,
+            translation: data?.translation?.text
+              ? prev[prev.length - 1]?.translation !==
+                  data?.translation?.text && data.translation.text
+              : prev[prev.length - 1]?.translation !== data?.translation &&
+                data?.translation,
             timestamp: new Date(),
           },
         ]);
@@ -377,9 +455,17 @@ export default function useWebsocketTranslation(
       } else if (
         data.type === "error" &&
         ((data.message as string).toLowerCase().includes("audio") ||
-          (data.message as string).toLowerCase().includes("speech"))
+          (data.message as string).toLowerCase().includes("speech") ||
+          (data.message as string).toLowerCase().includes("recognition"))
       ) {
-        setMessage("Needs-to-pause-and-play");
+        setMessage("needs-to-restart-audio");
+
+        // schedule automatic restart (small delay so server settles)
+        setTimeout(() => {
+          restartAudioRecognition().catch((e) => {
+            console.error("Auto restartAudioRecognition failed", e);
+          });
+        }, 400);
       }
     };
   }, [ws]);
@@ -445,7 +531,7 @@ export default function useWebsocketTranslation(
     );
   };
 
-  const startRecording = async () => {
+  async function startRecording() {
     if (!hasJoinedEvent || wsRef.current?.readyState !== WebSocket.OPEN) {
       await joinEvent();
     }
@@ -481,30 +567,43 @@ export default function useWebsocketTranslation(
         })
       );
     }
-    processor.onaudioprocess = (e) => {
+    processor.onaudioprocess = async (e) => {
       const s = wsRef.current;
+      const inData = e.inputBuffer.getChannelData(0);
+      const out16 = new Int16Array(inData.length);
+      for (let i = 0; i < inData.length; i++) {
+        out16[i] = Math.max(-32768, Math.min(32767, inData[i] * 32768));
+      }
       if (s?.readyState === WebSocket.OPEN) {
-        const inData = e.inputBuffer.getChannelData(0);
-        const out16 = new Int16Array(inData.length);
-        for (let i = 0; i < inData.length; i++) {
-          out16[i] = Math.max(-32768, Math.min(32767, inData[i] * 32768));
-        }
         s.send(JSON.stringify({ type: "audio", audio: Array.from(out16) }));
+      } else {
+        await sendWsMessage(
+          JSON.stringify({ type: "audio", audio: Array.from(out16) })
+        );
       }
     };
 
     setMediaRecorder({ stream, audioContext, processor });
     setIsRecording(true);
-  };
+  }
 
-  function stopRecording() {
-    if (mediaRecorder) {
+  async function stopRecording() {
+    if (!mediaRecorder) return;
+    if (mediaRecorder.processor) {
+      mediaRecorder.processor.onaudioprocess = null;
       mediaRecorder.processor.disconnect();
-      mediaRecorder.audioContext.close();
-      mediaRecorder.stream.getTracks().forEach((track) => track.stop());
     }
+    if (
+      mediaRecorder.audioContext &&
+      mediaRecorder.audioContext.state !== "closed"
+    ) {
+      await mediaRecorder.audioContext.close();
+    }
+    mediaRecorder.stream.getTracks().forEach((t) => t.stop());
     if (ws && ws.readyState === WebSocket.OPEN) {
       ws.send(JSON.stringify({ type: "audio-stop", eventCode }));
+    } else {
+      await sendWsMessage(JSON.stringify({ type: "audio-stop", eventCode }));
     }
     setIsRecording(false);
     setMediaRecorder(null);
@@ -515,6 +614,7 @@ export default function useWebsocketTranslation(
     actionMeta?: ActionMeta<OptionType>
   ) => {
     setTranslationLanguage(option);
+    if (!hasCompletedTour) return;
     if (isEventStarted || hasJoinedEvent) {
       const msg: any = {
         type: "change-language",
@@ -534,17 +634,25 @@ export default function useWebsocketTranslation(
     setStreamingLanguage(
       newLang as "EN_GB" | "NL" | "ES" | "EN_US" | "FR" | "ZH_HANS"
     );
-    if (
-      (isEventStarted || hasJoinedEvent) &&
-      wsRef.current?.readyState === WebSocket.OPEN
-    ) {
-      wsRef.current.send(
-        JSON.stringify({
-          type: "change-streaming-language",
-          streamingLanguage: newLang,
-          userId: adminUserId,
-        })
-      );
+    if (!hasCompletedTour) return;
+    if (isEventStarted || hasJoinedEvent) {
+      if (wsRef.current?.readyState === WebSocket.OPEN) {
+        wsRef.current.send(
+          JSON.stringify({
+            type: "change-streaming-language",
+            streamingLanguage: newLang,
+            userId: adminUserId,
+          })
+        );
+      } else {
+        sendWsMessage(
+          JSON.stringify({
+            type: "change-streaming-language",
+            streamingLanguage: newLang,
+            userId: adminUserId,
+          })
+        );
+      }
     }
   };
 
@@ -581,5 +689,7 @@ export default function useWebsocketTranslation(
     loadingMore,
     isScrollToBottom,
     fetchingInitConv,
+    hasCompletedTour,
+    restartAudioRecognition,
   };
 }

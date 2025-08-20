@@ -60,6 +60,8 @@ export default function EventTranslation({
   const user = useUser();
   const { hasCompletedTour } = useTour();
 
+  console.log(user);
+
   const {
     transcription,
     translationLanguage,
@@ -117,20 +119,6 @@ export default function EventTranslation({
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [reconnectWsToastId, setReconectWsToastId] = useState("");
 
-  // console.log("event code and userId", event?.eventCode, event?.createdBy);
-
-  useEffect(() => {
-    // Attempt a reconnect every minute if socket is not open
-    const interval = setInterval(() => {
-      if (message === "Needs-to-pause-and-play") {
-        handleClickSpeakerPause();
-        handleClickSpeaker();
-      }
-    }, 5000); // 30 seconds
-
-    return () => clearInterval(interval);
-  }, [message]);
-
   // Auto-scroll to bottom when new messages arrive.
   useEffect(() => {
     if (!event?.eventIsOngoing || event?.status === "ended") return;
@@ -151,10 +139,9 @@ export default function EventTranslation({
       if (!event) return;
 
       if (event.status === "ended" || !hasCompletedTour) return;
-
       if (event.status === "live") {
         async function eventJoiner() {
-          await joinEvent();
+          joinEvent();
         }
         handleClickSpeakerPause();
         setTranslationLanguage({
@@ -172,7 +159,7 @@ export default function EventTranslation({
           label: languageMap["EN_GB"] || "EN_GB",
         });
         async function eventStarter() {
-          await startEvent();
+          startEvent();
         }
         eventStarter();
       }
@@ -193,21 +180,6 @@ export default function EventTranslation({
           route.replace(`/dashboard/manageEvents`);
           setIsDeleteModalOpen(false);
         }
-        if (message === "ws-reconnecting" && !reconnectWsToastId) {
-          handleClickSpeakerPause();
-
-          const toastId = toast.loading("Lost connection. Reconnecting..", {
-            position: "bottom-left",
-          });
-          setReconectWsToastId(toastId);
-        }
-        if (message === "reconnected") {
-          if (reconnectWsToastId) toast.dismiss(reconnectWsToastId);
-          setReconectWsToastId("");
-        }
-        if (message === "needs-to-rejoin" && rejoinAttemptRef.current > 0)
-          setIsOpenRejoinModal(true);
-        rejoinAttemptRef.current += 1;
       }
       messageSetter();
     },
@@ -217,7 +189,7 @@ export default function EventTranslation({
   async function handleDelete() {
     if (!hasCompletedTour) return;
     setIsDeletingEvent(true);
-    await stopEvent();
+    stopEvent();
   }
 
   async function handleRejoin() {
@@ -394,17 +366,7 @@ export default function EventTranslation({
                               color: "#5E5D5D",
                             }}
                           >
-                            {(
-                              (msg as ChatMessage)?.translation as {
-                                text?: string;
-                              }
-                            ).text
-                              ? (
-                                  (msg as ChatMessage)?.translation as {
-                                    text?: string;
-                                  }
-                                ).text
-                              : (msg as ChatMessage)?.translation}
+                            {(msg as ChatMessage)?.translation}
                           </div>
 
                           <div
@@ -665,7 +627,15 @@ function StreamingLanguageSelector({
   language,
   setLanguage,
 }: {
-  language: "EN_GB" | "NL" | "ES" | "EN_US" | "FR" | "ZH_HANS";
+  language:
+    | "EN_GB"
+    | "NL"
+    | "ES"
+    | "EN_US"
+    | "FR"
+    | "ZH_HANS"
+    | "sv-SE"
+    | "de-DE";
   setLanguage: (e: React.ChangeEvent<HTMLSelectElement>) => void;
 }) {
   return (
@@ -682,6 +652,8 @@ function StreamingLanguageSelector({
         <option value="EN_GB">English (GB)</option>
         <option value="FR">French</option>
         <option value="ZH_HANS">Chinese (Simplified)</option>
+        <option value="sv-SE">Swedish</option>
+        <option value="de-DE">German</option>
       </select>
     </div>
   );

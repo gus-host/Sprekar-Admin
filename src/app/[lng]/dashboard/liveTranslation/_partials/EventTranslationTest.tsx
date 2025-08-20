@@ -57,9 +57,9 @@ export default function EventTranslation({
   event?: Event;
   error?: string;
 }) {
+  const user = useUser();
   const { hasCompletedTour } = useTour();
 
-  const user = useUser();
   const {
     transcription,
     translationLanguage,
@@ -86,7 +86,7 @@ export default function EventTranslation({
     loadingMore,
     isScrollToBottom,
     fetchingInitConv,
-    // hasCompletedTour,
+    // restartAudioRecognition,
   } = useWebsocketTranslation(
     user,
     event?.createdBy || "",
@@ -120,17 +120,33 @@ export default function EventTranslation({
 
   // console.log("event code and userId", event?.eventCode, event?.createdBy);
 
-  useEffect(() => {
-    // Attempt a reconnect every minute if socket is not open
-    const interval = setInterval(() => {
-      if (message === "Needs-to-pause-and-play") {
-        handleClickSpeakerPause();
-        handleClickSpeaker();
-      }
-    }, 5000); // 30 seconds
-
-    return () => clearInterval(interval);
-  }, [message]);
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     if (
+  //       message === "Needs-to-pause-and-play" ||
+  //       message === "needs-to-restart-audio"
+  //     ) {
+  //       // prefer explicit restart function (exposed from hook)
+  //       if (restartAudioRecognition) {
+  //         restartAudioRecognition().catch((e) => {
+  //           console.error(
+  //             "restartAudioRecognition failed from component interval:",
+  //             e
+  //           );
+  //           // If it fails due to permissions, instruct user to click mic
+  //           toast.error(
+  //             "Audio restart failed — please click the mic to restart."
+  //           );
+  //         });
+  //       } else {
+  //         // fallback: use manual pause/play
+  //         handleClickSpeakerPause();
+  //         handleClickSpeaker();
+  //       }
+  //     }
+  //   }, 5000);
+  //   return () => clearInterval(interval);
+  // }, [message, restartAudioRecognition]);
 
   // Auto-scroll to bottom when new messages arrive.
   useEffect(() => {
@@ -147,36 +163,39 @@ export default function EventTranslation({
     }
   }, [event?.name, event?.eventIsOngoing, event?.status]);
 
-  useEffect(function () {
-    if (!event) return;
+  useEffect(
+    function () {
+      if (!event) return;
 
-    if (event.status === "ended") return;
+      if (event.status === "ended" || !hasCompletedTour) return;
 
-    if (event.status === "live") {
-      async function eventJoiner() {
-        await joinEvent();
+      if (event.status === "live") {
+        async function eventJoiner() {
+          await joinEvent();
+        }
+        handleClickSpeakerPause();
+        setTranslationLanguage({
+          value: "EN_GB",
+          label: languageMap["EN_GB"] || "EN_GB",
+        });
+        eventJoiner();
+      } else if (
+        user._id === event?.createdBy &&
+        message !== "Event has started"
+      ) {
+        handleClickSpeakerPause();
+        setTranslationLanguage({
+          value: "EN_GB",
+          label: languageMap["EN_GB"] || "EN_GB",
+        });
+        async function eventStarter() {
+          await startEvent();
+        }
+        eventStarter();
       }
-      handleClickSpeakerPause();
-      setTranslationLanguage({
-        value: "EN_GB",
-        label: languageMap["EN_GB"] || "EN_GB",
-      });
-      eventJoiner();
-    } else if (
-      user._id === event?.createdBy &&
-      message !== "Event has started"
-    ) {
-      handleClickSpeakerPause();
-      setTranslationLanguage({
-        value: "EN_GB",
-        label: languageMap["EN_GB"] || "EN_GB",
-      });
-      async function eventStarter() {
-        await startEvent();
-      }
-      eventStarter();
-    }
-  }, []);
+    },
+    [hasCompletedTour]
+  );
 
   useEffect(
     function () {
@@ -213,6 +232,7 @@ export default function EventTranslation({
   );
 
   async function handleDelete() {
+    if (!hasCompletedTour) return;
     setIsDeletingEvent(true);
     await stopEvent();
   }
@@ -225,12 +245,15 @@ export default function EventTranslation({
     setIsOpenRejoinModal(false);
   }
   async function handleClickSpeaker() {
+    if (!hasCompletedTour) return;
+
     await startRecording();
     // setTranslationLanguage((lang) => lang);
     if (errorTranslation) return toast.error(errorTranslation);
     return setSpeakerIcon("pause");
   }
   function handleClickSpeakerPause() {
+    if (!hasCompletedTour) return;
     stopRecording();
     // setTranslationLanguage((lang) => lang);
     if (errorTranslation) return toast.error(errorTranslation);
@@ -302,14 +325,14 @@ export default function EventTranslation({
                   setLanguage={handleStreamingLanguageChange}
                 />
                 <QrCodeIcon
-                  className="cursor-pointer"
+                  className="cursor-pointer share-event-code"
                   size={16}
                   onClick={() => setIsModalOpen(true)}
                 />
                 <select
                   value={selectedDeviceId}
                   onChange={(e) => setSelectedDeviceId(e.target.value)}
-                  className="border border-gray-50 bg-gray-50 rounded hover:bg-gray-100 text-[12px] py-1 px-2"
+                  className="border border-gray-50 bg-gray-50 rounded hover:bg-gray-100 text-[12px] py-1 px-2 select-audio-device"
                 >
                   {audioDevices.map((device) => (
                     <option key={device.deviceId} value={device.deviceId}>
@@ -319,7 +342,7 @@ export default function EventTranslation({
                     </option>
                   ))}
                 </select>
-                <>
+                <span className="view-full-screen">
                   {!isShowFullScreen && (
                     <Fullscreen
                       onClick={handleFullScreen.enter}
@@ -334,11 +357,11 @@ export default function EventTranslation({
                       className="cursor-pointer"
                     />
                   )}
-                </>
+                </span>
               </div>
             </div>
             <div
-              className="overflow-y-auto overflow-hidden"
+              className="overflow-y-auto overflow-hidden view-translations"
               style={{
                 height: `${
                   (clientWidth as number) > 915
@@ -431,6 +454,12 @@ export default function EventTranslation({
             />
           )}
         </div>
+        {/* <button
+          className="absolute -bottom-2 left-0 text-[14px] bg-transparent border-none text-[#025FF3] font-medium cursor-pointer"
+          onClick={restartTour}
+        >
+          Take a tour?
+        </button> */}
       </FullScreen>
       {(clientWidth as number) > 915 ? (
         <TranscriptionsPortal
@@ -526,9 +555,9 @@ function EventController({
   return (
     <div className="flex justify-between items-end max-[915px]:flex-col max-[915px]:items-start max-[915px]:gap-3">
       <div className="flex gap-3 items-center">
-        <div className="cursor-pointer">
+        <div className="cursor-pointer mic-trigger">
           {speakerIcon === "" && !isLoading && !error ? (
-            <span onClick={() => handleClickSpeaker()} className="mic-trigger">
+            <span onClick={() => handleClickSpeaker()}>
               <SpeakerIcon />
             </span>
           ) : speakerIcon === "pause" && !isLoading && !error ? (
@@ -579,7 +608,7 @@ function EventController({
           <p className="text-[#676767] text-[12px] mb-1">
             Supported Languages ({event?.supportedLanguages?.length})
           </p>
-          <div className="max-w-[300px]">
+          <div className="max-w-[300px] translation-lang-select min-h-[37px]">
             <SupportedLangaugesTranslation
               options={formattedLanguages}
               translationLanguage={translationLanguage as LanguageOption}
@@ -592,7 +621,10 @@ function EventController({
             Total attendees connected:
           </h4>
           <p className="text-[20px] font-semibold mb-3">{participantCount}</p>
-          <ButtonRed onClick={() => setIsDeleteModalOpen((open) => !open)}>
+          <ButtonRed
+            onClick={() => setIsDeleteModalOpen((open) => !open)}
+            classNames="end-event"
+          >
             End Event
           </ButtonRed>
         </div>
@@ -650,7 +682,15 @@ function StreamingLanguageSelector({
   language,
   setLanguage,
 }: {
-  language: "EN_GB" | "NL" | "ES" | "EN_US" | "FR" | "ZH_HANS";
+  language:
+    | "EN_GB"
+    | "NL"
+    | "ES"
+    | "EN_US"
+    | "FR"
+    | "ZH_HANS"
+    | "sv-SE"
+    | "de-DE";
   setLanguage: (e: React.ChangeEvent<HTMLSelectElement>) => void;
 }) {
   return (
@@ -659,7 +699,7 @@ function StreamingLanguageSelector({
         id="language-select"
         value={language}
         onChange={setLanguage}
-        className="text-[12px] border border-gray-300 rounded p-0.5"
+        className="text-[12px] border border-gray-300 rounded p-0.5 streaming-lang-select"
       >
         <option value="NL">Dutch</option>
         <option value="ES">Spanish</option>
@@ -667,6 +707,8 @@ function StreamingLanguageSelector({
         <option value="EN_GB">English (GB)</option>
         <option value="FR">French</option>
         <option value="ZH_HANS">Chinese (Simplified)</option>
+        <option value="sv-SE">Swedish</option>
+        <option value="de-DE">German</option>
       </select>
     </div>
   );
