@@ -396,7 +396,7 @@ export default function useWebsocketTranslation(
     if (!ws) return;
     ws.onmessage = async (event: MessageEvent) => {
       const data = JSON.parse(event.data);
-      console.log("Received from server:", data);
+      // console.log("Received from server:", data);
       setIsLoading(false);
       setMessage(data.message);
       setError("");
