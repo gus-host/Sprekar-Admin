@@ -226,7 +226,7 @@ export default function useWebsocketTranslation(
   const [streamingLanguage, setStreamingLanguage] = useState<
     "EN_GB" | "NL" | "ES" | "EN_US" | "FR" | "ZH_HANS" | "sv-SE" | "de-DE"
   >("EN_GB");
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [serverStatus, setServerStatus] = useState({ level: "idle", msg: "" });
 
   const websocketUrl = "wss://dev.sprekar.com";
@@ -271,7 +271,7 @@ export default function useWebsocketTranslation(
   // session snapshot for reconnect/rehandshake
   const sessionRef = useRef({
     eventCode: eventCode,
-    translationLanguage: translationLanguage,
+    translationLanguage: translationLanguage?.value || "EN_GB",
     streamingLanguage: streamingLanguage,
     participantId: "",
     isParticipant: false,
@@ -282,7 +282,7 @@ export default function useWebsocketTranslation(
   useEffect(() => {
     sessionRef.current = {
       eventCode,
-      translationLanguage,
+      translationLanguage: translationLanguage?.value || "EN_GB",
       streamingLanguage,
       participantId,
       isParticipant: false,
@@ -461,6 +461,8 @@ export default function useWebsocketTranslation(
 
       setMessage(data.message);
 
+      // console.log("Message from server: ", data);
+
       switch (data.type) {
         case "pong":
           lastPongRef.current = Date.now();
@@ -521,6 +523,7 @@ export default function useWebsocketTranslation(
 
         case "participant-count":
           setParticipantCount(data.count || 0);
+          if (data.count > 0) setIsLoading((prev) => prev === true && false);
           setServerStatus({
             level: "ok",
             msg: `Participants: ${data.count || 0}`,
@@ -863,7 +866,7 @@ export default function useWebsocketTranslation(
   ) => {
     setTranslationLanguage(option);
     if (!hasCompletedTour) return;
-    sessionRef.current.translationLanguage = option;
+    sessionRef.current.translationLanguage = option?.value as string;
     safeSend({
       type: "change-language",
       language: option?.value || "EN_GB",

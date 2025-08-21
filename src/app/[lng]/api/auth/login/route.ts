@@ -27,7 +27,7 @@ export async function POST(req: Request) {
 
     if (axios.isAxiosError(error)) {
       errorMessage = error.response?.data?.message || "Axios request failed";
-      console.log(error.response);
+      console.log(error);
       statusCode = error.response?.status || 500;
     } else if (error instanceof Error) {
       errorMessage = error.message;
