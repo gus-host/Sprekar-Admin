@@ -229,7 +229,7 @@ export default function useWebsocketTranslation(
   const [isLoading, setIsLoading] = useState(true);
   const [serverStatus, setServerStatus] = useState({ level: "idle", msg: "" });
 
-  const websocketUrl = "wss://dev.sprekar.com";
+  const websocketUrl = "wss://prod.sprekar.com";
   const restApi = process.env.NEXT_PUBLIC_API_BASE_URL;
 
   const adminUserId: string = adminId;
