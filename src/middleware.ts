@@ -28,8 +28,8 @@ export function middleware(req: NextRequest) {
     );
   }
 
-  // const isNext404Route = pathname === "/_not-found";
   // if (isNext404Route) {
+  // const isNext404Route = pathname === "/_not-found";
   //   return NextResponse.redirect(new URL(`/${lng}/not-found`, req.url));
   // }
 
