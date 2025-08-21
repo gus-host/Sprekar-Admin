@@ -229,11 +229,11 @@ export default function useWebsocketTranslation(
   const [isLoading, setIsLoading] = useState(true);
   const [serverStatus, setServerStatus] = useState({ level: "idle", msg: "" });
 
-  const websocketUrl = "wss://prod.sprekar.com";
+  const websocketUrl = process.env.NEXT_PUBLIC_WEBSOCKET_BASE_URL;
   const restApi = process.env.NEXT_PUBLIC_API_BASE_URL;
 
   const adminUserId: string = adminId;
-  const DEBUG = false;
+  const DEBUG = true;
 
   /** Timers (ms) */
   const HEARTBEAT_MS = 10_000;
@@ -396,7 +396,7 @@ export default function useWebsocketTranslation(
 
     connectingRef.current = true;
     if (DEBUG) console.info("[WS] connecting →", websocketUrl, "mode:", mode);
-    const socket = new WebSocket(websocketUrl);
+    const socket = new WebSocket(websocketUrl as string);
     socket.binaryType = "arraybuffer";
 
     socket.onopen = () => {
@@ -461,7 +461,7 @@ export default function useWebsocketTranslation(
 
       setMessage(data.message);
 
-      // console.log("Message from server: ", data);
+      console.log("Message from server: ", data);
 
       switch (data.type) {
         case "pong":
