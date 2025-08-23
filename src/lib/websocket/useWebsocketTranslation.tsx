@@ -7,7 +7,9 @@ import {
   saveJoinRecord,
 } from "@/utils/helper/general/joinRecords";
 import React, { useState, useEffect, useCallback, useRef } from "react";
+import toast from "react-hot-toast";
 import { ActionMeta, SingleValue } from "react-select";
+import useSound from "./useSound";
 
 // Define an interface for our custom media recorder state
 interface MediaRecorderState {
@@ -228,12 +230,14 @@ export default function useWebsocketTranslation(
   >("EN_GB");
   const [isLoading, setIsLoading] = useState(true);
   const [serverStatus, setServerStatus] = useState({ level: "idle", msg: "" });
+  const reconnectWsToastIdRef = useRef("");
+  const { playSound } = useSound("/sounds/notification.mp3");
 
   const websocketUrl = process.env.NEXT_PUBLIC_WEBSOCKET_BASE_URL;
   const restApi = process.env.NEXT_PUBLIC_API_BASE_URL;
 
   const adminUserId: string = adminId;
-  const DEBUG = true;
+  const DEBUG = false;
 
   /** Timers (ms) */
   const HEARTBEAT_MS = 10_000;
@@ -411,6 +415,10 @@ export default function useWebsocketTranslation(
       const action = nextActionRef.current;
       nextActionRef.current = null;
 
+      if (reconnectWsToastIdRef.current)
+        toast.dismiss(reconnectWsToastIdRef.current);
+      reconnectWsToastIdRef.current = "";
+
       if (action === "join") {
         sendJoin();
         if (isRecordingRef.current) sendAudioStart();
@@ -442,6 +450,13 @@ export default function useWebsocketTranslation(
           now - Math.max(lastRxRef.current, lastPongRef.current);
         if (silentFor > STALE_RECONNECT_MS) {
           if (DEBUG) console.warn("[WS] stale; reconnecting");
+          if (!reconnectWsToastIdRef.current) {
+            const toastId = toast.loading("Lost connection. Reconnecting..", {
+              position: "bottom-left",
+            });
+            reconnectWsToastIdRef.current = toastId;
+          }
+
           try {
             wsRef.current && wsRef.current.close(4000, "stale");
           } catch {}
@@ -461,7 +476,7 @@ export default function useWebsocketTranslation(
 
       setMessage(data.message);
 
-      console.log("Message from server: ", data);
+      // console.log("Message from server: ", data);
 
       switch (data.type) {
         case "pong":
@@ -484,7 +499,8 @@ export default function useWebsocketTranslation(
             source: "socket",
           };
           setChatMessages((prev) => dedupeMessages(prev, [msg]));
-
+          if (streamingLanguage !== "EN_GB" && streamingLanguage !== "EN_US")
+            playSound();
           return;
         }
 
@@ -561,11 +577,13 @@ export default function useWebsocketTranslation(
             msg.includes("unknown message type") ||
             msg.includes("you must start audio recognition first") ||
             msg.includes("not in a room") ||
-            msg.includes("no audio session")
+            msg.includes("no audio session") ||
+            msg.includes("Already live")
           ) {
             serverAudioReadyRef.current = false;
             rehandshake();
           }
+
           return;
         }
 
@@ -581,7 +599,7 @@ export default function useWebsocketTranslation(
       clearInterval(watchdogTimerRef.current);
       // stopRecording(); // mic off if socket dies
       // Auto-reconnect only if we had a session (joined or started)
-      setTimeout(() => connect(null), backoff());
+      setTimeout(() => connect("join"), backoff());
     };
 
     socket.onerror = () => {
