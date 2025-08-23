@@ -490,7 +490,7 @@ export default function useWebsocketTranslation(
           return;
 
         case "translation": {
-          setTranscription(data.text || "");
+          // setTranscription(data.text || "");
           setTranslation(data.translation || "");
           const msg = {
             id: data.messageId || data._id || `${Date.now()}-${Math.random()}`,
