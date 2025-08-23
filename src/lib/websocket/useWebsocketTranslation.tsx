@@ -256,6 +256,7 @@ export default function useWebsocketTranslation(
   const reconnectRef = useRef({ tries: 0 });
   const lastRxRef = useRef(Date.now());
   const lastPongRef = useRef(Date.now());
+
   const heartbeatTimerRef = useRef<ReturnType<typeof setInterval> | undefined>(
     undefined
   );
@@ -499,8 +500,9 @@ export default function useWebsocketTranslation(
             source: "socket",
           };
           setChatMessages((prev) => dedupeMessages(prev, [msg]));
-          if (streamingLanguage !== "EN_GB" && streamingLanguage !== "EN_US")
-            playSound();
+
+          playSound();
+
           return;
         }
 
