@@ -92,7 +92,7 @@ export default function useWebsocketTranslation(
   const [loadingMore, setLoadingMore] = useState<boolean>(false);
   const [streamingLanguage, setStreamingLanguage] = useState<
     "EN_GB" | "NL" | "ES" | "EN_US" | "FR" | "ZH_HANS" | "sv-SE" | "de-DE"
-  >("EN_GB");
+  >("NL");
   const [isLoading, setIsLoading] = useState(false);
 
   const websocketUrl = process.env.NEXT_PUBLIC_WEBSOCKET_BASE_URL;
@@ -110,7 +110,7 @@ export default function useWebsocketTranslation(
   const translationLangRef = useRef<OptionType | null>(null);
   const streamingLangRef = useRef<
     "EN_GB" | "NL" | "ES" | "EN_US" | "FR" | "ZH_HANS" | "sv-SE" | "de-DE"
-  >("EN_GB");
+  >("NL");
 
   const DEBUG = false;
 
