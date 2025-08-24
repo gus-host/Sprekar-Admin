@@ -4,7 +4,7 @@ import { Suspense } from "react";
 import Spinner from "@/components/ui/Spinner";
 import { unstable_noStore as noStore } from "next/cache";
 import { notFound } from "next/navigation";
-import EventTranslation from "../_partials/EventTranslationTest";
+import EventTranslation from "../_partials/EventTranslation";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 export const revalidate = 0;
