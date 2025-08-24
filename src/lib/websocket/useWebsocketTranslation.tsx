@@ -107,6 +107,10 @@ export default function useWebsocketTranslation(
   const startRecordingRef = useRef<null | (() => Promise<void>)>(null);
   const stopRecordingRef = useRef<null | (() => Promise<void>)>(null);
   const restartingRef = useRef(false);
+  const translationLangRef = useRef<OptionType | null>(null);
+  const streamingLangRef = useRef<
+    "EN_GB" | "NL" | "ES" | "EN_US" | "FR" | "ZH_HANS" | "sv-SE" | "de-DE"
+  >("EN_GB");
 
   const DEBUG = false;
 
@@ -397,7 +401,7 @@ export default function useWebsocketTranslation(
     const msg: any = {
       type: "join",
       eventCode,
-      language: translationLanguage?.value,
+      language: translationLangRef.current?.value,
       conversationPage: 1,
       conversationLimit: 10,
     };
@@ -415,7 +419,7 @@ export default function useWebsocketTranslation(
       JSON.stringify({
         type: "audio-start",
         eventCode,
-        streamingLanguage,
+        streamingLanguage: streamingLangRef.current,
       })
     );
     return ok;
@@ -667,6 +671,7 @@ export default function useWebsocketTranslation(
     actionMeta?: ActionMeta<OptionType>
   ) => {
     setTranslationLanguage(option);
+    translationLangRef.current = option;
     if (!hasCompletedTour) return;
     if (isEventStarted || hasJoinedEvent) {
       const msg: any = {
@@ -685,8 +690,25 @@ export default function useWebsocketTranslation(
   ) => {
     const newLang = e.target.value;
     setStreamingLanguage(
-      newLang as "EN_GB" | "NL" | "ES" | "EN_US" | "FR" | "ZH_HANS"
+      newLang as
+        | "EN_GB"
+        | "NL"
+        | "ES"
+        | "EN_US"
+        | "FR"
+        | "ZH_HANS"
+        | "sv-SE"
+        | "de-DE"
     );
+    streamingLangRef.current = newLang as
+      | "EN_GB"
+      | "NL"
+      | "ES"
+      | "EN_US"
+      | "FR"
+      | "ZH_HANS"
+      | "sv-SE"
+      | "de-DE";
     if (!hasCompletedTour) return;
     if (isEventStarted || hasJoinedEvent) {
       if (wsRef.current?.readyState === WebSocket.OPEN) {
