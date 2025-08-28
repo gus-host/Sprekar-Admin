@@ -113,6 +113,13 @@ export default function useWebsocketTranslation(
   const streamingLangRef = useRef<
     "EN_GB" | "NL" | "ES" | "EN_US" | "FR" | "ZH_HANS" | "sv-SE" | "de-DE"
   >("NL");
+  const heartbeatTimerRef = useRef<ReturnType<typeof setInterval> | undefined>(
+    undefined
+  );
+  const lastRxRef = useRef(Date.now());
+
+  /** Timers (ms) */
+  const HEARTBEAT_MS = 10_000;
 
   const DEBUG = false;
 
@@ -243,11 +250,24 @@ export default function useWebsocketTranslation(
     }
   }, [hasJoinedEvent, eventCode, translationLanguage?.value]);
 
+  /** ------- SAFE SEND HELPERS ------- */
+  const safeSend = (obj: {}) => {
+    const ws = wsRef.current;
+    if (!ws || ws.readyState !== WebSocket.OPEN) return false;
+    try {
+      ws.send(JSON.stringify(obj));
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
   // Connect to WebSocket
   const connectWebSocket = useCallback((): Promise<WebSocket> => {
     return new Promise((resolve, reject) => {
       const socket = new WebSocket(websocketUrl || "");
       socket.onopen = () => {
+        lastRxRef.current = Date.now();
         console.log("Connected to server");
         setGenIsLoading(false);
         async function eventJoiner() {
@@ -255,6 +275,16 @@ export default function useWebsocketTranslation(
         }
         if (participantId && rejoinAfterWsClosesRef.current) eventJoiner();
         rejoinAfterWsClosesRef.current = false;
+        // Heartbeat + watchdog
+        clearInterval(heartbeatTimerRef.current);
+        heartbeatTimerRef.current = setInterval(() => {
+          const ws = wsRef.current;
+          if (!ws || ws.readyState !== WebSocket.OPEN) return;
+          if (Date.now() - lastRxRef.current >= HEARTBEAT_MS) {
+            safeSend({ type: "ping" });
+            if (DEBUG) console.log("[WS] ping");
+          }
+        }, HEARTBEAT_MS);
         setWs(socket);
         setMessage("reconnected");
         resolve(socket);
@@ -446,6 +476,7 @@ export default function useWebsocketTranslation(
   useEffect(() => {
     if (!ws) return;
     ws.onmessage = async (event: MessageEvent) => {
+      lastRxRef.current = Date.now();
       const data = JSON.parse(event.data);
       // console.log("Received from server:", data);
       setIsLoading(false);
