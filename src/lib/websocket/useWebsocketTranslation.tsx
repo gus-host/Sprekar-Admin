@@ -123,8 +123,6 @@ export default function useWebsocketTranslation(
 
   const DEBUG = false;
 
-  console.log(adminUserId);
-
   // keep it in sync whenever `ws` changes:
   useEffect(() => {
     wsRef.current = ws;
@@ -485,7 +483,7 @@ export default function useWebsocketTranslation(
 
       // participantId: prefer stored value
 
-      console.log(DEBUG && "Message from server: ", data);
+      if (DEBUG) console.log("Message from server: ", data);
 
       // Error handling
       if (
@@ -495,7 +493,7 @@ export default function useWebsocketTranslation(
           (data.message as string).toLowerCase().includes("recognition") ||
           (data.message as string).includes("already live"))
       ) {
-        console.log(DEBUG && "[FE] restart reshake");
+        if (DEBUG) console.log("[FE] restart reshake");
         rehandshake();
       } else if (
         data.type === "error" &&
@@ -545,21 +543,6 @@ export default function useWebsocketTranslation(
         if (user?._id) return;
         setParticipantId(data.participantId as string);
       }
-      // else if (
-      //   data.type === "error" &&
-      //   ((data.message as string).toLowerCase().includes("audio") ||
-      //     (data.message as string).toLowerCase().includes("speech") ||
-      //     (data.message as string).toLowerCase().includes("recognition"))
-      // ) {
-      //   setMessage("needs-to-restart-audio");
-
-      //   // schedule automatic restart (small delay so server settles)
-      //   setTimeout(() => {
-      //     restartAudioRecognition().catch((e) => {
-      //       console.error("Auto restartAudioRecognition failed", e);
-      //     });
-      //   }, 400);
-      // }
     };
   }, [ws]);
 
