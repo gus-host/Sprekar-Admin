@@ -8,6 +8,7 @@ import {
 } from "@/utils/helper/general/joinRecords";
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { ActionMeta, SingleValue } from "react-select";
+import useSound from "./useSound";
 
 // Define an interface for our custom media recorder state
 interface MediaRecorderState {
@@ -47,6 +48,7 @@ export default function useWebsocketTranslation(
   eventCodeServer: string,
   hasCompletedTour: string | boolean | null
 ) {
+  const { playSound } = useSound("/sounds/notification.mp3");
   const [participantId, setParticipantId] = useState<string>(() => {
     if (typeof window === "undefined" || user?._id) return "";
     return getSavedParticipantId(eventCodeServer) || "";
@@ -113,6 +115,8 @@ export default function useWebsocketTranslation(
   >("NL");
 
   const DEBUG = false;
+
+  console.log(adminUserId);
 
   // keep it in sync whenever `ws` changes:
   useEffect(() => {
@@ -491,6 +495,7 @@ export default function useWebsocketTranslation(
             timestamp: new Date(),
           },
         ]);
+        playSound();
 
         // event started
       } else if (
