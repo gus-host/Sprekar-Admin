@@ -2,6 +2,7 @@
 
 import { User } from "@/app/[lng]/dashboard/_partials/ProfileImgGetter";
 import { useCallback, useEffect, useRef, useState } from "react";
+import useSound from "./useSound";
 
 const HEARTBEAT_MS = 10_000;
 const STALE_RECONNECT_MS = 40_000;
@@ -98,6 +99,7 @@ export default function useWebsocketPoCAligned({
   presetParticipantId = "",
   debug = true,
 }: Options = {}) {
+  const { playSound } = useSound("/sounds/notification.mp3");
   const WS_URL = wsUrl ?? process.env.NEXT_PUBLIC_WEBSOCKET_BASE_URL;
   const REST_API = restApi ?? process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -410,6 +412,7 @@ export default function useWebsocketPoCAligned({
             };
             setChatMessages((prev) => dedupeMessages(prev, [msg]));
             chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+            playSound();
             return;
           }
 
