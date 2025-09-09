@@ -4,7 +4,8 @@ import { Suspense } from "react";
 import Spinner from "@/components/ui/Spinner";
 import { unstable_noStore as noStore } from "next/cache";
 import { notFound } from "next/navigation";
-import EventTranslation from "../_partials/EventTranslation";
+// import EventTranslation from "../_partials/EventTranslation";
+import EventTranslationAligned from "../_partials/EventTranslationAligned";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 export const revalidate = 0;
@@ -89,7 +90,7 @@ export default async function EventGetter({ id }: { id: string }) {
         </div>
       }
     >
-      <EventTranslation event={event} error={error} />
+      <EventTranslationAligned event={event} error={error} />
     </Suspense>
   );
 }

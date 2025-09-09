@@ -10,6 +10,7 @@ export interface User {
   profilePicture?: string;
   firstName?: string;
   lastName?: string;
+  language?: string;
   _id?: string;
 }
 

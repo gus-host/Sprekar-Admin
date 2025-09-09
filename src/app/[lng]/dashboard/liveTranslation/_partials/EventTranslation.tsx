@@ -335,6 +335,8 @@ export default function EventTranslation({
                   onClick={() => setIsModalOpen(true)}
                 />
                 <select
+                  id="audio-device-select"
+                  aria-label="Audio input device"
                   value={selectedDeviceId}
                   onChange={(e) => setSelectedDeviceId(e.target.value)}
                   className="border border-gray-50 bg-gray-50 rounded hover:bg-gray-100 text-[12px] py-1 px-2 select-audio-device"
@@ -703,6 +705,7 @@ function StreamingLanguageSelector({
       <select
         id="language-select"
         value={language}
+        aria-label="Streaming language"
         onChange={setLanguage}
         className="text-[12px] border border-gray-300 rounded p-0.5 streaming-lang-select"
       >

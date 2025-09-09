@@ -11,7 +11,7 @@ export const metadata = {
 
 export default async function page(props: { searchParams: SearchParams }) {
   const { eventId } = await props.searchParams;
-  console.log(eventId);
+  // console.log(eventId);
   return (
     <div>
       <h2 className="text-[18px] mb-[40px]">Live Translations</h2>
