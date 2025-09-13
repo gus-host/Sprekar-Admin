@@ -447,6 +447,7 @@ export default function useWebsocketPoCAligned({
               setServerStatus({ level: "ok", msg: data.message || "OK" });
             } else if (data.message === "Event has started") {
               setIsEventStarted(true);
+              setHasJoinedEvent(true);
               setServerStatus({ level: "ok", msg: data.message || "OK" });
             } else if (data.message === "Recognition started") {
               serverAudioReadyRef.current = true;
@@ -708,7 +709,7 @@ export default function useWebsocketPoCAligned({
     if (hasJoinedEvent && eventCode) {
       fetchMessages({ page: 1, isInitial: true });
     }
-  }, [eventCode, translationLanguage]);
+  }, [eventCode, translationLanguage, hasJoinedEvent]);
 
   // useEffect(() => {
   //   if (hasJoinedEvent && eventCode) {

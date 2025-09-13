@@ -151,11 +151,18 @@ export default function EventTranslationAligned({
     if (!event || !hasCompletedTour) return;
     (async () => {
       try {
-        if (event.status === "live") {
-          await joinEvent();
-        } else if (user._id === event.createdBy) {
-          await startEvent();
+        if (user._id === event.createdBy) {
+          if (event.status === "live") {
+            await joinEvent();
+            return;
+          }
+          if (event.status === "scheduled") {
+            await startEvent();
+            return;
+          }
+          return
         }
+        toast.error("This User is not admin of this event.")
       } catch (e) {
         console.error(e);
       }
